@@ -1,7 +1,7 @@
 import { useState } from "react";
 import StepSelectCode from "../components/booking/StepSelectCode";
 import StepService from "../components/booking/StepService";
-// import StepDateTime from "../components/booking/StepDateTime";
+import StepDateTime from "../components/booking/StepDateTime";
 // import StepUserDetails from "../components/booking/StepUserDetails";
 
 export default function Booking() {
