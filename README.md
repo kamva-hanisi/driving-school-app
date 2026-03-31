@@ -98,7 +98,7 @@ src/
 
 # 1. Clone the repository
 
-- git clone https://github.com/your-username/driving-school-app.git
+- https://github.com/kamva-hanisi/driving-school-app.git
 - cd driving-school-app
 
 # 2. Install dependencies
@@ -148,7 +148,7 @@ This project is licensed under the MIT License.
 
 # Kamva-Hanisi
 
-Full-stack JavaScrip Developer & UX Designer
+Full-stack JavaScript Developer & UX Designer
 
 ## ⭐ Support
 
