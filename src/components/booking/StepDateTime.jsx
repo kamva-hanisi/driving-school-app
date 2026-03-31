@@ -8,12 +8,15 @@ export default function StepDateTime({ next, prev }) {
       <input type="date" className="border p-3 w-full mb-4 rounded" />
       <input type="time" className="border p-3 w-full mb-4 rounded" />
 
-      <button onClick={next} className="bg-black text-white px-6 py-3">
+      <button
+        onClick={next}
+        className="bg-black text-white px-4 py-3  hover:bg-gray-800 rounded-lg transition-colors duration-300"
+      >
         Continue
       </button>
       <button
         onClick={prev}
-        className="ml-4 text-gray-500 hover:text-gray-700 transition-colors duration-300"
+        className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors duration-300"
       >
         Back
       </button>
