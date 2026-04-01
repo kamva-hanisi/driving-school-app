@@ -8,7 +8,6 @@ export default function Sidebar() {
       <nav>
         <Link to="/dashboard">Dashboard</Link>
         <Link to="/dashboard/booking">Booking</Link>
-        <Link to="/dashboard/students">Students</Link>
         <Link to="/dashboard/posters">Posters</Link>
       </nav>
     </aside>

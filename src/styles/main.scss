@@ -52,6 +52,11 @@ input {
   font: inherit;
 }
 
+textarea {
+  font: inherit;
+  resize: vertical;
+}
+
 button {
   cursor: pointer;
 }
@@ -405,6 +410,15 @@ button {
   gap: 24px;
 }
 
+.poster-panel {
+  display: grid;
+  gap: 20px;
+}
+
+.poster-stage {
+  display: flex;
+}
+
 .poster-card {
   padding: 28px;
   border-radius: $radius-lg;
@@ -423,7 +437,49 @@ button {
   line-height: 1.6;
 }
 
+.template-selector {
+  display: grid;
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.template-option {
+  padding: 16px 18px;
+  display: grid;
+  gap: 6px;
+  border: 1px solid rgba(16, 20, 24, 0.08);
+  border-radius: $radius-md;
+  background: #fff;
+  text-align: left;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    border-color: rgba(15, 118, 110, 0.24);
+    box-shadow: $shadow-card;
+  }
+}
+
+.template-option--active {
+  border-color: rgba(15, 118, 110, 0.3);
+  background: rgba(15, 118, 110, 0.08);
+}
+
+.template-option__name {
+  font-weight: 700;
+  color: $color-text;
+}
+
+.template-option__description {
+  color: $color-text-muted;
+  line-height: 1.5;
+}
+
 .poster-preview {
+  width: 100%;
   min-height: 420px;
   padding: 32px;
   display: flex;
@@ -435,6 +491,24 @@ button {
     linear-gradient(135deg, rgba(245, 158, 11, 0.2), transparent);
   color: #fff;
   box-shadow: $shadow-soft;
+}
+
+.poster-preview--emerald {
+  background:
+    linear-gradient(160deg, rgba(16, 20, 24, 0.92), rgba(15, 118, 110, 0.9)),
+    linear-gradient(135deg, rgba(245, 158, 11, 0.2), transparent);
+}
+
+.poster-preview--sunset {
+  background:
+    linear-gradient(160deg, rgba(120, 53, 15, 0.95), rgba(234, 88, 12, 0.88)),
+    linear-gradient(135deg, rgba(250, 204, 21, 0.24), transparent);
+}
+
+.poster-preview--midnight {
+  background:
+    linear-gradient(160deg, rgba(17, 24, 39, 0.98), rgba(30, 41, 59, 0.9)),
+    linear-gradient(135deg, rgba(59, 130, 246, 0.2), transparent);
 }
 
 .poster-preview__eyebrow {
@@ -478,6 +552,10 @@ button {
   font-weight: 700;
 }
 
+.poster-download {
+  width: 100%;
+}
+
 .form-grid {
   display: grid;
   gap: 16px;
@@ -511,6 +589,11 @@ button {
     border-color: rgba(15, 118, 110, 0.65);
     box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.12);
   }
+}
+
+.field__input--multiline {
+  min-height: 140px;
+  padding-top: 14px;
 }
 
 @media (max-width: 768px) {
