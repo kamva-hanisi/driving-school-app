@@ -1,11 +1,9 @@
 import { Link } from "react-router-dom";
-import { Navbar } from "../components/navbar/Navbar";
 
 export default function Home() {
   return (
     <>
       <section className="nav_section">
-        <Navbar />
         <div className="hero_top">
           <h1 className="hero__title">
             Book your next driving lesson with confidence.

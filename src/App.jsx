@@ -7,7 +7,7 @@ function App() {
   return (
     <BrowserRouter>
       <div className="app-shell">
-        {/* <Navbar /> */}
+        <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/booking" element={<Booking />} />
