@@ -7,7 +7,7 @@ export function Navbar() {
   const { pathname } = useLocation();
 
   useEffect(() => {
-    return () => setIsOpen(false);
+    setIsOpen(false);
   }, [pathname]);
 
   useEffect(() => {
@@ -36,11 +36,14 @@ export function Navbar() {
           <Link className="site-nav__link" to="/">
             Home
           </Link>
-          <Link className="site-nav__link" to="about">
-            About
+          <Link className="site-nav__link" to="/booking">
+            Booking
           </Link>
-          <Link className="site-nav__link" to="contact">
-            Contact Us
+          <Link className="site-nav__link" to="/dashboard">
+            Dashboard
+          </Link>
+          <Link className="site-nav__link" to="/posters">
+            Posters
           </Link>
         </nav>
       </header>
