@@ -7,12 +7,26 @@ import StepUserDetails from "../components/booking/StepUserDetails";
 export default function Booking() {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({});
+  const steps = ["Code", "Service", "Schedule", "Details"];
 
   const next = () => setStep(step + 1);
   const prev = () => setStep(step - 1);
 
   return (
-    <div className="p-10">
+    <main className="booking-page">
+      <div className="booking-progress" aria-label="Booking progress">
+        {steps.map((label, index) => (
+          <span
+            className={`booking-progress__step${
+              step === index + 1 ? " booking-progress__step--active" : ""
+            }`}
+            key={label}
+          >
+            {index + 1}. {label}
+          </span>
+        ))}
+      </div>
+
       {step === 1 && (
         <StepSelectCode
           formData={formData}
@@ -44,6 +58,6 @@ export default function Booking() {
           prev={prev}
         />
       )}
-    </div>
+    </main>
   );
 }

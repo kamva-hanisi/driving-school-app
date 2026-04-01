@@ -7,22 +7,23 @@ export default function StepSelectCode({ next, formData, setFormData }) {
   };
 
   return (
-    <div className="bg-white p-6 rounded-xl shadow">
-      <h2 className="text-xl font-semibold">Select a Code</h2>
-      <p className="text-gray-500 mt-2">
+    <section className="booking-card">
+      <h2 className="booking-card__title">Select a code</h2>
+      <p className="booking-card__text">
         Choose the driving code you want to book lessons for:
       </p>
-      <div className="mt-4 space-y-2">
+      <div className="option-list">
         {codes.map((code) => (
           <button
             key={code}
             onClick={() => handleCodeSelect(code)}
-            className="block w-full text-left p-3 bg-blue-100 hover:bg-blue-200 rounded-lg transition-colors duration-300"
+            className="option-button"
+            type="button"
           >
             {code}
           </button>
         ))}
       </div>
-    </div>
+    </section>
   );
 }

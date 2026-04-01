@@ -1,25 +1,45 @@
-export default function StepDateTime({ next, prev }) {
+export default function StepDateTime({ next, prev, formData, setFormData }) {
+  const handleChange = (event) => {
+    setFormData({ ...formData, [event.target.name]: event.target.value });
+  };
+
   return (
-    <div className="bg-white p-6 rounded-xl shadow">
-      <h2 className="text-2xl font-bold mb-6">Pick Date & Time</h2>
-      <p className="text-gray-500 mb-4">
+    <section className="booking-card">
+      <h2 className="booking-card__title">Pick date and time</h2>
+      <p className="booking-card__text">
         Choose a date and time for your booking:
       </p>
-      <input type="date" className="border p-3 w-full mb-4 rounded" />
-      <input type="time" className="border p-3 w-full mb-4 rounded" />
+      <div className="form-grid">
+        <label className="field">
+          <span className="field__label">Preferred date</span>
+          <input
+            className="field__input"
+            name="bookingDate"
+            onChange={handleChange}
+            type="date"
+            value={formData.bookingDate || ""}
+          />
+        </label>
+        <label className="field">
+          <span className="field__label">Preferred time</span>
+          <input
+            className="field__input"
+            name="bookingTime"
+            onChange={handleChange}
+            type="time"
+            value={formData.bookingTime || ""}
+          />
+        </label>
+      </div>
 
-      <button
-        onClick={next}
-        className="bg-black text-white px-4 py-3  hover:bg-gray-800 rounded-lg transition-colors duration-300"
-      >
-        Continue
-      </button>
-      <button
-        onClick={prev}
-        className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors duration-300"
-      >
-        Back
-      </button>
-    </div>
+      <div className="button-row">
+        <button className="button button--secondary" onClick={prev} type="button">
+          Back
+        </button>
+        <button className="button button--dark" onClick={next} type="button">
+          Continue
+        </button>
+      </div>
+    </section>
   );
 }

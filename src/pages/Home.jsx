@@ -1,29 +1,44 @@
+import { Link } from "react-router-dom";
+import { Navbar } from "../components/navbar/Navbar";
+
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gray-50">
-      <section className="text-center py-20">
-        <h1 className="text-4xl font-bold mb-4">
-          Book a Driving Lessons Early 🚗
-        </h1>
-        <p className="text-lg text-gray-600 mb-8">
-          Code 8, 10 & 14 - Fast & Simple Booking
-        </p>
-        <a
-          href="/booking"
-          className="inline-block bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-300"
-        >
-          Book Now
-        </a>
+    <>
+      <section className="nav_section">
+        <Navbar />
+        <div className="hero_top">
+          <h1 className="hero__title">
+            Book your next driving lesson with confidence.
+          </h1>
+          <p className="hero__text">
+            Schedule Code 8, Code 10, or Code 14 lessons through a cleaner
+            booking flow designed for speed, trust, and a more professional
+            client experience.
+          </p>
+        </div>
       </section>
+      <main className="hero">
+        <section className="hero__content">
+          <span className="hero__eyebrow">Modern driving school bookings</span>
+        </section>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 px-10">
-        {["Code 8", "Code 10", "Code 14"].map((Code) => (
-          <div key={Code} className="bg-white p-6 rounded-xl shadow">
-            <h2 className="text-xl font-semibold">{Code}</h2>
-            <p className="text-gray-500 mt-2">Professional driving lessons</p>
-          </div>
-        ))}
-      </div>
-    </div>
+        <div className="feature-grid">
+          {["Code 8", "Code 10", "Code 14"].map((code) => (
+            <article className="feature-card" key={code}>
+              <h2 className="feature-card__title">{code}</h2>
+              <p className="feature-card__text">
+                Professional driving lessons with a smoother digital booking
+                experience.
+              </p>
+            </article>
+          ))}
+        </div>
+        <div className="Btn-move">
+          <Link className="button button--primary" to="/booking">
+            Book now
+          </Link>
+        </div>
+      </main>
+    </>
   );
 }
