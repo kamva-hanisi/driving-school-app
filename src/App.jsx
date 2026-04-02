@@ -1,10 +1,10 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Booking from "./pages/Booking";
-import Dashboard from "./components/dashboard/Dashboard";
-import Posters from "./components/poster/Posters";
+import Dashboard from "./pages/Dashboard";
 import Home from "./pages/Home";
+import Posters from "./pages/Posters";
 
-import { Navbar } from "./components/navbar/Navbar";
+import { Navbar } from "./components/layout/Navbar";
 
 function App() {
   return (

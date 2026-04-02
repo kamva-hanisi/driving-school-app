@@ -1,18 +1,18 @@
 const templates = [
   {
-    id: "emerald",
-    name: "Emerald",
-    description: "Clean, modern, and trustworthy.",
+    id: "standard",
+    name: "Standard",
+    description: "Neutral and professional.",
   },
   {
-    id: "sunset",
-    name: "Sunset",
-    description: "Warm and energetic promo style.",
+    id: "warm",
+    name: "Warm",
+    description: "A softer promotional look.",
   },
   {
-    id: "midnight",
-    name: "Midnight",
-    description: "Bold dark look for premium branding.",
+    id: "dark",
+    name: "Dark",
+    description: "Simple dark layout.",
   },
 ];
 

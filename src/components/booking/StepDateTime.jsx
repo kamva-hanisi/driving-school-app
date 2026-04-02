@@ -1,3 +1,5 @@
+import Button from "../common/Button";
+
 export default function StepDateTime({ next, prev, formData, setFormData }) {
   const handleChange = (event) => {
     setFormData({ ...formData, [event.target.name]: event.target.value });
@@ -33,12 +35,12 @@ export default function StepDateTime({ next, prev, formData, setFormData }) {
       </div>
 
       <div className="button-row">
-        <button className="button button--secondary" onClick={prev} type="button">
+        <Button onClick={prev} variant="secondary">
           Back
-        </button>
-        <button className="button button--dark" onClick={next} type="button">
+        </Button>
+        <Button onClick={next} variant="dark">
           Continue
-        </button>
+        </Button>
       </div>
     </section>
   );

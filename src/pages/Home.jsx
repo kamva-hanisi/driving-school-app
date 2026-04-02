@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import Button from "../components/common/Button";
 
 export default function Home() {
   return (
@@ -32,8 +33,8 @@ export default function Home() {
           ))}
         </div>
         <div className="Btn-move">
-          <Link className="button button--primary" to="/booking">
-            Book now
+          <Link to="/booking">
+            <Button>Book now</Button>
           </Link>
         </div>
       </main>

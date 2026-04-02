@@ -10,21 +10,20 @@ export default function PosterForm({ form, setForm }) {
     <section className="poster-card">
       <h2 className="poster-card__title">Poster details</h2>
       <p className="poster-card__text">
-        Fill in the content you want to feature in your promo poster.
+        Edit the text and download a simple poster preview.
       </p>
 
       <div className="form-grid">
         <label className="field">
-          <span className="field__label">Campaign label</span>
+          <span className="field__label">Label</span>
           <input
             className="field__input"
             name="eyebrow"
             onChange={handleChange}
             type="text"
-            value={form.eyebrow}
+            value={form.eyebrow || ""}
           />
         </label>
-
         <label className="field">
           <span className="field__label">Headline</span>
           <input
@@ -32,10 +31,9 @@ export default function PosterForm({ form, setForm }) {
             name="headline"
             onChange={handleChange}
             type="text"
-            value={form.headline}
+            value={form.headline || ""}
           />
         </label>
-
         <label className="field">
           <span className="field__label">Description</span>
           <textarea
@@ -43,10 +41,9 @@ export default function PosterForm({ form, setForm }) {
             name="subtitle"
             onChange={handleChange}
             rows="5"
-            value={form.subtitle}
+            value={form.subtitle || ""}
           />
         </label>
-
         <label className="field">
           <span className="field__label">Call to action</span>
           <input
@@ -54,7 +51,7 @@ export default function PosterForm({ form, setForm }) {
             name="cta"
             onChange={handleChange}
             type="text"
-            value={form.cta}
+            value={form.cta || ""}
           />
         </label>
       </div>

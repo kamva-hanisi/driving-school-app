@@ -1,3 +1,5 @@
+import Button from "../common/Button";
+
 export default function StepService({ next, prev, formData, setFormData }) {
   const services = ["Driving Lesson", "Test Booking", "Car Hire"];
 
@@ -26,9 +28,9 @@ export default function StepService({ next, prev, formData, setFormData }) {
       </div>
 
       <div className="button-row">
-        <button className="button button--secondary" onClick={prev} type="button">
+        <Button onClick={prev} variant="secondary">
           Back
-        </button>
+        </Button>
       </div>
     </section>
   );

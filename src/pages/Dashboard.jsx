@@ -1,6 +1,6 @@
-import BookingTable from "./BookingTable";
-import Sidebar from "./Sidebar";
-import StatsCard from "./StatsCard";
+import BookingTable from "../components/dashboard/BookingTable";
+import Sidebar from "../components/layout/Sidebar";
+import StatsCard from "../components/dashboard/StatsCard";
 
 export default function Dashboard() {
   const bookings = [
@@ -30,7 +30,6 @@ export default function Dashboard() {
         <div className="stats-cards">
           <StatsCard title="Total Bookings" value="20" />
           <StatsCard title="Revenue" value="R5,000" />
-          <StatsCard title="Today" value="5" />
         </div>
 
         <h2>Recent Bookings</h2>

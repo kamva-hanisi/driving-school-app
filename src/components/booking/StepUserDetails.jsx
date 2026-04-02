@@ -1,3 +1,5 @@
+import Button from "../common/Button";
+
 export default function StepUserDetails({ next, prev, formData, setFormData }) {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -44,20 +46,12 @@ export default function StepUserDetails({ next, prev, formData, setFormData }) {
       </div>
 
       <div className="button-row">
-        <button
-          onClick={prev}
-          className="button button--secondary"
-          type="button"
-        >
+        <Button onClick={prev} variant="secondary">
           Back
-        </button>
-        <button
-          onClick={next}
-          className="button button--primary"
-          type="button"
-        >
+        </Button>
+        <Button onClick={next}>
           Confirm booking
-        </button>
+        </Button>
       </div>
     </section>
   );

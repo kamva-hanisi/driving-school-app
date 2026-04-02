@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu } from "../menu/Menu";
+import { Menu } from "../common/Menu";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
