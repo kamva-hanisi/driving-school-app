@@ -16,14 +16,14 @@ export default function StepService({ next, prev, formData, setFormData }) {
       </p>
       <div className="option-list">
         {services.map((service) => (
-          <button
+          <Button
             key={service}
             onClick={() => handleServiceSelect(service)}
             className="option-button"
-            type="button"
+            variant="option"
           >
             {service}
-          </button>
+          </Button>
         ))}
       </div>
 

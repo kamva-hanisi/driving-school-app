@@ -71,11 +71,7 @@ button {
   gap: 20px;
   border: 1px solid rgba(255, 255, 255, 0.24);
   border-radius: $radius-lg;
-  background: linear-gradient(
-    135deg,
-    rgba(16, 20, 24, 0.98),
-    rgba(15, 118, 110, 0.92)
-  );
+  background: $primary-gradient;
   box-shadow: $shadow-soft;
   -webkit-backdrop-filter: blur(18px);
   backdrop-filter: blur(18px);
@@ -134,6 +130,7 @@ button {
   width: 20px;
   height: 2px;
   border-radius: 999px;
+  color: $color-text-muted;
   background: $color-dark;
   transition:
     transform 0.2s ease,
@@ -205,7 +202,7 @@ button {
 }
 
 .hero__title {
-  color: $color-border;
+  color: $color-surface-muted;
   max-width: 680px;
   margin: 0 auto 20px;
   font-size: clamp(2rem, 4vw, 2.8rem);
@@ -217,7 +214,7 @@ button {
   max-width: 560px;
   font-size: 1.1rem;
   line-height: 1.7;
-  color: $color-surface-muted;
+  color: $color-text-2;
 }
 
 .Btn-move {
@@ -239,7 +236,8 @@ button {
   transition:
     background-color 0.2s ease,
     color 0.2s ease,
-    box-shadow 0.2s ease;
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
 
   &:hover {
     transform: translateY(-1px);
@@ -248,11 +246,11 @@ button {
 
 .button--primary {
   color: #fff;
-  background: $color-primary;
+  background: $primary-gradient;
   box-shadow: $shadow-soft;
 
   &:hover {
-    background: $color-primary-dark;
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.16);
   }
 }
 
@@ -271,6 +269,22 @@ button {
 
   &:hover {
     background: $color-dark-soft;
+  }
+}
+
+.button--option {
+  width: 100%;
+  padding: 16px 18px;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  background: $primary-gradient;
+  box-shadow: $shadow-soft;
+  color: #fff;
+  justify-content: flex-start;
+  text-align: left;
+
+  &:hover {
+    box-shadow: 0 12px 28px rgba(15, 23, 42, 0.16);
   }
 }
 
@@ -338,19 +352,8 @@ button {
 }
 
 .option-button {
-  width: 100%;
-  padding: 16px 18px;
-  border: 1px solid $color-border;
-  border-radius: $radius-md;
-  background: $color-surface;
-  color: $color-text;
+  justify-content: flex-start;
   text-align: left;
-  font-weight: 600;
-
-  &:hover {
-    border-color: #bfdbfe;
-    background: #f8fafc;
-  }
 }
 
 .feature-grid {
@@ -441,7 +444,6 @@ button {
 
   .site-nav__link {
     text-align: center;
-    background: #f8fafc;
   }
 
   .menu-toggle {

@@ -3,9 +3,14 @@ $primary-gradient: linear-gradient(
   rgba(16, 20, 24, 0.98),
   rgba(15, 118, 110, 0.92)
 );
+$color-primary-gradient-2: linear-gradient(
+  135deg,
+  rgba(32, 41, 49, 0.98),
+  rgba(15, 118, 110, 0.92)
+);
 $color-bg: #f5f6f8;
 $color-surface: #ffffff;
-$color-surface-muted: #f8fafc;
+$color-surface-muted: #f2f5f8;
 $color-text: #1f2937;
 $color-text-muted: #6b7280;
 $color-border: #dbe1e7;
@@ -27,3 +32,4 @@ $color-primary-2: #0f766e;
 $color-primary-dark-2: #115e59;
 $color-accent-2: #f59e0b;
 $color-dark-2: #101418;
+$color-text-2: #dae4f1;

@@ -1,3 +1,5 @@
+import Button from "../common/Button";
+
 export default function StepSelectCode({ next, formData, setFormData }) {
   const codes = ["Code 8", "Code 10", "Code 14"];
 
@@ -14,14 +16,14 @@ export default function StepSelectCode({ next, formData, setFormData }) {
       </p>
       <div className="option-list">
         {codes.map((code) => (
-          <button
+          <Button
             key={code}
             onClick={() => handleCodeSelect(code)}
             className="option-button"
-            type="button"
+            variant="option"
           >
             {code}
-          </button>
+          </Button>
         ))}
       </div>
     </section>

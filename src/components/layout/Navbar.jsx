@@ -4,11 +4,11 @@ import { Menu } from "../common/Menu";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const { pathname } = useLocation();
+  useLocation();
 
   useEffect(() => {
     setIsOpen(false);
-  }, [pathname]);
+  }, []);
 
   useEffect(() => {
     const handleResize = () => {

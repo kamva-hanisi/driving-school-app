@@ -12,13 +12,16 @@
   padding: 20px;
   border: 1px solid $color-border;
   border-radius: $radius-lg;
-  background: $color-surface;
+  background: $color-primary-gradient-2;
   box-shadow: $shadow-soft;
+  -webkit-backdrop-filter: blur(18px);
+  backdrop-filter: blur(18px);
 }
 
 .sidebar h2 {
   margin: 0 0 16px;
   font-size: 1.15rem;
+  color: $color-surface-muted;
 }
 
 .sidebar nav {
@@ -30,7 +33,7 @@
   display: block;
   padding: 10px 12px;
   border-radius: $radius-sm;
-  color: $color-text;
+  color: $color-text-2;
 }
 
 .sidebar a:hover {
