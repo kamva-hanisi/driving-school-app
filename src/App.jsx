@@ -4,6 +4,7 @@ import Dashboard from "./pages/Dashboard";
 import Home from "./pages/Home";
 import Posters from "./pages/Posters";
 
+import { Footer } from "./components/layout/Footer";
 import { Navbar } from "./components/layout/Navbar";
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/posters" element={<Posters />} />
         </Routes>
+        <Footer />
       </div>
     </BrowserRouter>
   );
