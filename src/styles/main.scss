@@ -50,14 +50,19 @@ button {
 }
 
 .app-shell {
-  padding: 16px 16px 32px;
+  padding: 0 16px 32px;
 }
 
 .site-nav-shell {
   position: sticky;
   top: 0;
   z-index: 100;
+  padding-top: 0;
   padding-bottom: 12px;
+}
+
+.site-nav-shell--overlay {
+  margin-bottom: -92px;
 }
 
 .site-nav {
@@ -151,27 +156,53 @@ button {
   }
 }
 
-.nav_section {
-  background: linear-gradient(
-    135deg,
-    rgba(32, 41, 49, 0.98),
-    rgba(15, 118, 110, 0.92)
-  );
-  box-shadow: $shadow-soft;
-  // padding: 28px 16px 12px;
-  text-align: center;
+.hero-banner {
+  position: relative;
+  width: calc(100% + 32px);
+  min-height: clamp(420px, 72vh, 760px);
+  margin: -96px -16px 0;
+  overflow: hidden;
+}
+
+.hero-banner__media,
+.hero-banner__overlay,
+.hero-banner__content {
+  position: absolute;
+  inset: 0;
+}
+
+.hero-banner__overlay {
+  background:
+    linear-gradient(180deg, rgba(16, 20, 24, 0.32), rgba(16, 20, 24, 0.72)),
+    linear-gradient(90deg, rgba(16, 20, 24, 0.68), rgba(16, 20, 24, 0.18));
+}
+
+.hero-banner__content {
+  z-index: 1;
+  width: min(100%, $content-width);
+  margin: 0 auto;
+  padding: clamp(72px, 12vh, 116px) 32px 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .hero_top {
-  margin: 0 auto;
-  padding: 56px 32px 40px;
+  max-width: 700px;
   text-align: center;
+}
+
+.hero-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .hero {
   width: min(100%, $content-width);
   margin: 0 auto;
-  margin-top: -22px;
+  margin-top: -20px;
   padding: 56px 32px 40px;
   border: 1px solid $color-border;
   border-radius: $radius-lg;
@@ -204,17 +235,19 @@ button {
 .hero__title {
   color: $color-surface-muted;
   max-width: 680px;
-  margin: 0 auto 20px;
-  font-size: clamp(2rem, 4vw, 2.8rem);
-  line-height: 1.1;
+  margin: 0 0 20px;
+  font-size: clamp(2rem, 3.8vw, 3.4rem);
+  line-height: 1.15;
+  text-shadow: 0 10px 30px rgba(0, 0, 0, 0.28);
 }
 
 .hero__text {
-  margin: 0 auto 28px;
+  margin: 0;
   max-width: 560px;
-  font-size: 1.1rem;
-  line-height: 1.7;
-  color: $color-text-2;
+  font-size: clamp(0.95rem, 1.3vw, 1.05rem);
+  line-height: 1.6;
+  color: rgba(248, 250, 252, 0.92);
+  text-shadow: 0 8px 24px rgba(0, 0, 0, 0.24);
 }
 
 .Btn-move {
@@ -364,11 +397,35 @@ button {
 }
 
 .feature-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
   padding: 24px;
   border: 1px solid $color-border;
   border-radius: $radius-md;
   background: rgba(255, 255, 255, 0.9);
   box-shadow: $shadow-card;
+}
+
+.feature-card__icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: linear-gradient(135deg, rgba(15, 118, 110, 0.12), rgba(245, 158, 11, 0.18));
+  color: $color-primary-dark-2;
+
+  svg {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+.feature-card__body {
+  min-width: 0;
 }
 
 .feature-card__title {
@@ -566,6 +623,33 @@ button {
     padding-inline: 12px;
   }
 
+  .site-nav-shell {
+    padding-top: 0;
+  }
+
+  .site-nav-shell--overlay {
+    margin-bottom: -84px;
+  }
+
+  .hero-banner {
+    width: calc(100% + 24px);
+    min-height: 520px;
+    margin: -88px -12px 0;
+  }
+
+  .hero-banner__content {
+    padding: 112px 18px 40px;
+    align-items: flex-start;
+  }
+
+  .hero_top {
+    max-width: 100%;
+  }
+
+  .hero-image {
+    object-position: center;
+  }
+
   .site-nav {
     align-items: center;
     flex-wrap: wrap;
@@ -596,6 +680,10 @@ button {
   .hero,
   .booking-card {
     padding: 24px 18px;
+  }
+
+  .hero {
+    margin-top: -28px;
   }
 
   .booking-progress {
@@ -636,6 +724,23 @@ button {
 }
 
 @media (max-width: 560px) {
+  .hero-banner {
+    min-height: 560px;
+    margin-top: -92px;
+  }
+
+  .hero-banner__content {
+    padding: 116px 16px 36px;
+  }
+
+  .hero__title {
+    font-size: clamp(1.7rem, 7vw, 2.3rem);
+  }
+
+  .hero__text {
+    font-size: 0.95rem;
+  }
+
   .site-footer__inner {
     grid-template-columns: 1fr;
   }

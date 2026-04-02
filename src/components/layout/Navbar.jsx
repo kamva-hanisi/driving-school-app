@@ -4,11 +4,13 @@ import { Menu } from "../common/Menu";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  useLocation();
+  const { pathname } = useLocation();
 
   useEffect(() => {
     setIsOpen(false);
-  }, []);
+  }, [pathname]);
+
+  const isHomePage = pathname === "/";
 
   useEffect(() => {
     const handleResize = () => {
@@ -22,7 +24,7 @@ export function Navbar() {
   }, []);
 
   return (
-    <div className="site-nav-shell">
+    <div className={`site-nav-shell${isHomePage ? " site-nav-shell--overlay" : ""}`}>
       <header className="site-nav">
         <Link className="site-nav__brand" to="/">
           DriveEasy
