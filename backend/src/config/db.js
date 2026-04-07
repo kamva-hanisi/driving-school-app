@@ -1,5 +1,6 @@
 import mysql from "mysql2";
 
+// Shared MySQL connection used by controllers that need database access.
 const db = mysql.createConnection({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,

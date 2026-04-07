@@ -9,6 +9,7 @@ export default function Booking() {
   const [formData, setFormData] = useState({});
   const steps = ["Code", "Service", "Schedule", "Details"];
 
+  // Moves the learner through the booking steps while preserving form state.
   const next = () => setStep(step + 1);
   const prev = () => setStep(step - 1);
 

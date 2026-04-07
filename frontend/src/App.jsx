@@ -10,6 +10,7 @@ import { Navbar } from "./components/layout/Navbar";
 function App() {
   return (
     <BrowserRouter>
+      {/* Shared layout wrapper used across all public pages. */}
       <div className="app-shell">
         <Navbar />
         <Routes>

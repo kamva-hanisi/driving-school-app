@@ -1,46 +1,120 @@
-# Driving School Booking App
+# Driving School App
 
-A React and Vite project for a modern driving school booking flow. The current frontend focuses on a smoother learner experience for selecting a license code, choosing a service, picking a schedule, and submitting contact details.
+A full-stack driving school project with a React frontend and an Express/MySQL backend. The app is designed to help learners move through a simple booking flow, while leaving room for admin tools, poster generation, and future business features.
 
-## Stack
+## What This Project Does
 
-- React 19
+- shows a landing page for the driving school
+- guides users through a multi-step booking process
+- supports learner code selection such as Code 8, Code 10, and Code 14
+- includes an authentication API for registering and logging in users
+- includes dashboard and poster pages for future expansion
+
+## Tech Stack
+
+### Frontend
+
+- React
 - React Router
-- Sass
 - Vite
+- Sass
+- Axios
 
-## Current Features
+### Backend
 
-- landing page with a clear service overview
-- multi-step booking experience
-- code 8, code 10, and code 14 selection
-- service, date, time, and contact detail capture
-- Sass-based styling with reusable semantic class names
-
-## Getting Started
-
-1. Install dependencies with `npm install`
-2. Start the dev server with `npm run dev`
-3. Build the project with `npm run build`
+- Node.js
+- Express
+- MySQL
+- bcryptjs
+- JSON Web Tokens
+- dotenv
 
 ## Project Structure
 
 ```text
-src/
-  components/
-    booking/
-    navbar/
-  pages/
-  styles/
-  App.jsx
-  main.jsx
+driving-school-app/
+  backend/
+    src/
+      config/
+      controllers/
+      middleware/
+      routes/
+      app.js
+      server.js
+  frontend/
+    src/
+      components/
+      hooks/
+      pages/
+      services/
+      styles/
+      App.jsx
+      main.jsx
+  README.md
 ```
+
+## Frontend Setup
+
+From the `frontend` folder:
+
+```bash
+npm install
+npm run dev
+```
+
+Build for production:
+
+```bash
+npm run build
+```
+
+## Backend Setup
+
+From the `backend` folder:
+
+```bash
+npm install
+```
+
+Create a `.env` file and add:
+
+```env
+PORT=5000
+DB_HOST=localhost
+DB_USER=your_mysql_user
+DB_PASSWORD=your_mysql_password
+DB_NAME=driving_school
+JWT_SECRET=your_secret_key
+```
+
+Then start the backend:
+
+```bash
+node src/server.js
+```
+
+## API Endpoints
+
+Current authentication endpoints:
+
+- `POST /api/auth/register`
+- `POST /api/auth/login`
+
+## Notes
+
+- the frontend booking experience is the most complete part of the project right now
+- the backend auth flow is started and ready for further expansion
+- booking API routes are referenced in `backend/src/app.js`, so that area may still need implementation if it has not been added yet
 
 ## Roadmap
 
-This project is a strong base for a fuller driving school platform, including:
+- save bookings to the database
+- protect private routes with auth middleware
+- add admin and instructor dashboards
+- add reminders, analytics, and payment support
 
-- payment integration
-- instructor and admin dashboards
-- notifications and reminders
-- analytics and booking management
+## GitHub Description
+
+If you want a short GitHub repo description, you can use this:
+
+`Full-stack driving school booking app built with React, Vite, Express, and MySQL.`

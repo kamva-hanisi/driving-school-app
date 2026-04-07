@@ -1,0 +1,17 @@
+import express from "express";
+import cors from "cors";
+
+import authRoutes from "./routes/authRoutes.js";
+import bookingRoutes from "./routes/bookingRoutes.js";
+
+const app = express();
+
+// Global middleware for cross-origin requests and JSON request parsing.
+app.use(cors());
+app.use(express.json());
+
+// Feature routes are mounted under the API namespace.
+app.use("/api/auth", authRoutes);
+app.use("/api/bookings", bookingRoutes);
+
+export default app;
