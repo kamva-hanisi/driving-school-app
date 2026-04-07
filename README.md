@@ -118,3 +118,24 @@ Current authentication endpoints:
 If you want a short GitHub repo description, you can use this:
 
 `Full-stack driving school booking app built with React, Vite, Express, and MySQL.`
+
+## Table
+
+CREATE TABLE users (
+id INT AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(100) NOT NULL,
+email VARCHAR(150) NOT NULL UNIQUE,
+password VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE bookings (
+id INT AUTO_INCREMENT PRIMARY KEY,
+customer_name VARCHAR(100) NOT NULL,
+customer_email VARCHAR(150),
+customer_phone VARCHAR(30) NOT NULL,
+code VARCHAR(50) NOT NULL,
+service VARCHAR(100) NOT NULL,
+booking_date DATE NOT NULL,
+booking_time TIME NOT NULL,
+status VARCHAR(50) NOT NULL
+);
