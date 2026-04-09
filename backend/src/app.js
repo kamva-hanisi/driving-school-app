@@ -3,6 +3,7 @@ import cors from "cors";
 
 import authRoutes from "./routes/authRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
+import paymentRoutes from "./routes/paymentRoutes.js";
 
 const app = express();
 
@@ -13,5 +14,7 @@ app.use(express.json());
 // Feature routes are mounted under the API namespace.
 app.use("/api/auth", authRoutes);
 app.use("/api/bookings", bookingRoutes);
+app.use("/api/payment", paymentRoutes);
+app.use("/api/payments", paymentRoutes);
 
 export default app;

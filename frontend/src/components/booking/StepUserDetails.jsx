@@ -1,6 +1,12 @@
 import Button from "../common/Button";
 
-export default function StepUserDetails({ next, prev, formData, setFormData }) {
+export default function StepUserDetails({
+  prev,
+  formData,
+  setFormData,
+  handleConfirm,
+  isSubmitting = false,
+}) {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -49,8 +55,8 @@ export default function StepUserDetails({ next, prev, formData, setFormData }) {
         <Button onClick={prev} variant="secondary">
           Back
         </Button>
-        <Button onClick={next}>
-          Confirm booking
+        <Button onClick={handleConfirm} variant="dark">
+          {isSubmitting ? "Processing..." : "Confirm & Pay"}
         </Button>
       </div>
     </section>

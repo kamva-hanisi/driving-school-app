@@ -10,6 +10,8 @@ const normalizeBookingPayload = (body) => ({
   time: body.time ?? body.bookingTime,
 });
 
+const normalizeTimeValue = (value) => String(value).slice(0, 5);
+
 export const createBooking = (req, res) => {
   const booking = normalizeBookingPayload(req.body);
   const { name, phone, code, service, date, time } = booking;
@@ -27,7 +29,9 @@ export const createBooking = (req, res) => {
     [date, time],
     (selectError, results) => {
       if (selectError) {
-        return res.status(500).json({ message: "Failed to check booking slot" });
+        return res
+          .status(500)
+          .json({ message: "Failed to check booking slot" });
       }
 
       if (results.length > 0) {
@@ -38,10 +42,21 @@ export const createBooking = (req, res) => {
 
       db.query(
         "INSERT INTO bookings (customer_name, customer_email, customer_phone, code, service, booking_date, booking_time, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
-        [name, booking.email ?? null, phone, code, service, date, time, "pending"],
+        [
+          name,
+          booking.email ?? null,
+          phone,
+          code,
+          service,
+          date,
+          time,
+          "pending",
+        ],
         (insertError) => {
           if (insertError) {
-            return res.status(500).json({ message: "Failed to create booking" });
+            return res
+              .status(500)
+              .json({ message: "Failed to create booking" });
           }
 
           return res.status(201).json({
@@ -72,6 +87,27 @@ export const getBookings = (req, res) => {
       }
 
       return res.json(results);
+    },
+  );
+};
+
+export const getUnavailableSlots = (req, res) => {
+  const { date } = req.query;
+
+  if (!date) {
+    return res.status(400).json({ message: "date query parameter is required" });
+  }
+
+  db.query(
+    "SELECT booking_time FROM bookings WHERE booking_date = ?",
+    [date],
+    (err, results) => {
+      if (err) {
+        return res.status(500).json(err);
+      }
+
+      const times = results.map((row) => row.booking_time);
+      return res.json(times.map(normalizeTimeValue));
     },
   );
 };

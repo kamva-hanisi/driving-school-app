@@ -1,8 +1,19 @@
 import Button from "../common/Button";
+import TimeSlots from "./TimeSlots";
 
 export default function StepDateTime({ next, prev, formData, setFormData }) {
   const handleChange = (event) => {
-    setFormData({ ...formData, [event.target.name]: event.target.value });
+    const { name, value } = event.target;
+
+    setFormData({
+      ...formData,
+      [name]: value,
+      ...(name === "bookingDate" ? { bookingTime: "" } : {}),
+    });
+  };
+
+  const handleTimeSelect = (bookingTime) => {
+    setFormData({ ...formData, bookingTime });
   };
 
   return (
@@ -23,14 +34,23 @@ export default function StepDateTime({ next, prev, formData, setFormData }) {
           />
         </label>
         <label className="field">
-          <span className="field__label">Preferred time</span>
-          <input
-            className="field__input"
-            name="bookingTime"
-            onChange={handleChange}
-            type="time"
-            value={formData.bookingTime || ""}
-          />
+          <span className="field__label">Available time slots</span>
+          {formData.bookingDate ? (
+            <TimeSlots
+              date={formData.bookingDate}
+              selectedTime={formData.bookingTime}
+              setTime={handleTimeSelect}
+            />
+          ) : (
+            <span className="booking-card__text">
+              Choose a date first to see the available time slots.
+            </span>
+          )}
+          {formData.bookingTime && (
+            <span className="field__hint">
+              Selected time: {formData.bookingTime}
+            </span>
+          )}
         </label>
       </div>
 

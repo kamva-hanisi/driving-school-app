@@ -1,0 +1,33 @@
+.time-slots {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+
+  button {
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    background: #eee;
+    cursor: pointer;
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease,
+      transform 0.2s ease;
+
+    &:hover {
+      background: #667eea;
+      color: white;
+    }
+
+    &.selected {
+      background: #1d4ed8;
+      color: white;
+    }
+
+    &.disabled {
+      background: #ccc;
+      color: #666;
+      cursor: not-allowed;
+    }
+  }
+}

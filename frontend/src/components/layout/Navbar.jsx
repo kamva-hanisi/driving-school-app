@@ -6,10 +6,6 @@ export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const { pathname } = useLocation();
 
-  useEffect(() => {
-    setIsOpen(false);
-  }, [pathname]);
-
   const isHomePage = pathname === "/";
 
   useEffect(() => {
@@ -35,16 +31,28 @@ export function Navbar() {
           className={`site-nav__links${isOpen ? " site-nav__links--open" : ""}`}
           id="primary-navigation"
         >
-          <Link className="site-nav__link" to="/">
+          <Link className="site-nav__link" onClick={() => setIsOpen(false)} to="/">
             Home
           </Link>
-          <Link className="site-nav__link" to="/booking">
+          <Link
+            className="site-nav__link"
+            onClick={() => setIsOpen(false)}
+            to="/booking"
+          >
             Booking
           </Link>
-          <Link className="site-nav__link" to="/dashboard">
+          <Link
+            className="site-nav__link"
+            onClick={() => setIsOpen(false)}
+            to="/dashboard"
+          >
             Dashboard
           </Link>
-          <Link className="site-nav__link" to="/posters">
+          <Link
+            className="site-nav__link"
+            onClick={() => setIsOpen(false)}
+            to="/posters"
+          >
             Posters
           </Link>
         </nav>
