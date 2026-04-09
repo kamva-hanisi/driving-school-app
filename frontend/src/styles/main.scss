@@ -255,30 +255,32 @@ button {
   margin-top: 24px;
 }
 
-.button {
+.btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
+  padding: 10px 20px;
   min-height: 48px;
-  padding: 0 18px;
   border: 0;
   border-radius: $radius-sm;
+  background: $primary;
+  color: #fff;
   font-weight: 600;
   transition:
+    opacity 0.2s ease,
     background-color 0.2s ease,
     color 0.2s ease,
     box-shadow 0.2s ease,
     transform 0.2s ease;
 
   &:hover {
+    opacity: 0.9;
     transform: translateY(-1px);
   }
 }
 
-.button--primary {
-  color: #fff;
-  background: $primary-gradient;
+.btn--primary {
   box-shadow: $shadow-soft;
 
   &:hover {
@@ -286,7 +288,7 @@ button {
   }
 }
 
-.button--secondary {
+.btn--secondary {
   color: $color-text;
   background: #f3f4f6;
 
@@ -295,7 +297,7 @@ button {
   }
 }
 
-.button--dark {
+.btn--dark {
   color: #fff;
   background: $color-dark;
 
@@ -304,12 +306,12 @@ button {
   }
 }
 
-.button--option {
+.btn--option {
   width: 100%;
   padding: 16px 18px;
   border: 1px solid $color-border;
   border-radius: $radius-md;
-  background: $primary-gradient;
+  background: $primary;
   box-shadow: $shadow-soft;
   color: #fff;
   justify-content: flex-start;
@@ -318,6 +320,10 @@ button {
   &:hover {
     box-shadow: 0 12px 28px rgba(15, 23, 42, 0.16);
   }
+}
+
+.btn--full {
+  width: 100%;
 }
 
 .button-row {

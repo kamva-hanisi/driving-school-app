@@ -4,13 +4,13 @@ import jwt from "jsonwebtoken";
 
 // Creates a new user record after hashing the incoming password.
 export const register = (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, school_id } = req.body;
 
   const hashed = bcrypt.hashSync(password, 10);
 
   db.query(
-    "INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
-    [name, email, hashed],
+    "INSERT INTO users (name, email, password, school_id) VALUES (?, ?, ?, ?)",
+    [name, email, hashed, school_id ?? null],
     (err) => {
       if (err) return res.status(500).json(err);
       res.json({ message: "User registered" });
@@ -33,7 +33,13 @@ export const login = (req, res) => {
 
     if (!valid) return res.status(400).json("Wrong password");
 
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET);
+    const token = jwt.sign(
+      {
+        id: user.id,
+        school_id: user.school_id,
+      },
+      process.env.JWT_SECRET,
+    );
 
     res.json({ token });
   });

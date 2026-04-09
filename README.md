@@ -85,6 +85,9 @@ DB_USER=your_mysql_user
 DB_PASSWORD=your_mysql_password
 DB_NAME=driving_school
 JWT_SECRET=your_secret_key
+TWILIO_ACCOUNT_SID=your_twilio_sid
+TWILIO_AUTH_TOKEN=your_twilio_token
+TWILIO_WHATSAPP_FROM=whatsapp:+14155238886
 ```
 
 Then start the backend:
@@ -99,6 +102,26 @@ Current authentication endpoints:
 
 - `POST /api/auth/register`
 - `POST /api/auth/login`
+- `GET /api/bookings` requires `Authorization: Bearer <token>`
+
+## Multi-School Migration
+
+Run these SQL migrations when you are ready to enable school-level isolation:
+
+```sql
+ALTER TABLE users ADD school_id INT;
+ALTER TABLE bookings ADD school_id INT;
+```
+
+Until those columns exist, the backend now falls back to the legacy schema so the app can still run.
+
+## WhatsApp Setup
+
+WhatsApp notifications use Twilio from the backend utility in [backend/src/utils/whatsapp.js](/c:/projects/driving-school-app/backend/src/utils/whatsapp.js).
+
+- Install dependency: `npm install twilio`
+- Add Twilio env vars to `backend/.env`
+- Use WhatsApp-enabled numbers in international format, for example `+27123456789`
 
 ## Notes
 
@@ -139,3 +162,5 @@ booking_date DATE NOT NULL,
 booking_time TIME NOT NULL,
 status VARCHAR(50) NOT NULL
 );
+
+npm install twilio

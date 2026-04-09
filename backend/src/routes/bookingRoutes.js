@@ -1,4 +1,5 @@
 import express from "express";
+import { verifyToken } from "../middleware/authMiddleware.js";
 import {
   createBooking,
   getBookings,
@@ -8,7 +9,7 @@ import {
 const router = express.Router();
 
 router.post("/", createBooking);
-router.get("/", getBookings);
+router.get("/", verifyToken, getBookings);
 router.get("/unavailable", getUnavailableSlots);
 
 export default router;

@@ -6,7 +6,12 @@ export default function Button({
   variant = "primary",
   ...props
 }) {
-  const classes = ["button", `button--${variant}`, fullWidth ? "button--full" : "", className]
+  const classes = [
+    "btn",
+    `btn--${variant}`,
+    fullWidth ? "btn--full" : "",
+    className,
+  ]
     .filter(Boolean)
     .join(" ");
 
