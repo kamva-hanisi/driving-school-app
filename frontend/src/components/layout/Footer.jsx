@@ -146,9 +146,9 @@ export function Footer() {
 
         <div className="site-footer__group">
           <h3 className="site-footer__heading">Opening</h3>
-          <p>Monday - Saturday</p>
+          <p>Monday - Friday</p>
           <p>07:00 AM - 16:00 PM</p>
-          <p>Sunday</p>
+          <p>Saturday</p>
           <p>10:00 AM - 15:00 PM</p>
         </div>
       </div>

@@ -51,7 +51,7 @@ button {
 }
 
 .app-shell {
-  padding: 0 16px 32px;
+  padding: 0 16px 0;
 }
 
 .site-nav-shell {
@@ -264,7 +264,7 @@ button {
   min-height: 48px;
   border: 0;
   border-radius: $radius-sm;
-  background: $primary;
+  background: $primary-gradient;
   color: #fff;
   font-weight: 600;
   transition:
@@ -311,7 +311,7 @@ button {
   padding: 16px 18px;
   border: 1px solid $color-border;
   border-radius: $radius-md;
-  background: $primary;
+  background: $primary-gradient;
   box-shadow: $shadow-soft;
   color: #fff;
   justify-content: flex-start;
@@ -625,6 +625,142 @@ button {
 .field__input--multiline {
   min-height: 120px;
   padding-top: 14px;
+}
+
+.sign-R-L-wrapper {
+  // height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.R-L-box {
+  width: 400px;
+  background: $color-surface;
+  padding: 30px;
+  border-radius: 12px;
+
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: 500;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 14px;
+  }
+
+  input[type="email"],
+  input[type="password"],
+  input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: none;
+    outline: none;
+    background: #f2f2f2;
+  }
+
+  .show-password {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+
+    input {
+      cursor: pointer;
+    }
+
+    span {
+      font-size: 14px;
+    }
+  }
+
+  button {
+    width: 100%;
+    padding: 14px;
+    background: $primary-gradient;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    margin-bottom: 20px;
+
+    &:hover {
+      box-shadow: 0 12px 28px rgba(15, 23, 42, 0.16);
+    }
+  }
+
+  .R-L-links {
+    text-align: center;
+    font-size: 14px;
+
+    span {
+      color: #007bff;
+      cursor: pointer;
+    }
+
+    a {
+      color: #007bff;
+      text-decoration: none;
+    }
+
+    p {
+      margin: 10px 0;
+    }
+  }
+
+  .divider {
+    text-align: center;
+    margin: 15px 0;
+    position: relative;
+
+    &::before,
+    &::after {
+      content: "";
+      height: 1px;
+      width: 40%;
+      background: #ccc;
+      position: absolute;
+      top: 50%;
+    }
+
+    &::before {
+      left: 0;
+    }
+
+    &::after {
+      right: 0;
+    }
+  }
+
+  .site-signup__socials {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin: 15px 0;
+  }
+
+  .site-signup__social-link {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #f1f1f1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+    transition: 0.3s;
+
+    &:hover {
+      background: #e0e0e0;
+      transform: scale(1.1);
+    }
+  }
 }
 
 @media (max-width: 768px) {

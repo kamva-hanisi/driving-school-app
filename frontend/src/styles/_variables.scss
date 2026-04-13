@@ -1,5 +1,8 @@
-$primary: linear-gradient(135deg, #667eea, #764ba2);
-$primary-gradient: $primary;
+$primary-gradient: linear-gradient(
+  135deg,
+  rgba(32, 41, 49, 0.98),
+  rgba(15, 118, 110, 0.92)
+);
 $color-primary-gradient-2: linear-gradient(
   135deg,
   rgba(32, 41, 49, 0.98),
