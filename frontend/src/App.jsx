@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import AuthCallback from "./pages/AuthCallback";
 import Booking from "./pages/Booking";
 import Dashboard from "./pages/Dashboard";
 import Home from "./pages/Home";
@@ -18,16 +19,10 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route
-            path="/booking"
-            element={
-              <ProtectedRoute>
-                <Booking />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/booking" element={<Booking />} />
           <Route
             path="/dashboard"
             element={

@@ -110,6 +110,15 @@ button {
   }
 }
 
+.site-nav__link--button {
+  border: 0;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.site-nav__link--label {
+  background: rgba(255, 255, 255, 0.1);
+}
+
 .menu-toggle {
   display: none;
   width: 52px;
@@ -627,6 +636,38 @@ button {
   padding-top: 14px;
 }
 
+.field__hint {
+  color: $color-text-muted;
+  font-size: 0.92rem;
+}
+
+.form-status {
+  margin: 16px 0 0;
+  font-size: 0.95rem;
+}
+
+.form-status--error {
+  color: #b42318;
+}
+
+.form-status--success {
+  color: #166534;
+}
+
+.time-slots-wrap {
+  display: grid;
+  gap: 12px;
+}
+
+.booking-card--intro {
+  margin-bottom: 18px;
+}
+
+.auth-callback {
+  width: min(100%, 720px);
+  margin: 24px auto 0;
+}
+
 .sign-R-L-wrapper {
   // height: 100vh;
   display: flex;
@@ -760,6 +801,37 @@ button {
       background: #e0e0e0;
       transform: scale(1.1);
     }
+  }
+}
+
+.social-auth {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.social-auth__button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 50px;
+  padding: 12px 16px;
+  border: 1px solid $color-border;
+  border-radius: $radius-sm;
+  background: #fff;
+  color: $color-text;
+  font-weight: 600;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+
+  &:hover {
+    transform: translateY(-1px);
+    box-shadow: $shadow-card;
+    border-color: rgba(37, 99, 235, 0.24);
   }
 }
 

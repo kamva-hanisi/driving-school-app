@@ -2,6 +2,8 @@ import Button from "../common/Button";
 import TimeSlots from "./TimeSlots";
 
 export default function StepDateTime({ next, prev, formData, setFormData }) {
+  const canContinue = Boolean(formData.bookingDate && formData.bookingTime);
+
   const handleChange = (event) => {
     const { name, value } = event.target;
 
@@ -58,7 +60,7 @@ export default function StepDateTime({ next, prev, formData, setFormData }) {
         <Button onClick={prev} variant="secondary">
           Back
         </Button>
-        <Button onClick={next} variant="dark">
+        <Button disabled={!canContinue} onClick={next} variant="dark">
           Continue
         </Button>
       </div>

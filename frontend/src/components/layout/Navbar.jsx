@@ -1,10 +1,12 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu } from "../common/Menu";
+import { AuthContext } from "../../context/AuthContext";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const { pathname } = useLocation();
+  const { token, user, logout } = useContext(AuthContext);
 
   const isHomePage = pathname === "/";
 
@@ -48,13 +50,31 @@ export function Navbar() {
           >
             Dashboard
           </Link>
-          <Link
-            className="site-nav__link"
-            onClick={() => setIsOpen(false)}
-            to="/posters"
-          >
-            Posters
-          </Link>
+          {token ? (
+            <>
+              <span className="site-nav__link site-nav__link--label">
+                {user?.name || "Admin"}
+              </span>
+              <button
+                className="site-nav__link site-nav__link--button"
+                onClick={() => {
+                  logout();
+                  setIsOpen(false);
+                }}
+                type="button"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <Link
+              className="site-nav__link"
+              onClick={() => setIsOpen(false)}
+              to="/login"
+            >
+              Login
+            </Link>
+          )}
         </nav>
       </header>
     </div>

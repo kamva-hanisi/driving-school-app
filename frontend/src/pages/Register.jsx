@@ -3,62 +3,47 @@ import API from "../services/api";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import Button from "../components/common/Button";
-
-function GoogleIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 48 48">
-      <path
-        fill="#FFC107"
-        d="M43.6 20.5H42V20H24v8h11.3C33.6 32.9 29.2 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3 0 5.7 1.1 7.8 2.9l5.7-5.7C33.9 6.1 29.2 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.3-.1-2.7-.4-3.5z"
-      />
-    </svg>
-  );
-}
-
-function FacebookIcon() {
-  return (
-    <svg width="24" height="24" viewBox="0 0 24 24">
-      <path
-        fill="#1877F2"
-        d="M22 12a10 10 0 1 0-11.5 9.9v-7h-2v-3h2v-2.3c0-2 1.2-3.1 3-3.1.9 0 1.8.1 1.8.1v2h-1c-1 0-1.3.6-1.3 1.2V12h2.3l-.4 3h-1.9v7A10 10 0 0 0 22 12z"
-      />
-    </svg>
-  );
-}
-
-const socialLinks = [
-  {
-    href: "https://www.google.com/",
-    icon: <GoogleIcon />,
-    label: "Google",
-  },
-
-  {
-    href: "https://www.facebook.com/",
-    icon: <FacebookIcon />,
-    label: "Facebook",
-  },
-];
+import SocialAuthButtons from "../components/auth/SocialAuthButtons";
 
 export default function Register() {
   const [form, setForm] = useState({});
   const [show, setShow] = useState(false);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleRegister = async () => {
+    if (!form.name?.trim() || !form.email?.trim() || !form.password?.trim()) {
+      setError("Name, email, and password are required.");
+      return;
+    }
+
+    if (form.password !== form.confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+
     try {
-      await API.post("/auth/register", form);
+      setError("");
+      await API.post("/auth/register", {
+        name: form.name.trim(),
+        email: form.email.trim(),
+        password: form.password,
+        role: "owner",
+      });
       navigate("/login");
     } catch (err) {
       console.error(err);
-      alert("Registration failed. Please check your details and try again.");
+      setError(
+        err.response?.data?.message ||
+          "Registration failed. Please check your details and try again.",
+      );
     }
   };
 
   return (
     <div className="sign-R-L-wrapper">
       <div className="R-L-box">
-        <h2>Register</h2>
+        <h2>Create Owner Account</h2>
 
         <label>Full Name:</label>
         <input
@@ -94,25 +79,14 @@ export default function Register() {
           <input type="checkbox" onChange={() => setShow(!show)} />
           <span>Show Password</span>
         </div>
+        {error ? <p className="form-status form-status--error">{error}</p> : null}
 
         <Button onClick={handleRegister}>Register</Button>
 
         <div className="divider">
-          <span>or</span>
+          <span>or continue with</span>
         </div>
-        <div className="site-signup__socials">
-          {socialLinks.map((link, index) => (
-            <a
-              key={index}
-              href={link.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="site-signup__social-link"
-            >
-              {link.icon}
-            </a>
-          ))}
-        </div>
+        <SocialAuthButtons />
         <div className="R-L-links">
           <p>
             Already have an account? <Link to="/login">Sign In</Link>

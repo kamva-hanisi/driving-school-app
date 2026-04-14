@@ -6,6 +6,8 @@ export default function StepUserDetails({
   setFormData,
   handleConfirm,
   isSubmitting = false,
+  submitDisabled = false,
+  error = "",
 }) {
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -50,12 +52,17 @@ export default function StepUserDetails({
           />
         </label>
       </div>
+      {error ? <p className="form-status form-status--error">{error}</p> : null}
 
       <div className="button-row">
         <Button onClick={prev} variant="secondary">
           Back
         </Button>
-        <Button onClick={handleConfirm} variant="dark">
+        <Button
+          disabled={submitDisabled || isSubmitting}
+          onClick={handleConfirm}
+          variant="dark"
+        >
           {isSubmitting ? "Processing..." : "Confirm & Pay"}
         </Button>
       </div>

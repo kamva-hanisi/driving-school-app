@@ -1,166 +1,167 @@
 # Driving School App
 
-A full-stack driving school project with a React frontend and an Express/MySQL backend. The app is designed to help learners move through a simple booking flow, while leaving room for admin tools, poster generation, and future business features.
+Full-stack driving school booking platform built with React, Vite, Express, and MySQL.
 
-## What This Project Does
+## What Works Now
 
-- shows a landing page for the driving school
-- guides users through a multi-step booking process
-- supports learner code selection such as Code 8, Code 10, and Code 14
-- includes an authentication API for registering and logging in users
-- includes dashboard and poster pages for future expansion
+- Public client booking form
+- Owner/admin login and registration
+- Dashboard with real MySQL booking data
+- Booking status management
+- Google and Facebook OAuth flow support
+- PayFast/Twilio env hooks for production setup
 
-## Tech Stack
+## Stack
 
-### Frontend
-
-- React
-- React Router
-- Vite
-- Sass
-- Axios
-
-### Backend
-
-- Node.js
-- Express
-- MySQL
-- bcryptjs
-- JSON Web Tokens
-- dotenv
+- Frontend: React, React Router, Vite, Sass, Axios
+- Backend: Node.js, Express, MySQL, bcryptjs, JWT, dotenv
 
 ## Project Structure
 
 ```text
 driving-school-app/
   backend/
+    schema.sql
     src/
-      config/
-      controllers/
-      middleware/
-      routes/
-      app.js
-      server.js
   frontend/
     src/
-      components/
-      hooks/
-      pages/
-      services/
-      styles/
-      App.jsx
-      main.jsx
   README.md
 ```
 
-## Frontend Setup
+## Local Setup
 
-From the `frontend` folder:
+### 1. Database
+
+Create the database and tables from [schema.sql](/c:/projects/driving-school-app/backend/schema.sql).
+
+Example:
 
 ```bash
+cd backend
+mysql -u root -p < schema.sql
+```
+
+### 2. Backend env
+
+Create `backend/.env` from [backend/.env.example](/c:/projects/driving-school-app/backend/.env.example).
+
+Local example:
+
+```env
+PORT=5000
+DB_HOST=127.0.0.1
+DB_USER=root
+DB_PASSWORD=your_mysql_password
+DB_NAME=driving_school
+JWT_SECRET=replace_with_a_long_random_secret
+
+TWILIO_ACCOUNT_SID=replace_with_your_twilio_account_sid
+TWILIO_AUTH_TOKEN=replace_with_your_twilio_auth_token
+TWILIO_WHATSAPP_FROM=whatsapp:+14155238886
+
+PAYFAST_MERCHANT_ID=your_payfast_merchant_id
+PAYFAST_MERCHANT_KEY=your_payfast_merchant_key
+
+FRONTEND_URL=http://localhost:5173
+
+GOOGLE_CLIENT_ID=your_google_client_id
+GOOGLE_CLIENT_SECRET=your_google_client_secret
+GOOGLE_CALLBACK_URL=http://localhost:5000/api/auth/google/callback
+
+FACEBOOK_APP_ID=your_facebook_app_id
+FACEBOOK_APP_SECRET=your_facebook_app_secret
+FACEBOOK_CALLBACK_URL=http://localhost:5000/api/auth/facebook/callback
+```
+
+### 3. Frontend env
+
+Create `frontend/.env` from [frontend/.env.example](/c:/projects/driving-school-app/frontend/.env.example).
+
+Local example:
+
+```env
+VITE_API_URL=http://localhost:5000/api
+```
+
+### 4. Install and run
+
+Backend:
+
+```bash
+cd backend
 npm install
 npm run dev
 ```
 
-Build for production:
+Frontend:
 
 ```bash
-npm run build
-```
-
-## Backend Setup
-
-From the `backend` folder:
-
-```bash
+cd frontend
 npm install
+npm run dev
 ```
 
-Create a `.env` file and add:
+## OAuth Callback URLs
 
-```env
-PORT=5000
-DB_HOST=localhost
-DB_USER=your_mysql_user
-DB_PASSWORD=your_mysql_password
-DB_NAME=driving_school
-JWT_SECRET=your_secret_key
-TWILIO_ACCOUNT_SID=your_twilio_sid
-TWILIO_AUTH_TOKEN=your_twilio_token
-TWILIO_WHATSAPP_FROM=whatsapp:+14155238886
-```
+Use these exact values when creating Google and Facebook apps for local development:
 
-Then start the backend:
+- Frontend URL: `http://localhost:5173`
+- Backend URL: `http://localhost:5000`
+- Google callback: `http://localhost:5000/api/auth/google/callback`
+- Facebook callback: `http://localhost:5000/api/auth/facebook/callback`
 
-```bash
-node src/server.js
-```
+Production example if your frontend and backend are on different domains:
 
-## API Endpoints
+- Frontend URL: `https://yourdomain.com`
+- Backend URL: `https://api.yourdomain.com`
+- Google callback: `https://api.yourdomain.com/api/auth/google/callback`
+- Facebook callback: `https://api.yourdomain.com/api/auth/facebook/callback`
 
-Current authentication endpoints:
+## Google Setup
+
+In Google Cloud Console:
+
+1. Create an OAuth application.
+2. Add the authorized redirect URI:
+   `http://localhost:5000/api/auth/google/callback`
+3. Add your production redirect URI when deploying:
+   `https://api.yourdomain.com/api/auth/google/callback`
+4. Copy the client ID and secret into `backend/.env`.
+
+## Facebook Setup
+
+In Meta for Developers:
+
+1. Create an app with Facebook Login enabled.
+2. Add this Valid OAuth Redirect URI:
+   `http://localhost:5000/api/auth/facebook/callback`
+3. Add your production redirect URI when deploying:
+   `https://api.yourdomain.com/api/auth/facebook/callback`
+4. Copy the app ID and app secret into `backend/.env`.
+
+## Main API Routes
 
 - `POST /api/auth/register`
 - `POST /api/auth/login`
-- `GET /api/bookings` requires `Authorization: Bearer <token>`
+- `GET /api/auth/google`
+- `GET /api/auth/google/callback`
+- `GET /api/auth/facebook`
+- `GET /api/auth/facebook/callback`
+- `POST /api/bookings`
+- `GET /api/bookings`
+- `GET /api/bookings/summary`
+- `PATCH /api/bookings/:id/status`
 
-## Multi-School Migration
+## Important Notes
 
-Run these SQL migrations when you are ready to enable school-level isolation:
+- Social login code is ready, but it will not work until real provider credentials are added to `backend/.env`.
+- If PayFast keys are missing, bookings still save but payment redirect stays disabled.
+- If Twilio credentials are missing, bookings still save but WhatsApp sending is skipped.
+- Rotate any real secrets that were previously committed or shared.
 
-```sql
-ALTER TABLE users ADD school_id INT;
-ALTER TABLE bookings ADD school_id INT;
-```
+## Next Good Improvements
 
-Until those columns exist, the backend now falls back to the legacy schema so the app can still run.
-
-## WhatsApp Setup
-
-WhatsApp notifications use Twilio from the backend utility in [backend/src/utils/whatsapp.js](/c:/projects/driving-school-app/backend/src/utils/whatsapp.js).
-
-- Install dependency: `npm install twilio`
-- Add Twilio env vars to `backend/.env`
-- Use WhatsApp-enabled numbers in international format, for example `+27123456789`
-
-## Notes
-
-- the frontend booking experience is the most complete part of the project right now
-- the backend auth flow is started and ready for further expansion
-- booking API routes are referenced in `backend/src/app.js`, so that area may still need implementation if it has not been added yet
-
-## Roadmap
-
-- save bookings to the database
-- protect private routes with auth middleware
-- add admin and instructor dashboards
-- add reminders, analytics, and payment support
-
-## GitHub Description
-
-If you want a short GitHub repo description, you can use this:
-
-`Full-stack driving school booking app built with React, Vite, Express, and MySQL.`
-
-## Table
-
-CREATE TABLE users (
-id INT AUTO_INCREMENT PRIMARY KEY,
-name VARCHAR(100) NOT NULL,
-email VARCHAR(150) NOT NULL UNIQUE,
-password VARCHAR(255) NOT NULL
-);
-
-CREATE TABLE bookings (
-id INT AUTO_INCREMENT PRIMARY KEY,
-customer_name VARCHAR(100) NOT NULL,
-customer_email VARCHAR(150),
-customer_phone VARCHAR(30) NOT NULL,
-code VARCHAR(50) NOT NULL,
-service VARCHAR(100) NOT NULL,
-booking_date DATE NOT NULL,
-booking_time TIME NOT NULL,
-status VARCHAR(50) NOT NULL
-);
-
-npm install twilio
+- Add Apple login or OTP phone login
+- Add charts to the dashboard
+- Add calendar scheduling view
+- Add branch or multi-school support
