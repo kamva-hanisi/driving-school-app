@@ -11,6 +11,9 @@ export function Navbar() {
   const { pathname } = useLocation();
   const { token, user, logout } = useContext(AuthContext);
 
+  const isOwnerRoute =
+    pathname.startsWith("/login") || pathname.startsWith("/dashboard");
+
   const isHomePage = pathname === "/";
 
   useEffect(() => {
@@ -57,7 +60,7 @@ export function Navbar() {
               onClick={() => setCheckDropdown(!checkDropdown)}
               type="button"
             >
-              Check ▾
+              CHECK ▾
             </button>
 
             {checkDropdown && (
@@ -86,39 +89,41 @@ export function Navbar() {
           </Link>
 
           {/* PROFILE DROPDOWN */}
-          <div className="site-nav__dropdown">
-            <button
-              className="site-nav__link site-nav__link--button"
-              onClick={() => setProfileDropdown(!profileDropdown)}
-              type="button"
-            >
-              Profile ▾
-            </button>
+          {isOwnerRoute && (
+            <div className="site-nav__dropdown">
+              <button
+                className="site-nav__link site-nav__link--button"
+                onClick={() => setProfileDropdown(!profileDropdown)}
+                type="button"
+              >
+                Profile ▾
+              </button>
 
-            {profileDropdown && (
-              <div className="site-nav__dropdown-menu">
-                {!token ? (
-                  <Link to="/login">Login</Link>
-                ) : (
-                  <>
-                    <span className="dropdown-user">
-                      {user?.name || "Admin"}
-                    </span>
-                    {/* <Link to="/dashboard">Dashboard</Link> */}
-                    <button
-                      type="button"
-                      onClick={() => {
-                        logout();
-                        setProfileDropdown(false);
-                      }}
-                    >
-                      Logout
-                    </button>
-                  </>
-                )}
-              </div>
-            )}
-          </div>
+              {profileDropdown && (
+                <div className="site-nav__dropdown-menu">
+                  {!token ? (
+                    <Link to="/login">Login</Link>
+                  ) : (
+                    <>
+                      <span className="dropdown-user">
+                        {user?.name || "Admin"}
+                      </span>
+                      <Link to="/dashboard">Dashboard</Link>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          logout();
+                          setProfileDropdown(false);
+                        }}
+                      >
+                        Logout
+                      </button>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
         </nav>
       </header>
     </div>

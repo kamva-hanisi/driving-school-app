@@ -116,8 +116,8 @@ export function Footer() {
 
         <div className="site-footer__group">
           <h3 className="site-footer__heading">Company</h3>
-          <a href="/">About Us</a>
-          <a href="/">Contact Us</a>
+
+          <a href="/contact">Contact Us</a>
           <a href="/">Privacy Policy</a>
           <a href="/">Terms &amp; Conditions</a>
         </div>
