@@ -9,7 +9,7 @@ Full-stack driving school booking platform built with React, Vite, Express, and 
 - Dashboard with real MySQL booking data
 - Booking status management
 - Google and Facebook OAuth flow support
-- PayFast/Twilio env hooks for production setup
+- Downloadable booking references and Twilio env hooks for production setup
 
 ## Stack
 
@@ -58,9 +58,6 @@ JWT_SECRET=replace_with_a_long_random_secret
 TWILIO_ACCOUNT_SID=replace_with_your_twilio_account_sid
 TWILIO_AUTH_TOKEN=replace_with_your_twilio_auth_token
 TWILIO_WHATSAPP_FROM=whatsapp:+14155238886
-
-PAYFAST_MERCHANT_ID=your_payfast_merchant_id
-PAYFAST_MERCHANT_KEY=your_payfast_merchant_key
 
 FRONTEND_URL=http://localhost:5173
 
@@ -148,6 +145,7 @@ In Meta for Developers:
 - `GET /api/auth/facebook`
 - `GET /api/auth/facebook/callback`
 - `POST /api/bookings`
+- `GET /api/bookings/public/:reference`
 - `GET /api/bookings`
 - `GET /api/bookings/summary`
 - `PATCH /api/bookings/:id/status`
@@ -155,7 +153,8 @@ In Meta for Developers:
 ## Important Notes
 
 - Social login code is ready, but it will not work until real provider credentials are added to `backend/.env`.
-- If PayFast keys are missing, bookings still save but payment redirect stays disabled.
+- Clients now pay in person, so the booking flow no longer redirects to payment.
+- Clients can download their booking reference card after confirming and also from the tracking page.
 - If Twilio credentials are missing, bookings still save but WhatsApp sending is skipped.
 - Rotate any real secrets that were previously committed or shared.
 

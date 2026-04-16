@@ -1,10 +1,13 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import AuthCallback from "./pages/AuthCallback";
 import Booking from "./pages/Booking";
+import BookingReview from "./pages/BookingReview";
+import BookingStatus from "./pages/BookingStatus";
 import Dashboard from "./pages/Dashboard";
 import Home from "./pages/Home";
 import Posters from "./pages/Posters";
 import ProtectedRoute from "./routes/ProtectedRoute";
+import TrackBooking from "./pages/TrackBooking";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 
@@ -23,6 +26,9 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/booking" element={<Booking />} />
+          <Route path="/booking/review/:reference" element={<BookingReview />} />
+          <Route path="/track-booking" element={<TrackBooking />} />
+          <Route path="/booking/status/:reference" element={<BookingStatus />} />
           <Route
             path="/dashboard"
             element={

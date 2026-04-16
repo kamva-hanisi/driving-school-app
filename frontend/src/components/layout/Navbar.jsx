@@ -41,17 +41,24 @@ export function Navbar() {
             onClick={() => setIsOpen(false)}
             to="/booking"
           >
-            Booking
+            Book lesson
           </Link>
           <Link
             className="site-nav__link"
             onClick={() => setIsOpen(false)}
-            to="/dashboard"
+            to="/track-booking"
           >
-            Dashboard
+            Track booking
           </Link>
           {token ? (
             <>
+              <Link
+                className="site-nav__link"
+                onClick={() => setIsOpen(false)}
+                to="/dashboard"
+              >
+                Dashboard
+              </Link>
               <span className="site-nav__link site-nav__link--label">
                 {user?.name || "Admin"}
               </span>
@@ -66,15 +73,7 @@ export function Navbar() {
                 Logout
               </button>
             </>
-          ) : (
-            <Link
-              className="site-nav__link"
-              onClick={() => setIsOpen(false)}
-              to="/login"
-            >
-              Login
-            </Link>
-          )}
+          ) : null}
         </nav>
       </header>
     </div>

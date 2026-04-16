@@ -8,13 +8,11 @@ export default function Sidebar() {
   return (
     <aside className="sidebar">
       <h2>DriveAdmin</h2>
-      <p className="sidebar__meta">
-        {user?.name || "Owner"} • {user?.role || "owner"}
-      </p>
+      <p className="sidebar__meta">{`${user?.name || "Owner"} | ${user?.role || "owner"}`}</p>
 
       <nav>
-        <Link to="/dashboard">Dashboard</Link>
-        <Link to="/booking">Client booking form</Link>
+        <Link to="/dashboard">Dashboard overview</Link>
+        <Link to="/booking">Public booking page</Link>
         <Link to="/">Website home</Link>
       </nav>
     </aside>

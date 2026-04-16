@@ -73,36 +73,49 @@ export default function Dashboard() {
       {
         title: "Total bookings",
         value: summary.total_bookings,
-        helper: "All client bookings in the system",
+        helper: "All client bookings received through the website",
       },
       {
         title: "Total clients",
         value: summary.total_clients,
-        helper: "Unique clients who have booked",
+        helper: "Unique people who have booked lessons",
       },
       {
-        title: "Today",
-        value: summary.today_bookings,
-        helper: "Bookings happening today",
+        title: "Pending today",
+        value: summary.pending_bookings,
+        helper: "Bookings still waiting for your action",
       },
       {
         title: "Upcoming",
         value: summary.upcoming_bookings,
-        helper: "Future bookings to prepare for",
+        helper: "Future lessons to plan and prepare for",
       },
     ],
     [summary],
   );
 
-  const handleStatusChange = async (bookingId, status) => {
+  const handleBookingAction = async (bookingId, action) => {
     try {
-      await API.patch(`/bookings/${bookingId}/status`, { status });
+      if (action === "delete") {
+        const shouldDelete = window.confirm(
+          "Delete this client booking permanently?",
+        );
+
+        if (!shouldDelete) {
+          return;
+        }
+
+        await API.delete(`/bookings/${bookingId}`);
+      } else {
+        await API.patch(`/bookings/${bookingId}/status`, { status: action });
+      }
+
       await fetchDashboardData({ silent: true });
     } catch (requestError) {
-      console.error("Failed to update booking status:", requestError);
+      console.error("Failed to update booking:", requestError);
       setError(
         requestError.response?.data?.message ||
-          "We could not update the booking status.",
+          "We could not update the booking right now.",
       );
     }
   };
@@ -117,31 +130,32 @@ export default function Dashboard() {
       <Sidebar />
 
       <main className="dashboard-main">
-        <div className="dashboard-hero">
+        <section className="dashboard-hero">
           <div>
-            <p className="dashboard-eyebrow">Owner dashboard</p>
-            <h1>Manage real client bookings</h1>
+            <p className="dashboard-eyebrow">Private owner area</p>
+            <h1>Manage client bookings with confidence</h1>
             <p className="dashboard-intro">
-              Track incoming bookings, see client demand, and keep your lesson
-              schedule under control.
+              Review every booking, confirm lesson slots, and remove records you
+              no longer need from one focused dashboard.
             </p>
           </div>
+
           <div className="dashboard-status-group">
-            <div className="status status--pending">
+            <span className="status status--pending">
               Pending: {summary.pending_bookings}
-            </div>
-            <div className="status status--confirmed">
+            </span>
+            <span className="status status--confirmed">
               Confirmed: {summary.confirmed_bookings}
-            </div>
-            <div className="status status--completed">
+            </span>
+            <span className="status status--completed">
               Completed: {summary.completed_bookings}
-            </div>
+            </span>
           </div>
-        </div>
+        </section>
 
         {error ? <p className="form-status form-status--error">{error}</p> : null}
 
-        <div className="stats-cards">
+        <section className="stats-cards">
           {stats.map((stat) => (
             <StatsCard
               key={stat.title}
@@ -150,16 +164,16 @@ export default function Dashboard() {
               value={stat.value}
             />
           ))}
-        </div>
+        </section>
 
         <section className="dashboard-panel">
           <div className="dashboard-panel__header">
             <div>
-              <h2>Booking controls</h2>
-              <p>Filter bookings and review the latest client activity.</p>
+              <h2>Booking filters</h2>
+              <p>Find a client quickly and narrow results by booking status.</p>
             </div>
             {isRefreshing ? (
-              <span className="field__hint">Refreshing...</span>
+              <span className="field__hint">Refreshing live data...</span>
             ) : null}
           </div>
 
@@ -206,28 +220,29 @@ export default function Dashboard() {
         </section>
 
         <section className="dashboard-grid">
-          <div className="dashboard-panel">
+          <section className="dashboard-panel">
             <div className="dashboard-panel__header">
               <div>
-                <h2>All bookings</h2>
-                <p>Each booking below is coming from the real database.</p>
+                <h2>Client bookings</h2>
+                <p>These are the real bookings submitted through the website.</p>
               </div>
             </div>
+
             {isLoading ? (
               <p className="field__hint">Loading bookings...</p>
             ) : (
               <BookingTable
                 bookings={bookings}
-                onStatusChange={handleStatusChange}
+                onStatusChange={handleBookingAction}
               />
             )}
-          </div>
+          </section>
 
           <aside className="dashboard-panel">
             <div className="dashboard-panel__header">
               <div>
                 <h2>Recent clients</h2>
-                <p>The latest people who booked through the website.</p>
+                <p>Latest people who booked from the public booking form.</p>
               </div>
             </div>
 
@@ -245,9 +260,7 @@ export default function Dashboard() {
                     </div>
                     <p>{client.customer_email || "No email provided"}</p>
                     <p>{client.customer_phone}</p>
-                    <p>
-                      {client.code} • {client.service}
-                    </p>
+                    <p>{`${client.code} | ${client.service}`}</p>
                   </article>
                 ))
               )}

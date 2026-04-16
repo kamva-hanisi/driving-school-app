@@ -1,5 +1,6 @@
 import db from "../config/db.js";
 import { sendWhatsApp } from "../utils/whatsapp.js";
+import crypto from "crypto";
 
 const BOOKING_STATUSES = new Set([
   "pending",
@@ -20,6 +21,8 @@ const normalizeBookingPayload = (body) => ({
 
 const normalizeTimeValue = (value) => String(value).slice(0, 5);
 const getSchoolId = (req) => req.user?.school_id ?? req.body.school_id ?? null;
+const createPublicReference = () =>
+  `DRV-${crypto.randomBytes(4).toString("hex").toUpperCase()}`;
 
 const query = (sql, values = []) =>
   new Promise((resolve, reject) => {
@@ -84,7 +87,7 @@ export const createBooking = async (req, res) => {
     }
 
     const result = await query(
-      "INSERT INTO bookings (customer_name, customer_email, customer_phone, code, service, booking_date, booking_time, status, school_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+      "INSERT INTO bookings (customer_name, customer_email, customer_phone, code, service, booking_date, booking_time, status, school_id, public_reference) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
       [
         name,
         booking.email ?? null,
@@ -95,7 +98,15 @@ export const createBooking = async (req, res) => {
         time,
         "pending",
         schoolId,
+        createPublicReference(),
       ],
+    );
+
+    const [createdBooking] = await query(
+      `SELECT id, public_reference, customer_name, customer_email, customer_phone, code, service, booking_date, booking_time, status, school_id, created_at, updated_at
+       FROM bookings
+       WHERE id = ?`,
+      [result.insertId],
     );
 
     try {
@@ -107,16 +118,17 @@ export const createBooking = async (req, res) => {
     return res.status(201).json({
       message: "Booking created",
       booking: {
-        id: result.insertId,
-        name,
-        email: booking.email ?? null,
-        phone,
-        code,
-        service,
-        date,
-        time,
-        school_id: schoolId,
-        status: "pending",
+        id: createdBooking.id,
+        reference: createdBooking.public_reference,
+        name: createdBooking.customer_name,
+        email: createdBooking.customer_email,
+        phone: createdBooking.customer_phone,
+        code: createdBooking.code,
+        service: createdBooking.service,
+        date: createdBooking.booking_date,
+        time: createdBooking.booking_time,
+        school_id: createdBooking.school_id,
+        status: createdBooking.status,
       },
     });
   } catch (error) {
@@ -141,7 +153,7 @@ export const getBookings = async (req, res) => {
     });
 
     const results = await query(
-      `SELECT id, customer_name, customer_email, customer_phone, code, service, booking_date, booking_time, status, school_id, created_at, updated_at
+      `SELECT id, public_reference, customer_name, customer_email, customer_phone, code, service, booking_date, booking_time, status, school_id, created_at, updated_at
        FROM bookings
        WHERE ${whereClause}
        ORDER BY booking_date ASC, booking_time ASC, created_at DESC`,
@@ -176,7 +188,7 @@ export const getBookingSummary = async (req, res) => {
     ]);
 
     const recentClients = await query(
-      `SELECT id, customer_name, customer_email, customer_phone, code, service, booking_date, booking_time, status, created_at
+      `SELECT id, public_reference, customer_name, customer_email, customer_phone, code, service, booking_date, booking_time, status, created_at
        FROM bookings
        WHERE school_id <=> ?
        ORDER BY created_at DESC
@@ -217,7 +229,7 @@ export const updateBookingStatus = async (req, res) => {
     }
 
     const [booking] = await query(
-      `SELECT id, customer_name, customer_email, customer_phone, code, service, booking_date, booking_time, status, created_at, updated_at
+      `SELECT id, public_reference, customer_name, customer_email, customer_phone, code, service, booking_date, booking_time, status, created_at, updated_at
        FROM bookings
        WHERE id = ?`,
       [bookingId],
@@ -229,6 +241,68 @@ export const updateBookingStatus = async (req, res) => {
     });
   } catch (error) {
     return res.status(500).json({ message: "Failed to update booking status" });
+  }
+};
+
+export const getPublicBookingStatus = async (req, res) => {
+  const reference = req.params.reference?.trim().toUpperCase();
+
+  if (!reference) {
+    return res.status(400).json({ message: "Booking reference is required" });
+  }
+
+  try {
+    const [booking] = await query(
+      `SELECT public_reference, customer_name, customer_email, customer_phone, code, service, booking_date, booking_time, status, created_at, updated_at
+       FROM bookings
+       WHERE public_reference = ?
+       LIMIT 1`,
+      [reference],
+    );
+
+    if (!booking) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+
+    return res.json({
+      reference: booking.public_reference,
+      name: booking.customer_name,
+      email: booking.customer_email,
+      phone: booking.customer_phone,
+      code: booking.code,
+      service: booking.service,
+      date: booking.booking_date,
+      time: booking.booking_time,
+      status: booking.status,
+      created_at: booking.created_at,
+      updated_at: booking.updated_at,
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "Failed to fetch booking status" });
+  }
+};
+
+export const deleteBooking = async (req, res) => {
+  const schoolId = req.user?.school_id ?? null;
+  const bookingId = Number(req.params.id);
+
+  if (!Number.isInteger(bookingId) || bookingId <= 0) {
+    return res.status(400).json({ message: "Invalid booking id" });
+  }
+
+  try {
+    const result = await query(
+      "DELETE FROM bookings WHERE id = ? AND school_id <=> ?",
+      [bookingId, schoolId],
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+
+    return res.json({ message: "Booking deleted" });
+  } catch (error) {
+    return res.status(500).json({ message: "Failed to delete booking" });
   }
 };
 

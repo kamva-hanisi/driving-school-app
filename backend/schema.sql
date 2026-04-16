@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS bookings (
   booking_time TIME NOT NULL,
   status ENUM('pending', 'confirmed', 'completed', 'cancelled') NOT NULL DEFAULT 'pending',
   school_id INT NULL,
+  public_reference VARCHAR(20) NOT NULL UNIQUE,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   INDEX idx_bookings_date_time (booking_date, booking_time),

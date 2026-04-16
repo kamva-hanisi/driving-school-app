@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import API from "../services/api";
 import StepSelectCode from "../components/booking/StepSelectCode";
 import StepService from "../components/booking/StepService";
@@ -6,11 +7,11 @@ import StepDateTime from "../components/booking/StepDateTime";
 import StepUserDetails from "../components/booking/StepUserDetails";
 
 export default function Booking() {
+  const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
   const steps = ["Code", "Service", "Schedule", "Details"];
 
   // Moves the learner through the booking steps while preserving form state.
@@ -45,26 +46,22 @@ export default function Booking() {
     try {
       setIsSubmitting(true);
       setError("");
-      setSuccess("");
 
-      await API.post("/bookings", bookingData);
+      const bookingResponse = await API.post("/bookings", bookingData);
+      const bookingReference = bookingResponse.data?.booking?.reference;
 
-      const res = await API.post("/payment", {
-        amount: 500,
-        item_name: "Driving Lesson",
-      });
-
-      if (res.data?.url) {
-        window.location.href = res.data.url;
-        return;
+      if (!bookingReference) {
+        throw new Error("Booking reference was not returned");
       }
 
-      setSuccess(
-        res.data?.message ||
-          "Your booking was submitted successfully. We will contact you soon.",
-      );
-      setFormData({});
-      setStep(1);
+      navigate(`/booking/review/${bookingReference}`, {
+        state: {
+          bookingMessage:
+            bookingResponse.data?.message ||
+            "Your booking was submitted successfully. We will contact you soon.",
+          booking: bookingResponse.data?.booking || null,
+        },
+      });
     } catch (err) {
       console.error(err);
       setError(
@@ -86,7 +83,6 @@ export default function Booking() {
           Clients can book lessons here without creating an account. Every
           booking goes straight to the admin dashboard.
         </p>
-        {success ? <p className="form-status form-status--success">{success}</p> : null}
         {error ? <p className="form-status form-status--error">{error}</p> : null}
       </div>
 
