@@ -5,6 +5,9 @@ import { AuthContext } from "../../context/AuthContext";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [checkDropdown, setCheckDropdown] = useState(false);
+  const [profileDropdown, setProfileDropdown] = useState(false);
+
   const { pathname } = useLocation();
   const { token, user, logout } = useContext(AuthContext);
 
@@ -22,20 +25,50 @@ export function Navbar() {
   }, []);
 
   return (
-    <div className={`site-nav-shell${isHomePage ? " site-nav-shell--overlay" : ""}`}>
+    <div
+      className={`site-nav-shell${
+        isHomePage ? " site-nav-shell--overlay" : ""
+      }`}
+    >
       <header className="site-nav">
         <Link className="site-nav__brand" to="/">
           DriveEasy
         </Link>
+
         <Menu isOpen={isOpen} onToggle={() => setIsOpen((open) => !open)} />
+
         <nav
           aria-label="Primary"
           className={`site-nav__links${isOpen ? " site-nav__links--open" : ""}`}
           id="primary-navigation"
         >
-          <Link className="site-nav__link" onClick={() => setIsOpen(false)} to="/">
+          <Link
+            className="site-nav__link"
+            onClick={() => setIsOpen(false)}
+            to="/"
+          >
             Home
           </Link>
+
+          {/* CHECK DROPDOWN */}
+          <div className="site-nav__dropdown">
+            <button
+              className="site-nav__link site-nav__link--button"
+              onClick={() => setCheckDropdown(!checkDropdown)}
+              type="button"
+            >
+              Check ▾
+            </button>
+
+            {checkDropdown && (
+              <div className="site-nav__dropdown-menu">
+                <Link to="/about">About</Link>
+                <Link to="/contact">Contact</Link>
+                <Link to="/owner">Owner</Link>
+              </div>
+            )}
+          </div>
+
           <Link
             className="site-nav__link"
             onClick={() => setIsOpen(false)}
@@ -43,6 +76,7 @@ export function Navbar() {
           >
             Book lesson
           </Link>
+
           <Link
             className="site-nav__link"
             onClick={() => setIsOpen(false)}
@@ -50,30 +84,41 @@ export function Navbar() {
           >
             Track booking
           </Link>
-          {token ? (
-            <>
-              <Link
-                className="site-nav__link"
-                onClick={() => setIsOpen(false)}
-                to="/dashboard"
-              >
-                Dashboard
-              </Link>
-              <span className="site-nav__link site-nav__link--label">
-                {user?.name || "Admin"}
-              </span>
-              <button
-                className="site-nav__link site-nav__link--button"
-                onClick={() => {
-                  logout();
-                  setIsOpen(false);
-                }}
-                type="button"
-              >
-                Logout
-              </button>
-            </>
-          ) : null}
+
+          {/* PROFILE DROPDOWN */}
+          <div className="site-nav__dropdown">
+            <button
+              className="site-nav__link site-nav__link--button"
+              onClick={() => setProfileDropdown(!profileDropdown)}
+              type="button"
+            >
+              Profile ▾
+            </button>
+
+            {profileDropdown && (
+              <div className="site-nav__dropdown-menu">
+                {!token ? (
+                  <Link to="/login">Login</Link>
+                ) : (
+                  <>
+                    <span className="dropdown-user">
+                      {user?.name || "Admin"}
+                    </span>
+                    {/* <Link to="/dashboard">Dashboard</Link> */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        logout();
+                        setProfileDropdown(false);
+                      }}
+                    >
+                      Logout
+                    </button>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
         </nav>
       </header>
     </div>
