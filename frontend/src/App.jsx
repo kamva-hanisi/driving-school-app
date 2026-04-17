@@ -10,7 +10,6 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 import TrackBooking from "./pages/TrackBooking";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
-import About from "./pages/About";
 
 import { Footer } from "./components/layout/Footer";
 import { Navbar } from "./components/layout/Navbar";
@@ -36,7 +35,6 @@ function App() {
             path="/booking/status/:reference"
             element={<BookingStatus />}
           />
-          <Route path="/about" element={<About />} />
           <Route
             path="/dashboard"
             element={

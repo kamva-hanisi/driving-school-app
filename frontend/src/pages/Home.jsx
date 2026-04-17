@@ -1,6 +1,9 @@
+import { useEffect } from "react";
+import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 import Button from "../components/common/Button";
 import DrivingSchool from "../assets/Driving-school.jpg";
+import About from "./About";
 
 function CarIcon() {
   return (
@@ -42,6 +45,18 @@ const codes = [
 ];
 
 export default function Home() {
+  const { hash } = useLocation();
+
+  useEffect(() => {
+    if (hash) {
+      const element = document.querySelector(hash);
+
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  }, [hash]);
+
   return (
     <>
       <section className="hero-banner">
@@ -91,6 +106,11 @@ export default function Home() {
           </Link>
         </div>
       </main>
+
+      <section id="about" className="about">
+        <h2 className="about__title">About Us</h2>
+        <About />
+      </section>
     </>
   );
 }

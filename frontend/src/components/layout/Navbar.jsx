@@ -65,9 +65,15 @@ export function Navbar() {
 
             {checkDropdown && (
               <div className="site-nav__dropdown-menu">
-                <Link to="/about">About</Link>
-                <Link to="/contact">Contact</Link>
-                <Link to="/owner">Owner</Link>
+                <Link to="/#about" onClick={() => setCheckDropdown(false)}>
+                  About
+                </Link>
+                <Link to="/contact" onClick={() => setCheckDropdown(false)}>
+                  Contact
+                </Link>
+                <Link to="/owner" onClick={() => setCheckDropdown(false)}>
+                  Owner
+                </Link>
               </div>
             )}
           </div>
