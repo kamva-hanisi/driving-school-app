@@ -17,6 +17,6 @@ app.get("/api/health", (_req, res) => {
 // Feature routes are mounted under the API namespace.
 app.use("/api/auth", authRoutes);
 app.use("/api/bookings", bookingRoutes);
-app.use("/api/contact, contactRoutes");
+app.use("/api/contact", contactRoutes);
 
 export default app;

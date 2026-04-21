@@ -129,6 +129,8 @@ export const createBooking = async (req, res) => {
         time: createdBooking.booking_time,
         school_id: createdBooking.school_id,
         status: createdBooking.status,
+        created_at: createdBooking.created_at,
+        updated_at: createdBooking.updated_at,
       },
     });
   } catch (error) {
@@ -279,6 +281,63 @@ export const getPublicBookingStatus = async (req, res) => {
     });
   } catch (error) {
     return res.status(500).json({ message: "Failed to fetch booking status" });
+  }
+};
+
+export const updatePublicBookingDetails = async (req, res) => {
+  const reference = req.params.reference?.trim().toUpperCase();
+  const name = req.body.name?.trim();
+  const email = req.body.email?.trim().toLowerCase() || null;
+  const phone = req.body.phone?.trim();
+
+  if (!reference) {
+    return res.status(400).json({ message: "Booking reference is required" });
+  }
+
+  if (!name || !phone) {
+    return res.status(400).json({
+      message: "Client name and phone number are required.",
+    });
+  }
+
+  try {
+    const result = await query(
+      `UPDATE bookings
+       SET customer_name = ?, customer_email = ?, customer_phone = ?, updated_at = CURRENT_TIMESTAMP
+       WHERE public_reference = ?`,
+      [name, email, phone, reference],
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+
+    const [booking] = await query(
+      `SELECT public_reference, customer_name, customer_email, customer_phone, code, service, booking_date, booking_time, status, created_at, updated_at
+       FROM bookings
+       WHERE public_reference = ?
+       LIMIT 1`,
+      [reference],
+    );
+
+    return res.json({
+      message: "Booking details updated",
+      booking: {
+        reference: booking.public_reference,
+        name: booking.customer_name,
+        email: booking.customer_email,
+        phone: booking.customer_phone,
+        code: booking.code,
+        service: booking.service,
+        date: booking.booking_date,
+        time: booking.booking_time,
+        status: booking.status,
+        created_at: booking.created_at,
+        updated_at: booking.updated_at,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "Failed to update booking details" });
   }
 };
 

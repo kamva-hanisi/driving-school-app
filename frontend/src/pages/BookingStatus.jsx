@@ -12,6 +12,26 @@ const formatDate = (value) =>
 
 const formatTime = (value) => String(value).slice(0, 5);
 
+const formatDateTime = (value) => {
+  if (!value) {
+    return "Waiting for first update";
+  }
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return "Waiting for first update";
+  }
+
+  return new Intl.DateTimeFormat("en-ZA", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(date);
+};
+
 export default function BookingStatus() {
   const { reference } = useParams();
   const { state } = useLocation();
@@ -84,9 +104,15 @@ export default function BookingStatus() {
                   {booking.reference}
                 </strong>
               </div>
-              <span className={`status status--${booking.status}`}>
-                {booking.status}
-              </span>
+              <div className="booking-status-card__meta">
+                <span className="booking-status-card__last-seen">
+                  Last seen{" "}
+                  {formatDateTime(booking.updated_at || booking.created_at)}
+                </span>
+                <span className={`status status--${booking.status}`}>
+                  {booking.status}
+                </span>
+              </div>
             </div>
 
             <div className="booking-status-grid">

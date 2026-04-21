@@ -1,42 +1,48 @@
-import SteeringImage from "../assets/Steering.jpg";
+import SteeringImage from "../../public/Steering.jpg";
 import LearnerImage from "../assets/LearnerImage.avif";
 import Driver from "../assets/Driving-school.jpg";
+
+const features = [
+  {
+    image: Driver,
+    title: "Professional lesson booking",
+    description:
+      "Clients can book Code 8, Code 10, and Code 14 lessons through a guided flow that feels fast, clear, and trustworthy.",
+    tag: "Client experience",
+  },
+  {
+    image: SteeringImage,
+    title: "Flexible scheduling with live slots",
+    description:
+      "Available time slots help learners choose practical lesson times without back-and-forth calls or WhatsApp confusion.",
+    tag: "Operations",
+  },
+  {
+    image: LearnerImage,
+    title: "Reference-based booking tracking",
+    description:
+      "Every booking gets a downloadable reference card so clients can track whether their booking is pending or confirmed.",
+    tag: "Visibility",
+  },
+];
 
 export default function Features() {
   return (
     <section className="features">
       <p className="features__subtitle">
-        A modern driving school platform built to save time, simplify bookings,
-        and help learners get on the road faster.
+        Built for modern driving schools that want a cleaner client journey and
+        a more organized daily workflow.
       </p>
 
       <div className="features__grid">
-        <div className="feature-box">
-          <img src={Driver} alt="Easy online booking" />
-          <h3>Easy Online Booking</h3>
-          <p>
-            Book Code 8, 10, and 14 driving lessons in minutes with a clean and
-            professional booking flow.
-          </p>
-        </div>
-
-        <div className="feature-box">
-          <img src={SteeringImage} alt="Flexible scheduling" />
-          <h3>Flexible Scheduling</h3>
-          <p>
-            Choose your preferred lesson date and time without manual calls or
-            WhatsApp delays.
-          </p>
-        </div>
-
-        <div className="feature-box">
-          <img src={LearnerImage} alt="Track bookings" />
-          <h3>Track Your Booking</h3>
-          <p>
-            Stay updated with booking status, payment reference, and lesson
-            confirmation.
-          </p>
-        </div>
+        {features.map((feature) => (
+          <article className="feature-box" key={feature.title}>
+            <img src={feature.image} alt={feature.title} />
+            <span className="feature-box__tag">{feature.tag}</span>
+            <h3>{feature.title}</h3>
+            <p>{feature.description}</p>
+          </article>
+        ))}
       </div>
     </section>
   );

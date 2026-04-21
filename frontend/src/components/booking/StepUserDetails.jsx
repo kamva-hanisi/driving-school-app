@@ -63,7 +63,7 @@ export default function StepUserDetails({
           onClick={handleConfirm}
           variant="dark"
         >
-          {isSubmitting ? "Processing..." : "Confirm & Pay"}
+          {isSubmitting ? "Processing..." : "Confirm"}
         </Button>
       </div>
     </section>

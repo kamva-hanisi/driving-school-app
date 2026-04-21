@@ -123,7 +123,8 @@ button {
 
 .site-nav__link--button {
   border: 0;
-  background: rgba(255, 255, 255, 0.12);
+  background: transparent;
+  box-shadow: none;
 }
 
 .site-nav__link--label {
@@ -139,10 +140,14 @@ button {
   top: 100%;
   left: 0;
   min-width: 160px;
-  background: #f1f0f0;
-  border-radius: 8px;
-  padding: 10px 0;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+  margin-top: 10px;
+  background: rgba(255, 255, 255, 0.98);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 14px;
+  padding: 8px 0;
+  box-shadow: 0 16px 32px rgba(15, 23, 42, 0.12);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
   z-index: 100;
 
   a,
@@ -161,7 +166,7 @@ button {
 
   a:hover,
   button:hover {
-    background: #f5f5f5;
+    background: rgba(15, 118, 110, 0.08);
   }
 }
 
@@ -509,7 +514,7 @@ button {
 }
 
 .features {
-  padding: 60px 24px;
+  padding: 50px 24px;
   text-align: center;
 
   &__title {
@@ -533,10 +538,12 @@ button {
 }
 
 .feature-box {
-  background: white;
-  border-radius: 16px;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 20px;
   padding: 20px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 14px 32px rgba(15, 23, 42, 0.08);
+  text-align: left;
 
   img {
     width: 100%;
@@ -547,13 +554,27 @@ button {
   }
 
   h3 {
-    margin-bottom: 10px;
+    margin: 12px 0 10px;
+    color: $color-dark;
   }
 
   p {
     color: #666;
     line-height: 1.6;
   }
+}
+
+.feature-box__tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(15, 118, 110, 0.1);
+  color: $color-primary-dark-2;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .site-footer {
@@ -810,6 +831,18 @@ button {
   margin-top: 24px;
 }
 
+.booking-status-card__meta {
+  display: grid;
+  justify-items: end;
+  gap: 8px;
+}
+
+.booking-status-card__last-seen {
+  color: $color-text-muted;
+  font-size: 0.88rem;
+  text-align: right;
+}
+
 .booking-status-card__reference {
   display: inline-block;
   margin-top: 6px;
@@ -828,6 +861,36 @@ button {
   grid-column: 1 / -1;
 }
 
+.booking-detail--editable {
+  align-content: start;
+}
+
+.booking-detail__row {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.booking-detail__edit {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: $color-primary-dark;
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.booking-detail__input {
+  min-height: 44px;
+}
+
+.booking-detail__save {
+  min-height: 40px;
+  padding-inline: 14px;
+  justify-self: start;
+}
+
 .booking-status-card__actions {
   display: flex;
   gap: 12px;
@@ -835,14 +898,15 @@ button {
   margin-top: 24px;
 }
 
-.download-btn {
-  // background: black;
-  // color: white;
-  padding: 8px 14px;
-  margin-right: 12px 12px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
+.booking-status-card__actions--spread {
+  align-items: center;
+  justify-content: space-between;
+}
+
+.booking-status-card__actions-left {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
 .sign-R-L-wrapper {
@@ -1033,63 +1097,169 @@ button {
   }
 }
 
-.testimonials {
-  padding: 60px 24px;
-  text-align: center;
-}
-
 .testimonials__title {
   font-size: 32px;
   font-weight: 700;
   margin-bottom: 12px;
+  text-align: center;
 }
 
-.testimonials__subtitl {
-  color: #666;
-  margin-bottom: 32px;
-}
+.testimonials {
+  padding: 30px 20px;
 
-.testimonials__grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
+  &__subtitle {
+    text-align: center;
+    font-size: 18px;
+    margin-bottom: 30px;
+    color: #333;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
 }
 
 .testimonial-card {
-  background: white;
-  border-radius: 16px;
+  position: relative;
+  background: linear-gradient(180deg, #fff 0%, #f8fafc 100%);
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: 22px;
   padding: 24px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 14px 30px rgba(15, 23, 42, 0.08);
 
   p {
-    color: #555;
-    line-height: 1.7;
+    line-height: 1.6;
+    margin-bottom: 18px;
+    color: #222;
+  }
+}
+
+.testimonial-card__quote-mark {
+  display: inline-flex;
+  margin-bottom: 12px;
+  color: $color-primary-dark;
+  font-size: 2.8rem;
+  line-height: 1;
+  font-weight: 700;
+}
+
+.testimonial-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  img {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #0f766e;
   }
 
-  strong,
-  h3 {
-    display: block;
-    margin-top: 12px;
-    font-weight: 600;
+  strong {
+    font-size: 15px;
   }
+
+  span {
+    display: block;
+    margin-top: 4px;
+    color: $color-text-muted;
+    font-size: 0.9rem;
+  }
+}
+
+.about-section {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  padding: 60px 40px;
+}
+
+.about-image {
+  flex: 1;
+
+  img {
+    width: 100%;
+    max-width: 420px;
+    border-radius: 18px;
+    object-fit: cover;
+  }
+}
+
+.about-content {
+  flex: 2;
 }
 
 .about {
-  padding: 60px 24px;
-  background: #f8f9ff;
+  flex: 2;
+  padding: 0;
+  background: transparent;
 }
 
-.about__title {
-  font-size: 32px;
-  margin-bottom: 20px;
-  text-align: center;
+.about__eyebrow {
+  margin: 0 0 10px;
+  color: $color-primary-dark;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.82rem;
+  font-weight: 700;
 }
 
 .about-content {
   max-width: 800px;
-  margin: 0 auto;
+  margin: 0;
+  display: grid;
+  gap: 18px;
   line-height: 1.8;
   color: #444;
+
+  p {
+    margin: 0;
+  }
+}
+
+.about__title {
+  margin: 0;
+  font-size: clamp(2rem, 3vw, 2.8rem);
+  line-height: 1.15;
+  color: $color-dark;
+}
+
+.about__subtitle {
+  max-width: 680px;
+  color: $color-text-muted;
+  font-size: 1rem;
+}
+
+.about-copy {
+  display: grid;
+  gap: 14px;
+}
+
+.about-highlights {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.about-highlight {
+  padding: 20px;
+  border: 1px solid rgba(148, 163, 184, 0.22);
+  border-radius: 18px;
+  background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+
+  h3 {
+    margin: 0 0 8px;
+    color: $color-dark;
+  }
+
+  p {
+    color: $color-text-muted;
+    line-height: 1.7;
+  }
 }
 
 .contact-page {
@@ -1142,6 +1312,10 @@ button {
     border-radius: 8px;
     outline: none;
   }
+
+  .form-status {
+    margin: 0;
+  }
 }
 
 .whatsapp-btn {
@@ -1178,17 +1352,19 @@ button {
   }
 
   &__item {
-    background: white;
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    border: 1px solid rgba(148, 163, 184, 0.18);
     border-radius: 14px;
-    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 14px 32px rgba(15, 23, 42, 0.08);
     overflow: hidden;
   }
 
   &__question {
     width: 100%;
     padding: 18px 20px;
-    border: none;
-    background: white;
+    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    box-shadow: 0 14px 32px rgba(15, 23, 42, 0.08);
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
@@ -1299,7 +1475,7 @@ button {
     box-shadow: none;
     border: 1px solid #eee;
     border-radius: 8px;
-    background: #f1f0f0;
+    background: rgba(255, 255, 255, 0.98);
   }
 
   .site-nav__dropdown-menu a,
@@ -1358,6 +1534,18 @@ button {
     flex-direction: column;
     align-items: flex-start;
   }
+
+  .about-section {
+    flex-direction: column;
+  }
+
+  .about-image img {
+    max-width: 100%;
+  }
+
+  .testimonials__grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 560px) {
@@ -1405,6 +1593,22 @@ button {
     align-items: flex-start;
   }
 
+  .booking-status-card__meta {
+    justify-items: start;
+  }
+
+  .booking-status-card__last-seen {
+    text-align: left;
+  }
+
+  .booking-status-card__actions--spread {
+    align-items: stretch;
+  }
+
+  .booking-status-card__actions-left {
+    width: 100%;
+  }
+
   .site-nav__links {
     width: 100%;
     display: none;
@@ -1438,7 +1642,7 @@ button {
     box-shadow: none;
     border: 1px solid #eee;
     border-radius: 8px;
-    background: #f1f0f0;
+    background: rgba(255, 255, 255, 0.98);
   }
 
   .site-nav__dropdown-menu a,

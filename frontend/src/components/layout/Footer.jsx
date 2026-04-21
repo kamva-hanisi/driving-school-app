@@ -158,7 +158,7 @@ export function Footer() {
         <p>Designed by Kamva Haisi</p>
         <div className="site-footer__bottom-links">
           <a href="/">Help</a>
-          <a href="/FAQAccordiion">FAQs</a>
+          <a href="/FAQAccordion">FAQs</a>
           <a href="/">Support</a>
         </div>
       </div>

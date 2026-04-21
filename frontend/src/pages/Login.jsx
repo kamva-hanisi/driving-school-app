@@ -23,7 +23,7 @@ export default function Login() {
       setError("");
       const response = await API.post("/auth/login", form);
       login(response.data.token, response.data.user);
-      navigate("/dashboard");
+      navigate("/owner/dashboard");
     } catch (requestError) {
       console.error("Login failed:", requestError);
       setError(
@@ -67,7 +67,7 @@ export default function Login() {
 
         <div className="R-L-links">
           <p>
-            Need an owner account? <Link to="/register">Create one</Link>
+            Need an owner account? <Link to="/owner/register">Create one</Link>
           </p>
         </div>
       </div>

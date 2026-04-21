@@ -6,6 +6,25 @@ const formatDate = (value) =>
   }).format(new Date(value));
 
 const formatTime = (value) => String(value).slice(0, 5);
+const formatDateTime = (value) => {
+  if (!value) {
+    return "No activity yet";
+  }
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return "No activity yet";
+  }
+
+  return new Intl.DateTimeFormat("en-ZA", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(date);
+};
 
 export default function BookingTable({ bookings, onStatusChange }) {
   if (bookings.length === 0) {
@@ -20,6 +39,9 @@ export default function BookingTable({ bookings, onStatusChange }) {
             <div>
               <p className="booking-card-item__eyebrow">Client booking</p>
               <h3 className="booking-card-item__name">{booking.customer_name}</h3>
+              <p className="booking-card-item__last-seen">
+                Last seen {formatDateTime(booking.updated_at || booking.created_at)}
+              </p>
             </div>
             <span className={`status status--${booking.status.toLowerCase()}`}>
               {booking.status}
@@ -32,9 +54,11 @@ export default function BookingTable({ bookings, onStatusChange }) {
               <strong>{booking.customer_phone}</strong>
             </div>
 
-            <div className="booking-detail">
+            <div className="booking-detail booking-detail--email">
               <span className="booking-detail__label">Email</span>
-              <strong>{booking.customer_email || "No email provided"}</strong>
+              <strong className="booking-detail__value booking-detail__value--email">
+                {booking.customer_email || "No email provided"}
+              </strong>
             </div>
 
             <div className="booking-detail">

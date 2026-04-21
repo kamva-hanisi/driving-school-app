@@ -47,7 +47,9 @@ export default function TimeSlots({ date, selectedTime, setTime }) {
 
   return (
     <div className="time-slots-wrap">
-      {isLoading ? <p className="field__hint">Loading available slots...</p> : null}
+      {isLoading ? (
+        <p className="field__hint">Loading available slots...</p>
+      ) : null}
       {error ? <p className="form-status form-status--error">{error}</p> : null}
       <div className="time-slots">
         {slots.map((time) => (

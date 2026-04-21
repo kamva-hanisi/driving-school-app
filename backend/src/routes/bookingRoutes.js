@@ -7,6 +7,7 @@ import {
   getBookingSummary,
   getBookings,
   getUnavailableSlots,
+  updatePublicBookingDetails,
   updateBookingStatus,
 } from "../controllers/bookingController.js";
 
@@ -15,6 +16,7 @@ const router = express.Router();
 router.post("/", createBooking);
 router.get("/unavailable", getUnavailableSlots);
 router.get("/public/:reference", getPublicBookingStatus);
+router.patch("/public/:reference", updatePublicBookingDetails);
 router.get("/summary", verifyToken, getBookingSummary);
 router.get("/", verifyToken, getBookings);
 router.patch("/:id/status", verifyToken, updateBookingStatus);

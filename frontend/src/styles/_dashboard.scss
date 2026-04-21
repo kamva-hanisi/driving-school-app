@@ -213,6 +213,12 @@
   color: $color-dark;
 }
 
+.booking-card-item__last-seen {
+  margin: 8px 0 0;
+  color: $color-text-muted;
+  font-size: 0.9rem;
+}
+
 .booking-card-item__grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -234,6 +240,14 @@
   line-height: 1.5;
   overflow-wrap: anywhere;
   word-break: break-word;
+}
+
+.booking-detail--email {
+  grid-column: span 2;
+}
+
+.booking-detail__value--email {
+  font-size: 0.96rem;
 }
 
 .booking-detail__label {
@@ -349,6 +363,10 @@
   .booking-card-item__grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .booking-detail--email {
+    grid-column: span 2;
+  }
 }
 
 @media (max-width: 768px) {
@@ -362,6 +380,10 @@
 
   .booking-card-item__grid {
     grid-template-columns: 1fr;
+  }
+
+  .booking-detail--email {
+    grid-column: auto;
   }
 
   .booking-card-item__footer {

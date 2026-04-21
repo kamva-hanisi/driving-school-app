@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Button from "../components/common/Button";
+import API from "../services/api";
 
 export default function Contact() {
   const [form, setForm] = useState({
@@ -9,6 +10,8 @@ export default function Contact() {
     subject: "",
     message: "",
   });
+  const [status, setStatus] = useState({ type: "", message: "" });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e) => {
     setForm({
@@ -21,9 +24,16 @@ export default function Contact() {
     e.preventDefault();
 
     try {
-      await API.post("/contact", form);
+      setIsSubmitting(true);
+      setStatus({ type: "", message: "" });
 
-      alert("Your message has been sent successfully!");
+      const response = await API.post("/contact", form);
+
+      setStatus({
+        type: "success",
+        message:
+          response.data.message || "Your message has been sent successfully.",
+      });
 
       setForm({
         name: "",
@@ -33,7 +43,15 @@ export default function Contact() {
         message: "",
       });
     } catch (error) {
-      alert("Failed to send message");
+      console.error("Contact form error:", error);
+      setStatus({
+        type: "error",
+        message:
+          error.response?.data?.message ||
+          "Failed to send message. Please try again.",
+      });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -42,13 +60,12 @@ export default function Contact() {
       <div className="contact-page__header">
         <h1>Contact Us</h1>
         <p>
-          Need help with your booking, payment, or driving lessons? Send us a
-          message and we’ll get back to you.
+          Need help with your booking or driving lessons? Send us a message and
+          we will get back to you.
         </p>
       </div>
 
       <div className="contact-page__grid">
-        {/* LEFT SIDE */}
         <div className="contact-info">
           <h2>Get in touch</h2>
 
@@ -82,9 +99,20 @@ export default function Contact() {
           </a>
         </div>
 
-        {/* RIGHT SIDE */}
         <form className="contact-form" onSubmit={handleSubmit}>
           <h2>Send a Message</h2>
+
+          {status.message ? (
+            <p
+              className={`form-status ${
+                status.type === "error"
+                  ? "form-status--error"
+                  : "form-status--success"
+              }`}
+            >
+              {status.message}
+            </p>
+          ) : null}
 
           <input
             type="text"
@@ -126,7 +154,9 @@ export default function Contact() {
             onChange={handleChange}
           />
 
-          <Button type="submit">Send Message</Button>
+          <Button disabled={isSubmitting} type="submit">
+            {isSubmitting ? "Sending..." : "Send Message"}
+          </Button>
         </form>
       </div>
     </section>

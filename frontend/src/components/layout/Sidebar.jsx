@@ -11,7 +11,7 @@ export default function Sidebar() {
       <p className="sidebar__meta">{`${user?.name || "Owner"} | ${user?.role || "owner"}`}</p>
 
       <nav>
-        <Link to="/dashboard">Dashboard overview</Link>
+        <Link to="/owner/dashboard">Dashboard overview</Link>
         <Link to="/booking">Public booking page</Link>
         <Link to="/">Website home</Link>
       </nav>

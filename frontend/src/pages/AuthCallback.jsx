@@ -33,7 +33,7 @@ export default function AuthCallback() {
     try {
       const user = JSON.parse(decodeURIComponent(userParam));
       login(token, user);
-      navigate("/dashboard", { replace: true });
+      navigate("/owner/dashboard", { replace: true });
     } catch {
       // The message above already handles malformed callback payloads.
     }

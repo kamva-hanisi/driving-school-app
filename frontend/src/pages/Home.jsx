@@ -8,6 +8,7 @@ import About from "./About";
 import FAQAccordion from "../components/common/FAQAccordion";
 
 import DrivingSchool from "../assets/index-leaners-image_orig.jpg";
+import AboutImage from "../assets/about-drive.webp";
 
 function CarIcon() {
   return (
@@ -121,8 +122,10 @@ export default function Home() {
         <Testimonials />
       </section>
 
-      <section id="about" className="about">
-        <h2 className="about__title">About Us</h2>
+      <section id="about" className="about-section">
+        <div className="about-image">
+          <img src={AboutImage} alt="About DriveEasy" />
+        </div>
         <About />
       </section>
 

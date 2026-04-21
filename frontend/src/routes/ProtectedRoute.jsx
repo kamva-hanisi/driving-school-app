@@ -1,12 +1,14 @@
 import { useContext } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 
 export default function ProtectedRoute({ children }) {
   const { token } = useContext(AuthContext);
+  const location = useLocation();
 
   if (!token) {
-    return <Navigate to="/login" />;
+    const isOwnerRoute = location.pathname.startsWith("/owner");
+    return <Navigate to={isOwnerRoute ? "/owner/login" : "/owner/login"} />;
   }
 
   return children;

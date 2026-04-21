@@ -30,7 +30,7 @@ export default function Register() {
         password: form.password,
         role: "owner",
       });
-      navigate("/login");
+      navigate("/owner/login");
     } catch (err) {
       console.error(err);
       setError(
@@ -89,7 +89,7 @@ export default function Register() {
         <SocialAuthButtons />
         <div className="R-L-links">
           <p>
-            Already have an account? <Link to="/login">Sign In</Link>
+            Already have an account? <Link to="/owner/login">Sign In</Link>
           </p>
         </div>
       </div>

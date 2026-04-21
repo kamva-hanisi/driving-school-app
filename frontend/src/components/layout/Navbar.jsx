@@ -11,9 +11,7 @@ export function Navbar() {
   const { pathname } = useLocation();
   const { token, user, logout } = useContext(AuthContext);
 
-  const isOwnerRoute =
-    pathname.startsWith("/login") || pathname.startsWith("/dashboard");
-
+  const isOwnerRoute = pathname.startsWith("/owner");
   const isHomePage = pathname === "/";
 
   useEffect(() => {
@@ -27,6 +25,89 @@ export function Navbar() {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  const closeMenus = () => {
+    setCheckDropdown(false);
+    setProfileDropdown(false);
+    setIsOpen(false);
+  };
+
+  if (isOwnerRoute) {
+    return (
+      <div className="site-nav-shell">
+        <header className="site-nav site-nav--owner">
+          <Link className="site-nav__brand" onClick={closeMenus} to="/owner/dashboard">
+            DriveEasy Admin
+          </Link>
+
+          <Menu isOpen={isOpen} onToggle={() => setIsOpen((open) => !open)} />
+
+          <nav
+            aria-label="Owner navigation"
+            className={`site-nav__links${isOpen ? " site-nav__links--open" : ""}`}
+            id="owner-navigation"
+          >
+            <Link
+              className="site-nav__link"
+              onClick={closeMenus}
+              to="/owner/dashboard"
+            >
+              Dashboard
+            </Link>
+
+            <Link
+              className="site-nav__link"
+              onClick={closeMenus}
+              to="/owner/posters"
+            >
+              Posters
+            </Link>
+
+            <div className="site-nav__dropdown">
+              <button
+                className="site-nav__link site-nav__link--button"
+                onClick={() => setProfileDropdown((open) => !open)}
+                type="button"
+              >
+                Profile v
+              </button>
+
+              {profileDropdown && (
+                <div className="site-nav__dropdown-menu">
+                  {!token ? (
+                    <Link onClick={closeMenus} to="/owner/login">
+                      Login
+                    </Link>
+                  ) : (
+                    <>
+                      <span className="dropdown-user">
+                        {user?.name || "Admin"}
+                      </span>
+                      <Link onClick={closeMenus} to="/owner/dashboard">
+                        Dashboard
+                      </Link>
+                      <Link onClick={closeMenus} to="/owner/posters">
+                        Posters
+                      </Link>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          logout();
+                          closeMenus();
+                        }}
+                      >
+                        Logout
+                      </button>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+          </nav>
+        </header>
+      </div>
+    );
+  }
+
   return (
     <div
       className={`site-nav-shell${
@@ -34,7 +115,7 @@ export function Navbar() {
       }`}
     >
       <header className="site-nav">
-        <Link className="site-nav__brand" to="/">
+        <Link className="site-nav__brand" onClick={closeMenus} to="/">
           DriveEasy
         </Link>
 
@@ -45,91 +126,45 @@ export function Navbar() {
           className={`site-nav__links${isOpen ? " site-nav__links--open" : ""}`}
           id="primary-navigation"
         >
-          <Link
-            className="site-nav__link"
-            onClick={() => setIsOpen(false)}
-            to="/"
-          >
+          <Link className="site-nav__link" onClick={closeMenus} to="/">
             Home
           </Link>
 
-          {/* CHECK DROPDOWN */}
           <div className="site-nav__dropdown">
             <button
               className="site-nav__link site-nav__link--button"
-              onClick={() => setCheckDropdown(!checkDropdown)}
+              onClick={() => setCheckDropdown((open) => !open)}
               type="button"
             >
-              Info ▾
+              Info v
             </button>
 
             {checkDropdown && (
               <div className="site-nav__dropdown-menu">
-                <Link to="/#about" onClick={() => setCheckDropdown(false)}>
+                <Link onClick={closeMenus} to="/about">
                   About
                 </Link>
-                <Link to="/contact" onClick={() => setCheckDropdown(false)}>
+                <Link onClick={closeMenus} to="/contact">
                   Contact
                 </Link>
-                <Link to="/owner" onClick={() => setCheckDropdown(false)}>
+                <Link onClick={closeMenus} to="/owner/login">
                   Owner
                 </Link>
               </div>
             )}
           </div>
 
-          <Link
-            className="site-nav__link"
-            onClick={() => setIsOpen(false)}
-            to="/booking"
-          >
+          <Link className="site-nav__link" onClick={closeMenus} to="/booking">
             Book lesson
           </Link>
 
           <Link
             className="site-nav__link"
-            onClick={() => setIsOpen(false)}
+            onClick={closeMenus}
             to="/track-booking"
           >
             Track booking
           </Link>
-
-          {/* PROFILE DROPDOWN */}
-          {isOwnerRoute && (
-            <div className="site-nav__dropdown">
-              <button
-                className="site-nav__link site-nav__link--button"
-                onClick={() => setProfileDropdown(!profileDropdown)}
-                type="button"
-              >
-                Profile ▾
-              </button>
-
-              {profileDropdown && (
-                <div className="site-nav__dropdown-menu">
-                  {!token ? (
-                    <Link to="/login">Login</Link>
-                  ) : (
-                    <>
-                      <span className="dropdown-user">
-                        {user?.name || "Admin"}
-                      </span>
-                      <Link to="/dashboard">Dashboard</Link>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          logout();
-                          setProfileDropdown(false);
-                        }}
-                      >
-                        Logout
-                      </button>
-                    </>
-                  )}
-                </div>
-              )}
-            </div>
-          )}
         </nav>
       </header>
     </div>
