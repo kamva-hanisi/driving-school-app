@@ -60,7 +60,7 @@ export function Navbar() {
               onClick={() => setCheckDropdown(!checkDropdown)}
               type="button"
             >
-              CHECK ▾
+              Info ▾
             </button>
 
             {checkDropdown && (

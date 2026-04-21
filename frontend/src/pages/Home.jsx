@@ -2,8 +2,12 @@ import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import { Link } from "react-router-dom";
 import Button from "../components/common/Button";
-import DrivingSchool from "../assets/Driving-school.jpg";
+import Features from "./Features";
+import Testimonials from "./Testimonials";
 import About from "./About";
+import FAQAccordion from "../components/common/FAQAccordion";
+
+import DrivingSchool from "../assets/index-leaners-image_orig.jpg";
 
 function CarIcon() {
   return (
@@ -107,10 +111,22 @@ export default function Home() {
         </div>
       </main>
 
+      <section className="features">
+        <h2 className="features__title">Why Choose DriveEasy?</h2>
+        <Features />
+      </section>
+
+      <section id="testimonials" className="testimonials">
+        <h2 className="testimonials__title">What Our Learners Say</h2>
+        <Testimonials />
+      </section>
+
       <section id="about" className="about">
         <h2 className="about__title">About Us</h2>
         <About />
       </section>
+
+      <FAQAccordion />
     </>
   );
 }

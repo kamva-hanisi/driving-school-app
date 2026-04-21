@@ -133,21 +133,21 @@ export function Footer() {
           </a>
           <a
             className="site-footer__contact"
-            href="mailto:lucashaisi@driveeasy.com"
+            href="mailto:lucashaisi@gmail.com"
           >
             <MailIcon />
-            <span>lucashaisi@driveeasy.com</span>
+            <span>lucashaisi@gmail.com</span>
           </a>
           <a className="site-footer__contact" href="tel:+275864843">
             <PhoneIcon />
-            <span>+27 586 4843</span>
+            <span>+27 69 586 4843</span>
           </a>
         </div>
 
         <div className="site-footer__group">
           <h3 className="site-footer__heading">Opening</h3>
           <p>Monday - Friday</p>
-          <p>07:00 AM - 16:00 PM</p>
+          <p>08:00 AM - 16:00 PM</p>
           <p>Saturday</p>
           <p>10:00 AM - 15:00 PM</p>
         </div>
@@ -157,9 +157,8 @@ export function Footer() {
         <p>@{new Date().getFullYear()} DriveEasy</p>
         <p>Designed by Kamva Haisi</p>
         <div className="site-footer__bottom-links">
-          <a href="/">Home</a>
           <a href="/">Help</a>
-          <a href="/">FAQs</a>
+          <a href="/FAQAccordiion">FAQs</a>
           <a href="/">Support</a>
         </div>
       </div>

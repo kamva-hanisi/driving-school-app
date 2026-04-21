@@ -11,6 +11,8 @@ import {
   Posters,
   Register,
   TrackBooking,
+  Contact,
+  About,
 } from "./pages";
 
 import { ProtectedRoute } from "./routes";
@@ -28,6 +30,8 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/booking" element={<Booking />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/about" element={<About />} />
 
           <Route
             path="/booking/review/:reference"
