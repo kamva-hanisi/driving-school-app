@@ -30,6 +30,20 @@ function AppContent() {
         <Route path="/" element={<Home />} />
         <Route path="/auth/callback" element={<AuthCallback />} />
         <Route path="/login" element={<Navigate replace to="/owner/login" />} />
+        <Route path="/admin" element={<Navigate replace to="/owner/login" />} />
+        <Route path="/admin/login" element={<Navigate replace to="/owner/login" />} />
+        <Route
+          path="/admin/register"
+          element={<Navigate replace to="/owner/register" />}
+        />
+        <Route
+          path="/admin/dashboard"
+          element={<Navigate replace to="/owner/dashboard" />}
+        />
+        <Route
+          path="/admin/posters"
+          element={<Navigate replace to="/owner/posters" />}
+        />
         <Route
           path="/register"
           element={<Navigate replace to="/owner/register" />}

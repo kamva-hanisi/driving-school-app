@@ -28,7 +28,7 @@ export default function Register() {
         name: form.name.trim(),
         email: form.email.trim(),
         password: form.password,
-        role: "owner",
+        role: "admin",
       });
       navigate("/owner/login");
     } catch (err) {
@@ -43,7 +43,7 @@ export default function Register() {
   return (
     <div className="sign-R-L-wrapper">
       <div className="R-L-box">
-        <h2>Create Owner Account</h2>
+        <h2>Create Admin Account</h2>
 
         <label>Full Name:</label>
         <input
