@@ -1,31 +1,30 @@
 import "dotenv/config";
-import mysql from "mysql2";
+import pg from "pg";
 
 const getEnv = (key) => process.env[key]?.trim();
 
-// Shared MySQL pool used across the app. Requests can borrow connections on demand
-// without forcing an eager socket connection during module import.
-const db = mysql.createPool({
-  host: getEnv("DB_HOST"),
-  user: getEnv("DB_USER"),
-  password: getEnv("DB_PASSWORD"),
-  database: getEnv("DB_NAME"),
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0,
-  connectTimeout: 10000,
-});
+const { Pool } = pg;
 
-export const pingDatabase = () =>
-  new Promise((resolve, reject) => {
-    db.query("SELECT 1", (error) => {
-      if (error) {
-        reject(error);
-        return;
+// Shared PostgreSQL pool used across the app. Works with local pgAdmin-created
+// databases and hosted PostgreSQL URLs.
+const db = new Pool(
+  getEnv("DATABASE_URL")
+    ? {
+        connectionString: getEnv("DATABASE_URL"),
       }
+    : {
+        host: getEnv("DB_HOST") || "127.0.0.1",
+        port: Number(getEnv("DB_PORT") || 5432),
+        user: getEnv("DB_USER"),
+        password: getEnv("DB_PASSWORD"),
+        database: getEnv("DB_NAME"),
+        max: 10,
+        connectionTimeoutMillis: 10000,
+      },
+);
 
-      resolve();
-    });
-  });
+export const pingDatabase = async () => {
+  await db.query("SELECT 1");
+};
 
 export default db;

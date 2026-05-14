@@ -2,16 +2,7 @@ import db from "../config/db.js";
 import nodemailer from "nodemailer";
 
 const query = (sql, values = []) =>
-  new Promise((resolve, reject) => {
-    db.query(sql, values, (error, results) => {
-      if (error) {
-        reject(error);
-        return;
-      }
-
-      resolve(results);
-    });
-  });
+  db.query(sql, values).then((result) => result.rows);
 
 export const sendContactMessage = async (req, res) => {
   try {
@@ -31,7 +22,7 @@ export const sendContactMessage = async (req, res) => {
       `
       INSERT INTO contact_messages
       (name, email, phone, subject, message)
-      VALUES (?, ?, ?, ?, ?)
+      VALUES ($1, $2, $3, $4, $5)
     `,
       [name, email, phone, subject, message],
     );

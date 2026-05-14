@@ -6,16 +6,7 @@ const ALLOWED_ROLES = new Set(["owner", "admin"]);
 const SUPPORTED_SOCIAL_PROVIDERS = new Set(["google", "facebook"]);
 
 const query = (sql, values = []) =>
-  new Promise((resolve, reject) => {
-    db.query(sql, values, (error, results) => {
-      if (error) {
-        reject(error);
-        return;
-      }
-
-      resolve(results);
-    });
-  });
+  db.query(sql, values).then((result) => result.rows);
 
 const getBaseUrl = (req) => `${req.protocol}://${req.get("host")}`;
 
@@ -73,7 +64,7 @@ const redirectWithError = (res, message) => {
 };
 
 const findUserByEmail = async (email) => {
-  const users = await query("SELECT * FROM users WHERE email = ? LIMIT 1", [email]);
+  const users = await query("SELECT * FROM users WHERE email = $1 LIMIT 1", [email]);
   return users[0] || null;
 };
 
@@ -86,24 +77,25 @@ const insertSocialUser = async ({
   role = "owner",
 }) => {
   const result = await query(
-    "INSERT INTO users (name, email, password, role, school_id, provider, provider_id, avatar_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+    `INSERT INTO users
+     (name, email, password, role, school_id, provider, provider_id, avatar_url)
+     VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+     RETURNING *`,
     [name, email, null, role, null, provider, providerId, avatarUrl],
   );
 
-  const users = await query("SELECT * FROM users WHERE id = ? LIMIT 1", [
-    result.insertId,
-  ]);
-
-  return users[0];
+  return result[0];
 };
 
 const updateSocialUser = async (user, { provider, providerId, avatarUrl }) => {
-  await query(
-    "UPDATE users SET provider = ?, provider_id = ?, avatar_url = ? WHERE id = ?",
+  const users = await query(
+    `UPDATE users
+     SET provider = $1, provider_id = $2, avatar_url = $3
+     WHERE id = $4
+     RETURNING *`,
     [provider, providerId, avatarUrl, user.id],
   );
 
-  const users = await query("SELECT * FROM users WHERE id = ? LIMIT 1", [user.id]);
   return users[0];
 };
 
@@ -278,13 +270,15 @@ export const register = async (req, res) => {
     const hashed = bcrypt.hashSync(password, 10);
 
     await query(
-      "INSERT INTO users (name, email, password, role, school_id, provider, provider_id, avatar_url) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+      `INSERT INTO users
+       (name, email, password, role, school_id, provider, provider_id, avatar_url)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
       [name, email, hashed, role, schoolId, "local", null, null],
     );
 
     return res.json({ message: "User registered" });
   } catch (error) {
-    if (error?.code === "ER_DUP_ENTRY") {
+    if (error?.code === "23505") {
       return res.status(409).json({ message: "Email already registered" });
     }
 

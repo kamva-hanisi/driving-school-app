@@ -7,7 +7,7 @@ const PORT = process.env.PORT || 5000;
 const startServer = async () => {
   try {
     await pingDatabase();
-    console.log("Connected to the MySQL database.");
+    console.log("Connected to the PostgreSQL database.");
   } catch (error) {
     console.error("Database connection check failed:", error.message);
   }

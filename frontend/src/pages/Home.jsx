@@ -126,7 +126,7 @@ export default function Home() {
         <div className="about-image">
           <img src={AboutImage} alt="About DriveEasy" />
         </div>
-        <About />
+        <About embedded />
       </section>
 
       <FAQAccordion />

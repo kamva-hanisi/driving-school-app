@@ -1,12 +1,12 @@
 # Driving School App
 
-Full-stack driving school booking platform built with React, Vite, Express, and MySQL.
+Full-stack driving school booking platform built with React, Vite, Express, and PostgreSQL.
 
 ## What Works Now
 
 - Public client booking form
 - Owner/admin login and registration
-- Dashboard with real MySQL booking data
+- Dashboard with real PostgreSQL booking data
 - Booking status management
 - Google and Facebook OAuth flow support
 - Downloadable booking references and Twilio env hooks for production setup
@@ -14,14 +14,13 @@ Full-stack driving school booking platform built with React, Vite, Express, and 
 ## Stack
 
 - Frontend: React, React Router, Vite, Sass, Axios
-- Backend: Node.js, Express, MySQL, bcryptjs, JWT, dotenv
+- Backend: Node.js, Express, PostgreSQL, bcryptjs, JWT, dotenv
 
 ## Project Structure
 
 ```text
 driving-school-app/
   backend/
-    schema.sql
     src/
   frontend/
     src/
@@ -32,13 +31,34 @@ driving-school-app/
 
 ### 1. Database
 
-Create the database and tables from [schema.sql](/c:/projects/driving-school-app/backend/schema.sql).
+Create the database and app user in pgAdmin 4, then use the connection values below in `backend/.env`.
 
-Example:
+Connection values for a local PostgreSQL server:
 
-```bash
-cd backend
-mysql -u root -p < schema.sql
+```text
+Connection Name: Driving School App
+Hostname: 127.0.0.1
+Port: 5432
+Username: driving_app
+Password: DrivingApp@123
+Maintenance database: driving_school
+```
+
+First connect in pgAdmin 4 with your PostgreSQL administrator account, then run this SQL in the `postgres` maintenance database:
+
+```sql
+CREATE USER driving_app WITH PASSWORD 'DrivingApp@123';
+CREATE DATABASE driving_school OWNER driving_app;
+```
+
+Open the new `driving_school` database in pgAdmin 4 and use Query Tool for your PostgreSQL tables and seed data.
+
+Owner/admin login after running the SQL:
+
+```text
+URL: http://localhost:5173/owner/login
+Email: admin@drivingschool.com
+Password: Admin@123
 ```
 
 ### 2. Backend env
@@ -50,9 +70,11 @@ Local example:
 ```env
 PORT=5000
 DB_HOST=127.0.0.1
-DB_USER=root
-DB_PASSWORD=your_mysql_password
+DB_PORT=5432
+DB_USER=driving_app
+DB_PASSWORD=DrivingApp@123
 DB_NAME=driving_school
+# DATABASE_URL=postgresql://driving_app:DrivingApp%40123@127.0.0.1:5432/driving_school
 JWT_SECRET=replace_with_a_long_random_secret
 
 TWILIO_ACCOUNT_SID=replace_with_your_twilio_account_sid
