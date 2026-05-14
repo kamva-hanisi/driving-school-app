@@ -1,23 +1,23 @@
 $primary-gradient: linear-gradient(
   135deg,
-  rgba(32, 41, 49, 0.98),
-  rgba(15, 118, 110, 0.92)
+  rgba(15, 23, 42, 0.98),
+  rgba(13, 148, 136, 0.94)
 );
 $color-primary-gradient-2: linear-gradient(
   135deg,
-  rgba(32, 41, 49, 0.98),
-  rgba(15, 118, 110, 0.92)
+  rgba(15, 23, 42, 0.98),
+  rgba(13, 148, 136, 0.94)
 );
-$color-bg: #f5f6f8;
+$color-bg: #f6f8fb;
 $color-surface: #ffffff;
-$color-surface-muted: #f2f5f8;
+$color-surface-muted: #eef6f6;
 $color-text: #1f2937;
 $color-text-muted: #6b7280;
 $color-border: #dbe1e7;
-$color-primary: #2563eb;
-$color-primary-dark: #1d4ed8;
-$color-accent: #dbeafe;
-$color-accent-soft: #eff6ff;
+$color-primary: #0d9488;
+$color-primary-dark: #0f766e;
+$color-accent: #facc15;
+$color-accent-soft: #fef9c3;
 $color-dark: #111827;
 $color-dark-soft: #1f2937;
 $shadow-soft: 0 8px 24px rgba(15, 23, 42, 0.06);
@@ -28,8 +28,8 @@ $radius-sm: 8px;
 $content-width: 1120px;
 $content-narrow: 860px;
 
-$color-primary-2: #0f766e;
-$color-primary-dark-2: #115e59;
-$color-accent-2: #f59e0b;
+$color-primary-2: #0d9488;
+$color-primary-dark-2: #0f766e;
+$color-accent-2: #facc15;
 $color-dark-2: #101418;
 $color-text-2: #dae4f1;

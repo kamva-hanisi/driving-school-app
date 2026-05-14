@@ -62,45 +62,52 @@ export function Navbar() {
               Posters
             </Link>
 
-            <div className="site-nav__dropdown">
+            <div
+              className="site-nav__dropdown"
+              onMouseEnter={() => setProfileDropdown(true)}
+              onMouseLeave={() => setProfileDropdown(false)}
+            >
               <button
                 className="site-nav__link site-nav__link--button"
+                aria-expanded={profileDropdown}
                 onClick={() => setProfileDropdown((open) => !open)}
                 type="button"
               >
                 Profile v
               </button>
 
-              {profileDropdown && (
-                <div className="site-nav__dropdown-menu">
-                  {!token ? (
-                    <Link onClick={closeMenus} to="/owner/login">
-                      Login
+              <div
+                className={`site-nav__dropdown-menu${
+                  profileDropdown ? " site-nav__dropdown-menu--open" : ""
+                }`}
+              >
+                {!token ? (
+                  <Link onClick={closeMenus} to="/owner/login">
+                    Login
+                  </Link>
+                ) : (
+                  <>
+                    <span className="dropdown-user">
+                      {user?.name || "Admin"}
+                    </span>
+                    <Link onClick={closeMenus} to="/owner/dashboard">
+                      Dashboard
                     </Link>
-                  ) : (
-                    <>
-                      <span className="dropdown-user">
-                        {user?.name || "Admin"}
-                      </span>
-                      <Link onClick={closeMenus} to="/owner/dashboard">
-                        Dashboard
-                      </Link>
-                      <Link onClick={closeMenus} to="/owner/posters">
-                        Posters
-                      </Link>
-                      <button
-                        type="button"
-                        onClick={() => {
-                          logout();
-                          closeMenus();
-                        }}
-                      >
-                        Logout
-                      </button>
-                    </>
-                  )}
-                </div>
-              )}
+                    <Link onClick={closeMenus} to="/owner/posters">
+                      Posters
+                    </Link>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        logout();
+                        closeMenus();
+                      }}
+                    >
+                      Logout
+                    </button>
+                  </>
+                )}
+              </div>
             </div>
           </nav>
         </header>
@@ -130,28 +137,32 @@ export function Navbar() {
             Home
           </Link>
 
-          <div className="site-nav__dropdown">
+          <div
+            className="site-nav__dropdown"
+            onMouseEnter={() => setCheckDropdown(true)}
+            onMouseLeave={() => setCheckDropdown(false)}
+          >
             <button
               className="site-nav__link site-nav__link--button"
+              aria-expanded={checkDropdown}
               onClick={() => setCheckDropdown((open) => !open)}
               type="button"
             >
               Info v
             </button>
 
-            {checkDropdown && (
-              <div className="site-nav__dropdown-menu">
-                <Link onClick={closeMenus} to="/about">
-                  About
-                </Link>
-                <Link onClick={closeMenus} to="/contact">
-                  Contact
-                </Link>
-                <Link onClick={closeMenus} to="/owner/login">
-                  Owner
-                </Link>
-              </div>
-            )}
+            <div
+              className={`site-nav__dropdown-menu${
+                checkDropdown ? " site-nav__dropdown-menu--open" : ""
+              }`}
+            >
+              <Link onClick={closeMenus} to="/about">
+                About
+              </Link>
+              <Link onClick={closeMenus} to="/contact">
+                Contact
+              </Link>
+            </div>
           </div>
 
           <Link className="site-nav__link" onClick={closeMenus} to="/booking">

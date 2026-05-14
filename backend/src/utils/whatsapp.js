@@ -6,7 +6,12 @@ const accountSid = getEnv("TWILIO_ACCOUNT_SID");
 const authToken = getEnv("TWILIO_AUTH_TOKEN");
 const fromNumber = getEnv("TWILIO_WHATSAPP_FROM") || "whatsapp:+14155238886";
 
-const client = accountSid && authToken ? twilio(accountSid, authToken) : null;
+const hasTwilioCredentials =
+  accountSid?.startsWith("AC") &&
+  authToken &&
+  !authToken.toLowerCase().includes("replace_with");
+
+const client = hasTwilioCredentials ? twilio(accountSid, authToken) : null;
 
 export const sendWhatsApp = async (phone, message) => {
   if (!client || !phone || !message) {

@@ -25,31 +25,27 @@ const createPublicReference = () =>
   `DRV-${crypto.randomBytes(4).toString("hex").toUpperCase()}`;
 
 const query = (sql, values = []) =>
-  new Promise((resolve, reject) => {
-    db.query(sql, values, (error, results) => {
-      if (error) {
-        reject(error);
-        return;
-      }
-
-      resolve(results);
-    });
-  });
+  db.query(sql, values).then((result) => result.rows);
 
 const buildBookingsFilter = ({ schoolId, status, search }) => {
-  const conditions = ["school_id <=> ?"];
+  const conditions = ["school_id IS NOT DISTINCT FROM $1"];
   const values = [schoolId];
 
   if (status) {
-    conditions.push("status = ?");
     values.push(status);
+    conditions.push(`status = $${values.length}`);
   }
 
   if (search) {
-    conditions.push(
-      "(customer_name LIKE ? OR customer_email LIKE ? OR customer_phone LIKE ? OR code LIKE ? OR service LIKE ?)",
-    );
     const searchPattern = `%${search}%`;
+    const startIndex = values.length + 1;
+    conditions.push(
+      `(customer_name ILIKE $${startIndex}
+        OR customer_email ILIKE $${startIndex + 1}
+        OR customer_phone ILIKE $${startIndex + 2}
+        OR code ILIKE $${startIndex + 3}
+        OR service ILIKE $${startIndex + 4})`,
+    );
     values.push(
       searchPattern,
       searchPattern,
@@ -76,7 +72,12 @@ export const createBooking = async (req, res) => {
 
   try {
     const duplicateSlot = await query(
-      "SELECT id FROM bookings WHERE booking_date = ? AND booking_time = ? AND school_id <=> ? LIMIT 1",
+      `SELECT id
+       FROM bookings
+       WHERE booking_date = $1
+         AND booking_time = $2
+         AND school_id IS NOT DISTINCT FROM $3
+       LIMIT 1`,
       [date, time, schoolId],
     );
 
@@ -86,8 +87,11 @@ export const createBooking = async (req, res) => {
         .json({ message: "This date and time is already booked" });
     }
 
-    const result = await query(
-      "INSERT INTO bookings (customer_name, customer_email, customer_phone, code, service, booking_date, booking_time, status, school_id, public_reference) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+    const [createdBooking] = await query(
+      `INSERT INTO bookings
+       (customer_name, customer_email, customer_phone, code, service, booking_date, booking_time, status, school_id, public_reference)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+       RETURNING id, public_reference, customer_name, customer_email, customer_phone, code, service, booking_date, booking_time, status, school_id, created_at, updated_at`,
       [
         name,
         booking.email ?? null,
@@ -100,13 +104,6 @@ export const createBooking = async (req, res) => {
         schoolId,
         createPublicReference(),
       ],
-    );
-
-    const [createdBooking] = await query(
-      `SELECT id, public_reference, customer_name, customer_email, customer_phone, code, service, booking_date, booking_time, status, school_id, created_at, updated_at
-       FROM bookings
-       WHERE id = ?`,
-      [result.insertId],
     );
 
     try {
@@ -175,16 +172,16 @@ export const getBookingSummary = async (req, res) => {
     const [summaryRows] = await Promise.all([
       query(
         `SELECT
-           COUNT(*) AS total_bookings,
-           COUNT(DISTINCT COALESCE(NULLIF(customer_email, ''), customer_phone)) AS total_clients,
-           SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) AS pending_bookings,
-           SUM(CASE WHEN status = 'confirmed' THEN 1 ELSE 0 END) AS confirmed_bookings,
-           SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) AS completed_bookings,
-           SUM(CASE WHEN status = 'cancelled' THEN 1 ELSE 0 END) AS cancelled_bookings,
-           SUM(CASE WHEN booking_date = CURDATE() THEN 1 ELSE 0 END) AS today_bookings,
-           SUM(CASE WHEN booking_date >= CURDATE() THEN 1 ELSE 0 END) AS upcoming_bookings
+           COUNT(*)::int AS total_bookings,
+           COUNT(DISTINCT COALESCE(NULLIF(customer_email, ''), customer_phone))::int AS total_clients,
+           COUNT(*) FILTER (WHERE status = 'pending')::int AS pending_bookings,
+           COUNT(*) FILTER (WHERE status = 'confirmed')::int AS confirmed_bookings,
+           COUNT(*) FILTER (WHERE status = 'completed')::int AS completed_bookings,
+           COUNT(*) FILTER (WHERE status = 'cancelled')::int AS cancelled_bookings,
+           COUNT(*) FILTER (WHERE booking_date = CURRENT_DATE)::int AS today_bookings,
+           COUNT(*) FILTER (WHERE booking_date >= CURRENT_DATE)::int AS upcoming_bookings
          FROM bookings
-         WHERE school_id <=> ?`,
+         WHERE school_id IS NOT DISTINCT FROM $1`,
         [schoolId],
       ),
     ]);
@@ -192,7 +189,7 @@ export const getBookingSummary = async (req, res) => {
     const recentClients = await query(
       `SELECT id, public_reference, customer_name, customer_email, customer_phone, code, service, booking_date, booking_time, status, created_at
        FROM bookings
-       WHERE school_id <=> ?
+       WHERE school_id IS NOT DISTINCT FROM $1
        ORDER BY created_at DESC
        LIMIT 5`,
       [schoolId],
@@ -221,21 +218,17 @@ export const updateBookingStatus = async (req, res) => {
   }
 
   try {
-    const result = await query(
-      "UPDATE bookings SET status = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ? AND school_id <=> ?",
+    const [booking] = await query(
+      `UPDATE bookings
+       SET status = $1, updated_at = CURRENT_TIMESTAMP
+       WHERE id = $2 AND school_id IS NOT DISTINCT FROM $3
+       RETURNING id, public_reference, customer_name, customer_email, customer_phone, code, service, booking_date, booking_time, status, created_at, updated_at`,
       [status, bookingId, schoolId],
     );
 
-    if (result.affectedRows === 0) {
+    if (!booking) {
       return res.status(404).json({ message: "Booking not found" });
     }
-
-    const [booking] = await query(
-      `SELECT id, public_reference, customer_name, customer_email, customer_phone, code, service, booking_date, booking_time, status, created_at, updated_at
-       FROM bookings
-       WHERE id = ?`,
-      [bookingId],
-    );
 
     return res.json({
       message: "Booking status updated",
@@ -257,7 +250,7 @@ export const getPublicBookingStatus = async (req, res) => {
     const [booking] = await query(
       `SELECT public_reference, customer_name, customer_email, customer_phone, code, service, booking_date, booking_time, status, created_at, updated_at
        FROM bookings
-       WHERE public_reference = ?
+       WHERE public_reference = $1
        LIMIT 1`,
       [reference],
     );
@@ -301,24 +294,17 @@ export const updatePublicBookingDetails = async (req, res) => {
   }
 
   try {
-    const result = await query(
+    const [booking] = await query(
       `UPDATE bookings
-       SET customer_name = ?, customer_email = ?, customer_phone = ?, updated_at = CURRENT_TIMESTAMP
-       WHERE public_reference = ?`,
+       SET customer_name = $1, customer_email = $2, customer_phone = $3, updated_at = CURRENT_TIMESTAMP
+       WHERE public_reference = $4
+       RETURNING public_reference, customer_name, customer_email, customer_phone, code, service, booking_date, booking_time, status, created_at, updated_at`,
       [name, email, phone, reference],
     );
 
-    if (result.affectedRows === 0) {
+    if (!booking) {
       return res.status(404).json({ message: "Booking not found" });
     }
-
-    const [booking] = await query(
-      `SELECT public_reference, customer_name, customer_email, customer_phone, code, service, booking_date, booking_time, status, created_at, updated_at
-       FROM bookings
-       WHERE public_reference = ?
-       LIMIT 1`,
-      [reference],
-    );
 
     return res.json({
       message: "Booking details updated",
@@ -350,12 +336,14 @@ export const deleteBooking = async (req, res) => {
   }
 
   try {
-    const result = await query(
-      "DELETE FROM bookings WHERE id = ? AND school_id <=> ?",
+    const deletedBookings = await query(
+      `DELETE FROM bookings
+       WHERE id = $1 AND school_id IS NOT DISTINCT FROM $2
+       RETURNING id`,
       [bookingId, schoolId],
     );
 
-    if (result.affectedRows === 0) {
+    if (deletedBookings.length === 0) {
       return res.status(404).json({ message: "Booking not found" });
     }
 
@@ -377,7 +365,11 @@ export const getUnavailableSlots = async (req, res) => {
 
   try {
     const results = await query(
-      "SELECT booking_time FROM bookings WHERE booking_date = ? AND school_id <=> ? AND status != 'cancelled'",
+      `SELECT booking_time
+       FROM bookings
+       WHERE booking_date = $1
+         AND school_id IS NOT DISTINCT FROM $2
+         AND status <> 'cancelled'`,
       [date, schoolId],
     );
 
