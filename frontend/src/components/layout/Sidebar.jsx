@@ -12,6 +12,7 @@ export default function Sidebar() {
 
       <nav>
         <Link to="/owner/dashboard">Dashboard overview</Link>
+        <Link to="/owner/settings">Admin settings</Link>
         <Link to="/booking">Public booking page</Link>
         <Link to="/">Website home</Link>
       </nav>

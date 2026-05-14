@@ -45,6 +45,8 @@ const formatUser = (user) => ({
   school_id: user.school_id,
   provider: user.provider,
   avatar_url: user.avatar_url,
+  account_status: user.account_status,
+  deactivated_until: user.deactivated_until,
 });
 
 const redirectWithAuthResult = (res, payload) => {
@@ -301,6 +303,21 @@ export const login = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
+    if (
+      user.account_status === "deactivated" &&
+      user.deactivated_until &&
+      new Date(user.deactivated_until) > new Date()
+    ) {
+      return res.status(403).json({
+        message:
+          "This account is temporarily deactivated. Please try again after 30 days or contact support.",
+      });
+    }
+
+    if (user.account_status === "deleted") {
+      return res.status(403).json({ message: "This account has been deleted" });
+    }
+
     if (!user.password) {
       return res.status(400).json({
         message: `This account uses ${user.provider || "social"} login. Continue with that provider.`,
@@ -321,6 +338,68 @@ export const login = async (req, res) => {
     });
   } catch (error) {
     return res.status(500).json({ message: "Failed to log in" });
+  }
+};
+
+export const getCurrentUser = async (req, res) => {
+  try {
+    const users = await query("SELECT * FROM users WHERE id = $1 LIMIT 1", [
+      req.user.id,
+    ]);
+
+    if (!users[0]) {
+      return res.status(404).json({ message: "Account not found" });
+    }
+
+    return res.json({ user: formatUser(users[0]) });
+  } catch (error) {
+    return res.status(500).json({ message: "Failed to load account settings" });
+  }
+};
+
+export const deleteCurrentUser = async (req, res) => {
+  const mode = req.body.mode?.trim().toLowerCase();
+
+  if (!["temporary", "permanent"].includes(mode)) {
+    return res.status(400).json({
+      message: "Choose temporary deactivation or permanent deletion",
+    });
+  }
+
+  try {
+    if (mode === "permanent") {
+      const deletedUsers = await query(
+        "DELETE FROM users WHERE id = $1 RETURNING id",
+        [req.user.id],
+      );
+
+      if (deletedUsers.length === 0) {
+        return res.status(404).json({ message: "Account not found" });
+      }
+
+      return res.json({ message: "Account permanently deleted" });
+    }
+
+    const [user] = await query(
+      `UPDATE users
+       SET account_status = 'deactivated',
+           deletion_scheduled_at = CURRENT_TIMESTAMP,
+           deactivated_until = CURRENT_TIMESTAMP + INTERVAL '30 days'
+       WHERE id = $1
+       RETURNING *`,
+      [req.user.id],
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "Account not found" });
+    }
+
+    return res.json({
+      message: "Account temporarily deactivated for 30 days",
+      user: formatUser(user),
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "Failed to update account" });
   }
 };
 

@@ -3,6 +3,24 @@ import { Link, useLocation } from "react-router-dom";
 import { Menu } from "../common/Menu";
 import { AuthContext } from "../../context/AuthContext";
 
+function AdminIcon() {
+  return (
+    <span className="site-nav__brand-icon" aria-hidden="true">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 2 4 5.8v5.9c0 5 3.4 9.6 8 10.8 4.6-1.2 8-5.8 8-10.8V5.8L12 2Zm0 3.1 5 2.4v4.2c0 3.5-2 6.7-5 7.8-3-1.1-5-4.3-5-7.8V7.5l5-2.4Zm-1 4.1v3.1l3 1.8.9-1.5-2.2-1.3V9.2H11Z" />
+      </svg>
+    </span>
+  );
+}
+
+function ChevronDown() {
+  return (
+    <svg className="site-nav__chevron" viewBox="0 0 20 20" aria-hidden="true">
+      <path d="M5.3 7.4a1 1 0 0 1 1.4 0L10 10.7l3.3-3.3a1 1 0 1 1 1.4 1.4l-4 4a1 1 0 0 1-1.4 0l-4-4a1 1 0 0 1 0-1.4Z" />
+    </svg>
+  );
+}
+
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [checkDropdown, setCheckDropdown] = useState(false);
@@ -36,7 +54,8 @@ export function Navbar() {
       <div className="site-nav-shell">
         <header className="site-nav site-nav--owner">
           <Link className="site-nav__brand" onClick={closeMenus} to="/owner/dashboard">
-            DriveEasy Admin
+            <AdminIcon />
+            <span>DriveEasy Admin</span>
           </Link>
 
           <Menu isOpen={isOpen} onToggle={() => setIsOpen((open) => !open)} />
@@ -62,6 +81,16 @@ export function Navbar() {
               Posters
             </Link>
 
+            <Link
+              className="site-nav__link site-nav__link--icon"
+              onClick={closeMenus}
+              title="Settings"
+              to="/owner/settings"
+            >
+              <AdminIcon />
+              <span>Settings</span>
+            </Link>
+
             <div
               className="site-nav__dropdown"
               onMouseEnter={() => setProfileDropdown(true)}
@@ -73,7 +102,8 @@ export function Navbar() {
                 onClick={() => setProfileDropdown((open) => !open)}
                 type="button"
               >
-                Profile v
+                <span>Profile</span>
+                <ChevronDown />
               </button>
 
               <div
@@ -95,6 +125,9 @@ export function Navbar() {
                     </Link>
                     <Link onClick={closeMenus} to="/owner/posters">
                       Posters
+                    </Link>
+                    <Link onClick={closeMenus} to="/owner/settings">
+                      Settings
                     </Link>
                     <button
                       type="button"
@@ -148,7 +181,8 @@ export function Navbar() {
               onClick={() => setCheckDropdown((open) => !open)}
               type="button"
             >
-              Info v
+              <span>Info</span>
+              <ChevronDown />
             </button>
 
             <div

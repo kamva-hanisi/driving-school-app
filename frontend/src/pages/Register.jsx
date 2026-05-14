@@ -48,14 +48,14 @@ export default function Register() {
         <label>Full Name:</label>
         <input
           type="text"
-          placeholder="Lucas Hanisi"
+          placeholder="Trevor Rogers"
           onChange={(e) => setForm({ ...form, name: e.target.value })}
         />
 
         <label>Email:</label>
         <input
           type="email"
-          placeholder="lucashanisi@gmail.com"
+          placeholder="trevor@gmail.com"
           onChange={(e) => setForm({ ...form, email: e.target.value })}
         />
 

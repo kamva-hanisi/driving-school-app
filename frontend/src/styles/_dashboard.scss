@@ -45,7 +45,7 @@
 }
 
 .sidebar a:hover {
-  background: #eef2ff;
+  background: $color-accent-soft;
   color: $color-primary-dark;
 }
 
@@ -312,6 +312,55 @@
   word-break: break-word;
 }
 
+.settings-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 0.9fr);
+  gap: 20px;
+}
+
+.settings-card {
+  display: grid;
+  align-content: start;
+  gap: 18px;
+}
+
+.settings-list {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+}
+
+.settings-list div {
+  display: grid;
+  gap: 4px;
+  padding: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.18);
+  border-radius: $radius-sm;
+  background: #f8fafc;
+}
+
+.settings-list dt {
+  color: $color-text-muted;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.settings-list dd {
+  margin: 0;
+  color: $color-dark;
+  overflow-wrap: anywhere;
+}
+
+.settings-actions {
+  display: grid;
+  gap: 12px;
+}
+
+.settings-card--danger {
+  border-color: rgba(220, 38, 38, 0.22);
+}
+
 .status {
   display: inline-flex;
   align-items: center;
@@ -357,6 +406,10 @@
   }
 
   .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .settings-grid {
     grid-template-columns: 1fr;
   }
 

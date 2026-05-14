@@ -10,6 +10,7 @@ import {
   Login,
   Posters,
   Register,
+  Settings,
   TrackBooking,
   Contact,
   About,
@@ -20,7 +21,8 @@ import { Navbar, Footer } from "./components/layout";
 
 function AppContent() {
   const { pathname } = useLocation();
-  const isOwnerRoute = pathname.startsWith("/owner");
+  const isOwnerRoute =
+    pathname.startsWith("/owner") || pathname.startsWith("/admin");
 
   return (
     <div className="app-shell">
@@ -43,6 +45,10 @@ function AppContent() {
         <Route
           path="/admin/posters"
           element={<Navigate replace to="/owner/posters" />}
+        />
+        <Route
+          path="/admin/settings"
+          element={<Navigate replace to="/owner/settings" />}
         />
         <Route
           path="/register"
@@ -90,6 +96,15 @@ function AppContent() {
           element={
             <ProtectedRoute>
               <Posters />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/owner/settings"
+          element={
+            <ProtectedRoute>
+              <Settings />
             </ProtectedRoute>
           }
         />
