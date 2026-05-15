@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 import API from "../services/api";
 import BookingTable from "../components/dashboard/BookingTable";
 import Sidebar from "../components/layout/Sidebar";
 import StatsCard from "../components/dashboard/StatsCard";
+import { AuthContext } from "../context/AuthContext";
 
 const emptySummary = {
   total_bookings: 0,
@@ -16,6 +17,7 @@ const emptySummary = {
 };
 
 export default function Dashboard() {
+  const { user } = useContext(AuthContext);
   const [summary, setSummary] = useState(emptySummary);
   const [recentClients, setRecentClients] = useState([]);
   const [bookings, setBookings] = useState([]);
@@ -94,6 +96,19 @@ export default function Dashboard() {
     [summary],
   );
 
+  const schoolBookingLink = `${window.location.origin}/booking${
+    user?.school_id ? `?school_id=${user.school_id}` : ""
+  }`;
+
+  const copyBookingLink = async () => {
+    try {
+      await navigator.clipboard.writeText(schoolBookingLink);
+      setError("");
+    } catch {
+      setError("We could not copy the booking link.");
+    }
+  };
+
   const handleBookingAction = async (bookingId, action) => {
     try {
       if (action === "delete") {
@@ -170,7 +185,10 @@ export default function Dashboard() {
           <div className="dashboard-panel__header">
             <div>
               <h2>Booking filters</h2>
-              <p>Find a client quickly and narrow results by booking status.</p>
+              <p>
+                Find a client quickly and narrow results by booking status.
+                Share your booking link so new clients go to this admin account.
+              </p>
             </div>
             {isRefreshing ? (
               <span className="field__hint">Refreshing live data...</span>
@@ -217,6 +235,13 @@ export default function Dashboard() {
               Search
             </button>
           </form>
+
+          <div className="school-link">
+            <span>{schoolBookingLink}</span>
+            <button className="btn btn--secondary" onClick={copyBookingLink} type="button">
+              Copy booking link
+            </button>
+          </div>
         </section>
 
         <section className="dashboard-grid">

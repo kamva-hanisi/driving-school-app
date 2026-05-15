@@ -26,7 +26,11 @@ const formatDateTime = (value) => {
   }).format(date);
 };
 
-export default function BookingTable({ bookings, onStatusChange }) {
+export default function BookingTable({
+  bookings,
+  onStatusChange,
+  showAdmin = false,
+}) {
   if (bookings.length === 0) {
     return <p className="field__hint">No bookings match the current filters.</p>;
   }
@@ -39,6 +43,12 @@ export default function BookingTable({ bookings, onStatusChange }) {
             <div>
               <p className="booking-card-item__eyebrow">Client booking</p>
               <h3 className="booking-card-item__name">{booking.customer_name}</h3>
+              {showAdmin ? (
+                <p className="booking-card-item__last-seen">
+                  {booking.admin_name || "Unassigned admin"} | School{" "}
+                  {booking.school_id || "none"}
+                </p>
+              ) : null}
               <p className="booking-card-item__last-seen">
                 Last seen {formatDateTime(booking.updated_at || booking.created_at)}
               </p>

@@ -33,7 +33,10 @@ export default function AuthCallback() {
     try {
       const user = JSON.parse(decodeURIComponent(userParam));
       login(token, user);
-      navigate("/owner/dashboard", { replace: true });
+      navigate(
+        user?.role === "super_admin" ? "/platform/dashboard" : "/owner/dashboard",
+        { replace: true },
+      );
     } catch {
       // The message above already handles malformed callback payloads.
     }

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import API from "../../services/api";
 
-export default function TimeSlots({ date, selectedTime, setTime }) {
+export default function TimeSlots({ date, schoolId, selectedTime, setTime }) {
   const [unavailable, setUnavailable] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
@@ -21,7 +21,12 @@ export default function TimeSlots({ date, selectedTime, setTime }) {
       try {
         setIsLoading(true);
         setError("");
-        const res = await API.get(`/bookings/unavailable?date=${date}`);
+        const res = await API.get("/bookings/unavailable", {
+          params: {
+            date,
+            ...(schoolId ? { school_id: schoolId } : {}),
+          },
+        });
 
         if (!ignore) {
           setUnavailable(res.data);
@@ -43,7 +48,7 @@ export default function TimeSlots({ date, selectedTime, setTime }) {
     return () => {
       ignore = true;
     };
-  }, [date]);
+  }, [date, schoolId]);
 
   return (
     <div className="time-slots-wrap">

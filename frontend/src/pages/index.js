@@ -5,6 +5,7 @@ export { default as BookingStatus } from "./BookingStatus";
 export { default as Dashboard } from "./Dashboard";
 export { default as Home } from "./Home";
 export { default as Posters } from "./Posters";
+export { default as PlatformDashboard } from "./PlatformDashboard";
 export { default as TrackBooking } from "./TrackBooking";
 export { default as Login } from "./Login";
 export { default as Register } from "./Register";

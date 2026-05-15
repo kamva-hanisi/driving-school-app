@@ -9,7 +9,8 @@ export default function ProtectedRoute({ children }) {
   if (!token) {
     const isOwnerRoute =
       location.pathname.startsWith("/owner") ||
-      location.pathname.startsWith("/admin");
+      location.pathname.startsWith("/admin") ||
+      location.pathname.startsWith("/platform");
     return <Navigate to={isOwnerRoute ? "/owner/login" : "/owner/login"} />;
   }
 

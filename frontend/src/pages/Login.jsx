@@ -23,7 +23,11 @@ export default function Login() {
       setError("");
       const response = await API.post("/auth/login", form);
       login(response.data.token, response.data.user);
-      navigate("/owner/dashboard");
+      navigate(
+        response.data.user?.role === "super_admin"
+          ? "/platform/dashboard"
+          : "/owner/dashboard",
+      );
     } catch (requestError) {
       console.error("Login failed:", requestError);
       setError(

@@ -2,7 +2,7 @@ import db from "../config/db.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-const ALLOWED_ROLES = new Set(["owner", "admin"]);
+const ALLOWED_ROLES = new Set(["owner", "admin", "super_admin"]);
 const SUPPORTED_SOCIAL_PROVIDERS = new Set(["google", "facebook"]);
 
 const query = (sql, values = []) =>
@@ -70,6 +70,26 @@ const findUserByEmail = async (email) => {
   return users[0] || null;
 };
 
+const assignOwnSchoolIfMissing = async (user) => {
+  if (user.role === "super_admin") {
+    return user;
+  }
+
+  if (user.school_id) {
+    return user;
+  }
+
+  const users = await query(
+    `UPDATE users
+     SET school_id = id
+     WHERE id = $1
+     RETURNING *`,
+    [user.id],
+  );
+
+  return users[0] || user;
+};
+
 const insertSocialUser = async ({
   name,
   email,
@@ -86,7 +106,7 @@ const insertSocialUser = async ({
     [name, email, null, role, null, provider, providerId, avatarUrl],
   );
 
-  return result[0];
+  return assignOwnSchoolIfMissing(result[0]);
 };
 
 const updateSocialUser = async (user, { provider, providerId, avatarUrl }) => {
@@ -271,12 +291,15 @@ export const register = async (req, res) => {
   try {
     const hashed = bcrypt.hashSync(password, 10);
 
-    await query(
+    const [createdUser] = await query(
       `INSERT INTO users
        (name, email, password, role, school_id, provider, provider_id, avatar_url)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+       RETURNING *`,
       [name, email, hashed, role, schoolId, "local", null, null],
     );
+
+    await assignOwnSchoolIfMissing(createdUser);
 
     return res.json({ message: "User registered" });
   } catch (error) {
@@ -330,11 +353,12 @@ export const login = async (req, res) => {
       return res.status(400).json({ message: "Wrong password" });
     }
 
-    const token = createToken(user);
+    const activeUser = await assignOwnSchoolIfMissing(user);
+    const token = createToken(activeUser);
 
     return res.json({
       token,
-      user: formatUser(user),
+      user: formatUser(activeUser),
     });
   } catch (error) {
     return res.status(500).json({ message: "Failed to log in" });
@@ -400,6 +424,36 @@ export const deleteCurrentUser = async (req, res) => {
     });
   } catch (error) {
     return res.status(500).json({ message: "Failed to update account" });
+  }
+};
+
+export const getAdmins = async (req, res) => {
+  if (req.user?.role !== "super_admin") {
+    return res.status(403).json({ message: "Platform admin access required" });
+  }
+
+  try {
+    const admins = await query(
+      `SELECT
+         u.id,
+         u.name,
+         u.email,
+         u.role,
+         u.school_id,
+         COALESCE(u.account_status, 'active') AS account_status,
+         COUNT(b.id)::int AS total_bookings,
+         COUNT(b.id) FILTER (WHERE b.status = 'pending')::int AS pending_bookings,
+         COUNT(b.id) FILTER (WHERE b.status = 'confirmed')::int AS confirmed_bookings
+       FROM users u
+       LEFT JOIN bookings b ON b.school_id = u.school_id
+       WHERE u.role IN ('owner', 'admin')
+       GROUP BY u.id
+       ORDER BY u.created_at DESC`,
+    );
+
+    return res.json(admins);
+  } catch (error) {
+    return res.status(500).json({ message: "Failed to load admin accounts" });
   }
 };
 

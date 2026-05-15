@@ -33,33 +33,7 @@ driving-school-app/
 
 Create the database and app user in pgAdmin 4, then use the connection values below in `backend/.env`.
 
-Connection values for a local PostgreSQL server:
-
-```text
-Connection Name: Driving School App
-Hostname: 127.0.0.1
-Port: 5432
-Username: driving_app
-Password: DrivingApp@123
-Maintenance database: driving_school
-```
-
-First connect in pgAdmin 4 with your PostgreSQL administrator account, then run this SQL in the `postgres` maintenance database:
-
-```sql
-CREATE USER driving_app WITH PASSWORD 'DrivingApp@123';
-CREATE DATABASE driving_school OWNER driving_app;
-```
-
 Open the new `driving_school` database in pgAdmin 4 and use Query Tool for your PostgreSQL tables and seed data.
-
-Owner/admin login after running the SQL:
-
-```text
-URL: http://localhost:5173/owner/login
-Email: admin@drivingschool.com
-Password: Admin@123
-```
 
 ### 2. Backend env
 

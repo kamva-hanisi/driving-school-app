@@ -20,31 +20,80 @@ const normalizeBookingPayload = (body) => ({
 });
 
 const normalizeTimeValue = (value) => String(value).slice(0, 5);
-const getSchoolId = (req) => req.user?.school_id ?? req.body.school_id ?? null;
+const normalizeSchoolId = (value) => {
+  const id = Number(value);
+  return Number.isInteger(id) && id > 0 ? id : null;
+};
 const createPublicReference = () =>
   `DRV-${crypto.randomBytes(4).toString("hex").toUpperCase()}`;
 
 const query = (sql, values = []) =>
   db.query(sql, values).then((result) => result.rows);
 
-const buildBookingsFilter = ({ schoolId, status, search }) => {
-  const conditions = ["school_id IS NOT DISTINCT FROM $1"];
-  const values = [schoolId];
+const getDefaultSchoolId = async () => {
+  const [user] = await query(
+    `SELECT school_id
+     FROM users
+     WHERE school_id IS NOT NULL
+       AND COALESCE(account_status, 'active') = 'active'
+     ORDER BY id ASC
+     LIMIT 1`,
+  );
+
+  return user?.school_id ?? null;
+};
+
+const getAdminSchoolId = async (req) => {
+  if (req.user?.role === "super_admin") {
+    return null;
+  }
+
+  const tokenSchoolId = normalizeSchoolId(req.user?.school_id);
+
+  if (tokenSchoolId) {
+    return tokenSchoolId;
+  }
+
+  if (!req.user?.id) {
+    return null;
+  }
+
+  const [user] = await query("SELECT school_id FROM users WHERE id = $1", [
+    req.user.id,
+  ]);
+
+  return normalizeSchoolId(user?.school_id);
+};
+
+const getPublicSchoolId = async (req) =>
+  normalizeSchoolId(req.body.school_id ?? req.query.school_id) ??
+  (await getDefaultSchoolId());
+
+const buildBookingsFilter = ({ includeAllSchools, schoolId, status, search }) => {
+  const conditions = [];
+  const values = [];
+
+  if (!includeAllSchools) {
+    values.push(schoolId);
+    conditions.push(`b.school_id IS NOT DISTINCT FROM $${values.length}`);
+  }
 
   if (status) {
     values.push(status);
-    conditions.push(`status = $${values.length}`);
+    conditions.push(`b.status = $${values.length}`);
   }
 
   if (search) {
     const searchPattern = `%${search}%`;
     const startIndex = values.length + 1;
     conditions.push(
-      `(customer_name ILIKE $${startIndex}
-        OR customer_email ILIKE $${startIndex + 1}
-        OR customer_phone ILIKE $${startIndex + 2}
-        OR code ILIKE $${startIndex + 3}
-        OR service ILIKE $${startIndex + 4})`,
+      `(b.customer_name ILIKE $${startIndex}
+        OR b.customer_email ILIKE $${startIndex + 1}
+        OR b.customer_phone ILIKE $${startIndex + 2}
+        OR b.code ILIKE $${startIndex + 3}
+        OR b.service ILIKE $${startIndex + 4}
+        OR u.name ILIKE $${startIndex + 5}
+        OR u.email ILIKE $${startIndex + 6})`,
     );
     values.push(
       searchPattern,
@@ -52,15 +101,20 @@ const buildBookingsFilter = ({ schoolId, status, search }) => {
       searchPattern,
       searchPattern,
       searchPattern,
+      searchPattern,
+      searchPattern,
     );
   }
 
-  return { whereClause: conditions.join(" AND "), values };
+  return {
+    whereClause: conditions.length ? `WHERE ${conditions.join(" AND ")}` : "",
+    values,
+  };
 };
 
 export const createBooking = async (req, res) => {
   const booking = normalizeBookingPayload(req.body);
-  const schoolId = getSchoolId(req);
+  const schoolId = await getPublicSchoolId(req);
   const { name, phone, code, service, date, time } = booking;
 
   if (!name || !phone || !code || !service || !date || !time) {
@@ -136,7 +190,8 @@ export const createBooking = async (req, res) => {
 };
 
 export const getBookings = async (req, res) => {
-  const schoolId = req.user?.school_id ?? req.query.school_id ?? null;
+  const schoolId = await getAdminSchoolId(req);
+  const includeAllSchools = req.user?.role === "super_admin";
   const status = req.query.status?.trim().toLowerCase();
   const search = req.query.search?.trim();
 
@@ -146,16 +201,23 @@ export const getBookings = async (req, res) => {
 
   try {
     const { whereClause, values } = buildBookingsFilter({
+      includeAllSchools,
       schoolId,
       status,
       search,
     });
 
     const results = await query(
-      `SELECT id, public_reference, customer_name, customer_email, customer_phone, code, service, booking_date, booking_time, status, school_id, created_at, updated_at
-       FROM bookings
-       WHERE ${whereClause}
-       ORDER BY booking_date ASC, booking_time ASC, created_at DESC`,
+      `SELECT
+         b.id, b.public_reference, b.customer_name, b.customer_email, b.customer_phone,
+         b.code, b.service, b.booking_date, b.booking_time, b.status, b.school_id,
+         b.created_at, b.updated_at,
+         u.name AS admin_name,
+         u.email AS admin_email
+       FROM bookings b
+       LEFT JOIN users u ON u.school_id = b.school_id AND u.role IN ('owner', 'admin')
+       ${whereClause}
+       ORDER BY b.booking_date ASC, b.booking_time ASC, b.created_at DESC`,
       values,
     );
 
@@ -166,7 +228,12 @@ export const getBookings = async (req, res) => {
 };
 
 export const getBookingSummary = async (req, res) => {
-  const schoolId = req.user?.school_id ?? req.query.school_id ?? null;
+  const schoolId = await getAdminSchoolId(req);
+  const includeAllSchools = req.user?.role === "super_admin";
+  const whereClause = includeAllSchools
+    ? ""
+    : "WHERE school_id IS NOT DISTINCT FROM $1";
+  const values = includeAllSchools ? [] : [schoolId];
 
   try {
     const [summaryRows] = await Promise.all([
@@ -181,18 +248,18 @@ export const getBookingSummary = async (req, res) => {
            COUNT(*) FILTER (WHERE booking_date = CURRENT_DATE)::int AS today_bookings,
            COUNT(*) FILTER (WHERE booking_date >= CURRENT_DATE)::int AS upcoming_bookings
          FROM bookings
-         WHERE school_id IS NOT DISTINCT FROM $1`,
-        [schoolId],
+         ${whereClause}`,
+        values,
       ),
     ]);
 
     const recentClients = await query(
-      `SELECT id, public_reference, customer_name, customer_email, customer_phone, code, service, booking_date, booking_time, status, created_at
+      `SELECT id, public_reference, customer_name, customer_email, customer_phone, code, service, booking_date, booking_time, status, created_at, school_id
        FROM bookings
-       WHERE school_id IS NOT DISTINCT FROM $1
+       ${whereClause}
        ORDER BY created_at DESC
        LIMIT 5`,
-      [schoolId],
+      values,
     );
 
     return res.json({
@@ -205,7 +272,8 @@ export const getBookingSummary = async (req, res) => {
 };
 
 export const updateBookingStatus = async (req, res) => {
-  const schoolId = req.user?.school_id ?? null;
+  const schoolId = await getAdminSchoolId(req);
+  const includeAllSchools = req.user?.role === "super_admin";
   const bookingId = Number(req.params.id);
   const status = req.body.status?.trim().toLowerCase();
 
@@ -221,9 +289,9 @@ export const updateBookingStatus = async (req, res) => {
     const [booking] = await query(
       `UPDATE bookings
        SET status = $1, updated_at = CURRENT_TIMESTAMP
-       WHERE id = $2 AND school_id IS NOT DISTINCT FROM $3
+       WHERE id = $2 ${includeAllSchools ? "" : "AND school_id IS NOT DISTINCT FROM $3"}
        RETURNING id, public_reference, customer_name, customer_email, customer_phone, code, service, booking_date, booking_time, status, created_at, updated_at`,
-      [status, bookingId, schoolId],
+      includeAllSchools ? [status, bookingId] : [status, bookingId, schoolId],
     );
 
     if (!booking) {
@@ -328,7 +396,8 @@ export const updatePublicBookingDetails = async (req, res) => {
 };
 
 export const deleteBooking = async (req, res) => {
-  const schoolId = req.user?.school_id ?? null;
+  const schoolId = await getAdminSchoolId(req);
+  const includeAllSchools = req.user?.role === "super_admin";
   const bookingId = Number(req.params.id);
 
   if (!Number.isInteger(bookingId) || bookingId <= 0) {
@@ -338,9 +407,9 @@ export const deleteBooking = async (req, res) => {
   try {
     const deletedBookings = await query(
       `DELETE FROM bookings
-       WHERE id = $1 AND school_id IS NOT DISTINCT FROM $2
+       WHERE id = $1 ${includeAllSchools ? "" : "AND school_id IS NOT DISTINCT FROM $2"}
        RETURNING id`,
-      [bookingId, schoolId],
+      includeAllSchools ? [bookingId] : [bookingId, schoolId],
     );
 
     if (deletedBookings.length === 0) {
@@ -355,7 +424,9 @@ export const deleteBooking = async (req, res) => {
 
 export const getUnavailableSlots = async (req, res) => {
   const { date } = req.query;
-  const schoolId = req.user?.school_id ?? req.query.school_id ?? null;
+  const schoolId =
+    normalizeSchoolId(req.user?.school_id ?? req.query.school_id) ??
+    (await getDefaultSchoolId());
 
   if (!date) {
     return res

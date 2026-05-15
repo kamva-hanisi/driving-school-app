@@ -29,7 +29,8 @@ export function Navbar() {
   const { pathname } = useLocation();
   const { token, user, logout } = useContext(AuthContext);
 
-  const isOwnerRoute = pathname.startsWith("/owner");
+  const isOwnerRoute =
+    pathname.startsWith("/owner") || pathname.startsWith("/platform");
   const isHomePage = pathname === "/";
 
   useEffect(() => {
@@ -53,9 +54,15 @@ export function Navbar() {
     return (
       <div className="site-nav-shell">
         <header className="site-nav site-nav--owner">
-          <Link className="site-nav__brand" onClick={closeMenus} to="/owner/dashboard">
+          <Link
+            className="site-nav__brand"
+            onClick={closeMenus}
+            to={user?.role === "super_admin" ? "/platform/dashboard" : "/owner/dashboard"}
+          >
             <AdminIcon />
-            <span>DriveEasy Admin</span>
+            <span>
+              {user?.role === "super_admin" ? "DriveEasy Platform" : "DriveEasy Admin"}
+            </span>
           </Link>
 
           <Menu isOpen={isOpen} onToggle={() => setIsOpen((open) => !open)} />
@@ -68,18 +75,20 @@ export function Navbar() {
             <Link
               className="site-nav__link"
               onClick={closeMenus}
-              to="/owner/dashboard"
+              to={user?.role === "super_admin" ? "/platform/dashboard" : "/owner/dashboard"}
             >
-              Dashboard
+              {user?.role === "super_admin" ? "Platform" : "Dashboard"}
             </Link>
 
-            <Link
-              className="site-nav__link"
-              onClick={closeMenus}
-              to="/owner/posters"
-            >
-              Posters
-            </Link>
+            {user?.role !== "super_admin" ? (
+              <Link
+                className="site-nav__link"
+                onClick={closeMenus}
+                to="/owner/posters"
+              >
+                Posters
+              </Link>
+            ) : null}
 
             <Link
               className="site-nav__link site-nav__link--icon"
@@ -120,12 +129,25 @@ export function Navbar() {
                     <span className="dropdown-user">
                       {user?.name || "Admin"}
                     </span>
-                    <Link onClick={closeMenus} to="/owner/dashboard">
-                      Dashboard
+                    <Link
+                      onClick={closeMenus}
+                      to={
+                        user?.role === "super_admin"
+                          ? "/platform/dashboard"
+                          : "/owner/dashboard"
+                      }
+                    >
+                      {user?.role === "super_admin" ? "Platform" : "Dashboard"}
                     </Link>
-                    <Link onClick={closeMenus} to="/owner/posters">
-                      Posters
-                    </Link>
+                    {user?.role === "super_admin" ? (
+                      <Link onClick={closeMenus} to="/platform/dashboard">
+                        Platform
+                      </Link>
+                    ) : (
+                      <Link onClick={closeMenus} to="/owner/posters">
+                        Posters
+                      </Link>
+                    )}
                     <Link onClick={closeMenus} to="/owner/settings">
                       Settings
                     </Link>

@@ -1,7 +1,13 @@
 import Button from "../common/Button";
 import TimeSlots from "./TimeSlots";
 
-export default function StepDateTime({ next, prev, formData, setFormData }) {
+export default function StepDateTime({
+  next,
+  prev,
+  formData,
+  schoolId,
+  setFormData,
+}) {
   const canContinue = Boolean(formData.bookingDate && formData.bookingTime);
 
   const handleChange = (event) => {
@@ -40,6 +46,7 @@ export default function StepDateTime({ next, prev, formData, setFormData }) {
           {formData.bookingDate ? (
             <TimeSlots
               date={formData.bookingDate}
+              schoolId={schoolId}
               selectedTime={formData.bookingTime}
               setTime={handleTimeSelect}
             />

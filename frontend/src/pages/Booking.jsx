@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import API from "../services/api";
 import StepSelectCode from "../components/booking/StepSelectCode";
 import StepService from "../components/booking/StepService";
@@ -8,6 +8,8 @@ import StepUserDetails from "../components/booking/StepUserDetails";
 
 export default function Booking() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const schoolId = searchParams.get("school_id");
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -41,6 +43,7 @@ export default function Booking() {
       selectedService: formData.selectedService,
       bookingDate: formData.bookingDate,
       bookingTime: formData.bookingTime,
+      school_id: schoolId,
     };
 
     try {
@@ -115,11 +118,12 @@ export default function Booking() {
         />
       )}
       {step === 3 && (
-        <StepDateTime
-          formData={formData}
-          setFormData={setFormData}
-          next={next}
-          prev={prev}
+          <StepDateTime
+            formData={formData}
+            schoolId={schoolId}
+            setFormData={setFormData}
+            next={next}
+            prev={prev}
         />
       )}
       {step === 4 && (
