@@ -18,7 +18,9 @@ export default function Sidebar() {
         <Link to={isPlatformAdmin ? "/platform/dashboard" : "/owner/dashboard"}>
           {isPlatformAdmin ? "Platform overview" : "Dashboard overview"}
         </Link>
-        <Link to="/owner/settings">Admin settings</Link>
+        <Link to={isPlatformAdmin ? "/platform/settings" : "/owner/settings"}>
+          {isPlatformAdmin ? "Platform settings" : "Admin settings"}
+        </Link>
         {!isPlatformAdmin ? (
           <Link to={bookingPath}>Public booking page</Link>
         ) : null}

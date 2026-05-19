@@ -5,8 +5,10 @@ Full-stack driving school booking platform built with React, Vite, Express, and 
 ## What Works Now
 
 - Public client booking form
-- Owner/admin login and registration
-- Dashboard with real PostgreSQL booking data
+- Separate platform owner and company admin portals
+- Company admin login and registration
+- Company-scoped dashboards with real PostgreSQL booking data
+- Platform dashboard for all company admins and bookings
 - Booking status management
 - Google and Facebook OAuth flow support
 - Downloadable booking references and Twilio env hooks for production setup
@@ -35,36 +37,9 @@ Create the database and app user in pgAdmin 4, then use the connection values be
 
 Open the new `driving_school` database in pgAdmin 4 and use Query Tool for your PostgreSQL tables and seed data.
 
-### 2. Backend env
+Create the required tables in your database using pgAdmin, Beekeeper Studio, or
+Render's SQL shell.
 
-Create `backend/.env` from [backend/.env.example](/c:/projects/driving-school-app/backend/.env.example).
-
-Local example:
-
-```env
-PORT=5000
-DB_HOST=127.0.0.1
-DB_PORT=5432
-DB_USER=driving_app
-DB_PASSWORD=DrivingApp@123
-DB_NAME=driving_school
-# DATABASE_URL=postgresql://driving_app:DrivingApp%40123@127.0.0.1:5432/driving_school
-JWT_SECRET=replace_with_a_long_random_secret
-
-TWILIO_ACCOUNT_SID=replace_with_your_twilio_account_sid
-TWILIO_AUTH_TOKEN=replace_with_your_twilio_auth_token
-TWILIO_WHATSAPP_FROM=whatsapp:+14155238886
-
-FRONTEND_URL=http://localhost:5173
-
-GOOGLE_CLIENT_ID=your_google_client_id
-GOOGLE_CLIENT_SECRET=your_google_client_secret
-GOOGLE_CALLBACK_URL=http://localhost:5000/api/auth/google/callback
-
-FACEBOOK_APP_ID=your_facebook_app_id
-FACEBOOK_APP_SECRET=your_facebook_app_secret
-FACEBOOK_CALLBACK_URL=http://localhost:5000/api/auth/facebook/callback
-```
 
 ### 3. Frontend env
 
@@ -94,57 +69,80 @@ npm install
 npm run dev
 ```
 
-## OAuth Callback URLs
+## Deploy to Render
 
-Use these exact values when creating Google and Facebook apps for local development:
+This repo includes a [render.yaml](render.yaml) Blueprint for:
 
-- Frontend URL: `http://localhost:5173`
-- Backend URL: `http://localhost:5000`
-- Google callback: `http://localhost:5000/api/auth/google/callback`
-- Facebook callback: `http://localhost:5000/api/auth/facebook/callback`
+- `driving-school-api`: Node/Express API
+- `driving-school-frontend`: Vite static site
+- `driving-school-db`: Render PostgreSQL database
 
-Production example if your frontend and backend are on different domains:
+### 1. Push the repo to GitHub
 
-- Frontend URL: `https://yourdomain.com`
-- Backend URL: `https://api.yourdomain.com`
-- Google callback: `https://api.yourdomain.com/api/auth/google/callback`
-- Facebook callback: `https://api.yourdomain.com/api/auth/facebook/callback`
+Render deploys from a Git repository, so push this project to GitHub or GitLab.
 
-## Google Setup
+### 2. Create the Render Blueprint
 
-In Google Cloud Console:
+In Render, choose **New + > Blueprint**, connect your repo, and select the
+root-level `render.yaml` file. Render will ask for secret values marked with
+`sync: false`.
 
-1. Create an OAuth application.
-2. Add the authorized redirect URI:
-   `http://localhost:5000/api/auth/google/callback`
-3. Add your production redirect URI when deploying:
-   `https://api.yourdomain.com/api/auth/google/callback`
-4. Copy the client ID and secret into `backend/.env`.
+Initial required values:
 
-## Facebook Setup
+```env
+FRONTEND_URL=https://driving-school-frontend.onrender.com
+VITE_API_URL=https://driving-school-api.onrender.com/api
+```
 
-In Meta for Developers:
+Render generates `JWT_SECRET` and wires `DATABASE_URL` to the Render Postgres
+database automatically.
 
-1. Create an app with Facebook Login enabled.
-2. Add this Valid OAuth Redirect URI:
-   `http://localhost:5000/api/auth/facebook/callback`
-3. Add your production redirect URI when deploying:
-   `https://api.yourdomain.com/api/auth/facebook/callback`
-4. Copy the app ID and app secret into `backend/.env`.
+Optional values, only needed if you use those features:
 
-## Main API Routes
+```env
+GOOGLE_CLIENT_ID=
+GOOGLE_CLIENT_SECRET=
+GOOGLE_CALLBACK_URL=https://driving-school-api.onrender.com/api/auth/google/callback
+FACEBOOK_APP_ID=
+FACEBOOK_APP_SECRET=
+FACEBOOK_CALLBACK_URL=https://driving-school-api.onrender.com/api/auth/facebook/callback
+EMAIL_USER=
+EMAIL_PASS=
+TWILIO_ACCOUNT_SID=
+TWILIO_AUTH_TOKEN=
+TWILIO_WHATSAPP_FROM=whatsapp:+14155238886
+```
 
-- `POST /api/auth/register`
-- `POST /api/auth/login`
-- `GET /api/auth/google`
-- `GET /api/auth/google/callback`
-- `GET /api/auth/facebook`
-- `GET /api/auth/facebook/callback`
-- `POST /api/bookings`
-- `GET /api/bookings/public/:reference`
-- `GET /api/bookings`
-- `GET /api/bookings/summary`
-- `PATCH /api/bookings/:id/status`
+If Render gives your services different URLs, use those real URLs instead.
+
+### 3. Create the database tables
+
+After Render creates `driving-school-db`, connect to it with Beekeeper Studio
+using the Render database **External Database URL**, or use Render's SQL shell.
+Create the app tables there privately.
+
+### 4. Redeploy
+
+After the env vars and tables are ready, manually redeploy both services. Test:
+
+- Frontend: `https://driving-school-frontend.onrender.com`
+- API health: `https://driving-school-api.onrender.com/api/health`
+
+## Company Names
+
+Right now, company separation is based on `school_id`.
+
+Example:
+
+If you want company-branded URLs like:
+
+```text
+/booking/fast-driving-school
+/booking/realistic-driver-school
+```
+
+the next improvement is to add a `company_name` and `company_slug` field for
+each company admin.
 
 ## Important Notes
 
@@ -152,11 +150,14 @@ In Meta for Developers:
 - Clients now pay in person, so the booking flow no longer redirects to payment.
 - Clients can download their booking reference card after confirming and also from the tracking page.
 - If Twilio credentials are missing, bookings still save but WhatsApp sending is skipped.
+- Company admins must share their own booking link from the dashboard so client bookings are assigned to the correct `school_id`.
+- The plain `/booking` route falls back to the first active company admin and should not be used as the main company-specific booking link.
 - Rotate any real secrets that were previously committed or shared.
 
 ## Next Good Improvements
 
+- Add `company_name` and `company_slug` for branded company booking pages
 - Add Apple login or OTP phone login
 - Add charts to the dashboard
 - Add calendar scheduling view
-- Add branch or multi-school support
+- Add branch support inside each company

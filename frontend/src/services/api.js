@@ -23,7 +23,10 @@ API.interceptors.response.use(
   (error) => {
     if (error.response && error.response.status === 401) {
       localStorage.removeItem("token");
-      window.location.href = "/owner/login";
+      localStorage.removeItem("user");
+      window.location.href = window.location.pathname.startsWith("/platform")
+        ? "/platform/login"
+        : "/owner/login";
     }
     return Promise.reject(error);
   },

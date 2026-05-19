@@ -5,11 +5,12 @@ import { Link } from "react-router-dom";
 import Button from "../components/common/Button";
 import SocialAuthButtons from "../components/auth/SocialAuthButtons";
 
-export default function Register() {
+export default function Register({ portal = "owner" }) {
   const [form, setForm] = useState({});
   const [show, setShow] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const isPlatformPortal = portal === "platform";
 
   const handleRegister = async () => {
     if (!form.name?.trim() || !form.email?.trim() || !form.password?.trim()) {
@@ -28,9 +29,9 @@ export default function Register() {
         name: form.name.trim(),
         email: form.email.trim(),
         password: form.password,
-        role: "admin",
+        role: isPlatformPortal ? "super_admin" : "admin",
       });
-      navigate("/owner/login");
+      navigate(isPlatformPortal ? "/platform/login" : "/owner/login");
     } catch (err) {
       console.error(err);
       setError(
@@ -43,7 +44,9 @@ export default function Register() {
   return (
     <div className="sign-R-L-wrapper">
       <div className="R-L-box">
-        <h2>Create Admin Account</h2>
+        <h2>
+          {isPlatformPortal ? "Create Platform Owner Account" : "Create Company Admin Account"}
+        </h2>
 
         <label>Full Name:</label>
         <input
@@ -83,14 +86,25 @@ export default function Register() {
 
         <Button onClick={handleRegister}>Register</Button>
 
-        <div className="divider">
-          <span>or continue with</span>
-        </div>
-        <SocialAuthButtons />
+        {!isPlatformPortal ? (
+          <>
+            <div className="divider">
+              <span>or continue with</span>
+            </div>
+            <SocialAuthButtons />
+          </>
+        ) : null}
         <div className="R-L-links">
-          <p>
-            Already have an account? <Link to="/owner/login">Sign In</Link>
-          </p>
+          {isPlatformPortal ? (
+            <p>
+              Already have a platform account?{" "}
+              <Link to="/platform/login">Sign In</Link>
+            </p>
+          ) : (
+            <p>
+              Already have an account? <Link to="/owner/login">Sign In</Link>
+            </p>
+          )}
         </div>
       </div>
     </div>

@@ -35,11 +35,11 @@ function AppContent() {
         <Route path="/" element={<Home />} />
         <Route path="/auth/callback" element={<AuthCallback />} />
         <Route path="/login" element={<Navigate replace to="/owner/login" />} />
-        <Route path="/admin" element={<Navigate replace to="/owner/login" />} />
-        <Route path="/admin/login" element={<Navigate replace to="/owner/login" />} />
+        <Route path="/admin" element={<Navigate replace to="/platform/login" />} />
+        <Route path="/admin/login" element={<Navigate replace to="/platform/login" />} />
         <Route
           path="/admin/register"
-          element={<Navigate replace to="/owner/register" />}
+          element={<Navigate replace to="/platform/register" />}
         />
         <Route
           path="/admin/dashboard"
@@ -47,7 +47,7 @@ function AppContent() {
         />
         <Route
           path="/platform"
-          element={<Navigate replace to="/platform/dashboard" />}
+          element={<Navigate replace to="/platform/login" />}
         />
         <Route
           path="/admin/posters"
@@ -55,14 +55,19 @@ function AppContent() {
         />
         <Route
           path="/admin/settings"
-          element={<Navigate replace to="/owner/settings" />}
+          element={<Navigate replace to="/platform/settings" />}
         />
         <Route
           path="/register"
           element={<Navigate replace to="/owner/register" />}
         />
-        <Route path="/owner/login" element={<Login />} />
-        <Route path="/owner/register" element={<Register />} />
+        <Route path="/owner/login" element={<Login portal="owner" />} />
+        <Route path="/owner/register" element={<Register portal="owner" />} />
+        <Route path="/platform/login" element={<Login portal="platform" />} />
+        <Route
+          path="/platform/register"
+          element={<Register portal="platform" />}
+        />
         <Route path="/booking" element={<Booking />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/about" element={<About />} />
@@ -92,7 +97,7 @@ function AppContent() {
         <Route
           path="/owner/dashboard"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={["admin", "owner"]}>
               <Dashboard />
             </ProtectedRoute>
           }
@@ -101,7 +106,7 @@ function AppContent() {
         <Route
           path="/owner/posters"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={["admin", "owner"]}>
               <Posters />
             </ProtectedRoute>
           }
@@ -110,7 +115,16 @@ function AppContent() {
         <Route
           path="/owner/settings"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRoles={["admin", "owner"]}>
+              <Settings />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/platform/settings"
+          element={
+            <ProtectedRoute allowedRole="super_admin">
               <Settings />
             </ProtectedRoute>
           }
@@ -119,7 +133,7 @@ function AppContent() {
         <Route
           path="/platform/dashboard"
           element={
-            <ProtectedRoute>
+            <ProtectedRoute allowedRole="super_admin">
               <PlatformDashboard />
             </ProtectedRoute>
           }

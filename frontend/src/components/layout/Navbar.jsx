@@ -13,6 +13,16 @@ function AdminIcon() {
   );
 }
 
+function PlatformIcon() {
+  return (
+    <span className="site-nav__brand-icon site-nav__brand-icon--platform" aria-hidden="true">
+      <svg viewBox="0 0 24 24">
+        <path d="M12 3 3.8 7.6v8.8L12 21l8.2-4.6V7.6L12 3Zm0 2.3 5.8 3.3L12 11.9 6.2 8.6 12 5.3Zm-6.2 5.2 5.2 3v5.1l-5.2-2.9v-5.2Zm7.2 8.1v-5.1l5.2-3v5.2L13 18.6Z" />
+      </svg>
+    </span>
+  );
+}
+
 function ChevronDown() {
   return (
     <svg className="site-nav__chevron" viewBox="0 0 20 20" aria-hidden="true">
@@ -31,7 +41,19 @@ export function Navbar() {
 
   const isOwnerRoute =
     pathname.startsWith("/owner") || pathname.startsWith("/platform");
+  const isPlatformRoute = pathname.startsWith("/platform");
+  const isAuthRoute =
+    pathname.endsWith("/login") || pathname.endsWith("/register");
   const isHomePage = pathname === "/";
+  const portalBrand = isPlatformRoute || user?.role === "super_admin"
+    ? "Platform Owner"
+    : "Company Admin";
+  const portalHome = isPlatformRoute || user?.role === "super_admin"
+    ? "/platform/dashboard"
+    : "/owner/dashboard";
+  const PortalIcon = isPlatformRoute || user?.role === "super_admin"
+    ? PlatformIcon
+    : AdminIcon;
 
   useEffect(() => {
     const handleResize = () => {
@@ -57,16 +79,44 @@ export function Navbar() {
           <Link
             className="site-nav__brand"
             onClick={closeMenus}
-            to={user?.role === "super_admin" ? "/platform/dashboard" : "/owner/dashboard"}
+            to={token ? portalHome : isPlatformRoute ? "/platform/login" : "/owner/login"}
           >
-            <AdminIcon />
-            <span>
-              {user?.role === "super_admin" ? "DriveEasy Platform" : "DriveEasy Admin"}
-            </span>
+            <PortalIcon />
+            <span>{portalBrand}</span>
           </Link>
 
           <Menu isOpen={isOpen} onToggle={() => setIsOpen((open) => !open)} />
 
+          {isAuthRoute ? (
+            <nav
+              aria-label="Portal navigation"
+              className={`site-nav__links${isOpen ? " site-nav__links--open" : ""}`}
+              id="owner-navigation"
+            >
+              {isPlatformRoute ? (
+                <>
+                  <Link className="site-nav__link" onClick={closeMenus} to="/platform/login">
+                    Super Admin
+                  </Link>
+                  <Link className="site-nav__link" onClick={closeMenus} to="/platform/register">
+                    Platform Register
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link className="site-nav__link" onClick={closeMenus} to="/owner/login">
+                    Company Login
+                  </Link>
+                  <Link className="site-nav__link" onClick={closeMenus} to="/owner/register">
+                    Company Register
+                  </Link>
+                  <Link className="site-nav__link" onClick={closeMenus} to="/">
+                    Client Site
+                  </Link>
+                </>
+              )}
+            </nav>
+          ) : (
           <nav
             aria-label="Owner navigation"
             className={`site-nav__links${isOpen ? " site-nav__links--open" : ""}`}
@@ -75,7 +125,7 @@ export function Navbar() {
             <Link
               className="site-nav__link"
               onClick={closeMenus}
-              to={user?.role === "super_admin" ? "/platform/dashboard" : "/owner/dashboard"}
+              to={portalHome}
             >
               {user?.role === "super_admin" ? "Platform" : "Dashboard"}
             </Link>
@@ -94,7 +144,7 @@ export function Navbar() {
               className="site-nav__link site-nav__link--icon"
               onClick={closeMenus}
               title="Settings"
-              to="/owner/settings"
+              to={user?.role === "super_admin" ? "/platform/settings" : "/owner/settings"}
             >
               <AdminIcon />
               <span>Settings</span>
@@ -139,16 +189,19 @@ export function Navbar() {
                     >
                       {user?.role === "super_admin" ? "Platform" : "Dashboard"}
                     </Link>
-                    {user?.role === "super_admin" ? (
-                      <Link onClick={closeMenus} to="/platform/dashboard">
-                        Platform
-                      </Link>
-                    ) : (
+                    {user?.role !== "super_admin" ? (
                       <Link onClick={closeMenus} to="/owner/posters">
                         Posters
                       </Link>
-                    )}
-                    <Link onClick={closeMenus} to="/owner/settings">
+                    ) : null}
+                    <Link
+                      onClick={closeMenus}
+                      to={
+                        user?.role === "super_admin"
+                          ? "/platform/settings"
+                          : "/owner/settings"
+                      }
+                    >
                       Settings
                     </Link>
                     <button
@@ -165,6 +218,7 @@ export function Navbar() {
               </div>
             </div>
           </nav>
+          )}
         </header>
       </div>
     );

@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 import API from "../services/api";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
@@ -6,12 +6,17 @@ import { Link } from "react-router-dom";
 import Button from "../components/common/Button";
 import SocialAuthButtons from "../components/auth/SocialAuthButtons";
 
-export default function Login() {
+export default function Login({ portal = "owner" }) {
   const [form, setForm] = useState({});
   const [show, setShow] = useState(false);
   const [error, setError] = useState("");
-  const { login } = useContext(AuthContext);
+  const { login, logout } = useContext(AuthContext);
   const navigate = useNavigate();
+  const isPlatformPortal = portal === "platform";
+
+  useEffect(() => {
+    logout();
+  }, [logout, portal]);
 
   const handleLogin = async () => {
     if (!form.email?.trim() || !form.password?.trim()) {
@@ -22,12 +27,20 @@ export default function Login() {
     try {
       setError("");
       const response = await API.post("/auth/login", form);
-      login(response.data.token, response.data.user);
-      navigate(
-        response.data.user?.role === "super_admin"
-          ? "/platform/dashboard"
-          : "/owner/dashboard",
-      );
+      const user = response.data.user;
+
+      if (isPlatformPortal && user?.role !== "super_admin") {
+        setError("Use the company admin login for this account.");
+        return;
+      }
+
+      if (!isPlatformPortal && user?.role === "super_admin") {
+        setError("Use the platform login for the super admin account.");
+        return;
+      }
+
+      login(response.data.token, user);
+      navigate(isPlatformPortal ? "/platform/dashboard" : "/owner/dashboard");
     } catch (requestError) {
       console.error("Login failed:", requestError);
       setError(
@@ -40,7 +53,7 @@ export default function Login() {
   return (
     <div className="sign-R-L-wrapper">
       <div className="R-L-box">
-        <h2>Owner / Admin Login</h2>
+        <h2>{isPlatformPortal ? "Platform Owner Login" : "Company Admin Login"}</h2>
 
         <label>Email:</label>
         <input
@@ -64,15 +77,26 @@ export default function Login() {
 
         <Button onClick={handleLogin}>SIGN IN</Button>
 
-        <div className="divider">
-          <span>or continue with</span>
-        </div>
-        <SocialAuthButtons />
+        {!isPlatformPortal ? (
+          <>
+            <div className="divider">
+              <span>or continue with</span>
+            </div>
+            <SocialAuthButtons />
+          </>
+        ) : null}
 
         <div className="R-L-links">
-          <p>
-            Need an owner account? <Link to="/owner/register">Create one</Link>
-          </p>
+          {isPlatformPortal ? (
+            <p>
+              Need a platform owner account?{" "}
+              <Link to="/platform/register">Create one</Link>
+            </p>
+          ) : (
+            <p>
+              Need a company account? <Link to="/owner/register">Create one</Link>
+            </p>
+          )}
         </div>
       </div>
     </div>
