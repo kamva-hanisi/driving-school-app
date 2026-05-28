@@ -2,56 +2,161 @@
 
 Full-stack driving school booking platform built with React, Vite, Express, and PostgreSQL.
 
-## What Works Now
+## What Works
 
 - Public client booking form
-- Separate platform owner and company admin portals
-- Company admin login and registration
-- Company-scoped dashboards with real PostgreSQL booking data
-- Platform dashboard for all company admins and bookings
+- Admin sign up and login with email/password
+- Admin dashboard with real PostgreSQL booking data
 - Booking status management
-- Google and Facebook OAuth flow support
-- Downloadable booking references and Twilio env hooks for production setup
+- Booking reference tracking
+- Contact messages saved to PostgreSQL
 
 ## Stack
 
 - Frontend: React, React Router, Vite, Sass, Axios
 - Backend: Node.js, Express, PostgreSQL, bcryptjs, JWT, dotenv
 
-## Project Structure
+## PostgreSQL Setup
 
-```text
-driving-school-app/
-  backend/
-    src/
-  frontend/
-    src/
-  README.md
+Use pgAdmin 4, DBeaver, TablePlus, or another PostgreSQL client. MySQL Workbench is only for MySQL, so it will not connect to this PostgreSQL project.
+
+First connect as your PostgreSQL admin user, usually `postgres`, and run:
+
+```sql
+CREATE DATABASE driving_school;
+
+CREATE USER driving_app WITH PASSWORD 'your_password';
+
+GRANT ALL PRIVILEGES ON DATABASE driving_school TO driving_app;
 ```
 
-## Local Setup
+Then connect to the `driving_school` database and run this schema:
 
-### 1. Database
+```sql
+CREATE TABLE IF NOT EXISTS users (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(150) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  role VARCHAR(30) NOT NULL DEFAULT 'admin'
+    CHECK (role IN ('owner', 'admin', 'super_admin')),
+  school_id INT NULL UNIQUE,
+  account_status VARCHAR(30) NOT NULL DEFAULT 'active'
+    CHECK (account_status IN ('active', 'deactivated', 'deleted')),
+  deletion_scheduled_at TIMESTAMP NULL,
+  deactivated_until TIMESTAMP NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
-Create the database and app user in pgAdmin 4, then use the connection values below in `backend/.env`.
+CREATE INDEX IF NOT EXISTS idx_users_school ON users(school_id);
+CREATE INDEX IF NOT EXISTS idx_users_role ON users(role);
+CREATE INDEX IF NOT EXISTS idx_users_status ON users(account_status);
 
-Open the new `driving_school` database in pgAdmin 4 and use Query Tool for your PostgreSQL tables and seed data.
+CREATE TABLE IF NOT EXISTS bookings (
+  id SERIAL PRIMARY KEY,
+  customer_name VARCHAR(100) NOT NULL,
+  customer_email VARCHAR(150) NULL,
+  customer_phone VARCHAR(30) NOT NULL,
+  code VARCHAR(50) NOT NULL,
+  service VARCHAR(100) NOT NULL,
+  booking_date DATE NOT NULL,
+  booking_time TIME NOT NULL,
+  status VARCHAR(30) NOT NULL DEFAULT 'pending'
+    CHECK (status IN ('pending', 'confirmed', 'completed', 'cancelled')),
+  school_id INT NULL REFERENCES users(school_id) ON DELETE SET NULL,
+  public_reference VARCHAR(20) NOT NULL UNIQUE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
 
-Create the required tables in your database using pgAdmin, Beekeeper Studio, or
-Render's SQL shell.
+CREATE INDEX IF NOT EXISTS idx_bookings_date_time ON bookings(booking_date, booking_time);
+CREATE INDEX IF NOT EXISTS idx_bookings_school ON bookings(school_id);
+CREATE INDEX IF NOT EXISTS idx_bookings_status ON bookings(status);
 
+CREATE OR REPLACE FUNCTION set_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+  NEW.updated_at = CURRENT_TIMESTAMP;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
 
-### 3. Frontend env
+DROP TRIGGER IF EXISTS set_bookings_updated_at ON bookings;
 
-Create `frontend/.env` from [frontend/.env.example](/c:/projects/driving-school-app/frontend/.env.example).
+CREATE TRIGGER set_bookings_updated_at
+BEFORE UPDATE ON bookings
+FOR EACH ROW
+EXECUTE FUNCTION set_updated_at();
 
-Local example:
+CREATE TABLE IF NOT EXISTS contact_messages (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(100) NOT NULL,
+  phone VARCHAR(20) NULL,
+  subject VARCHAR(150) NOT NULL,
+  message TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+GRANT USAGE, CREATE ON SCHEMA public TO driving_app;
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA public TO driving_app;
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA public TO driving_app;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO driving_app;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public
+GRANT USAGE, SELECT ON SEQUENCES TO driving_app;
+```
+
+There is no demo admin account. The admin creates their own account in the app:
+
+```text
+http://localhost:5173/owner/register
+```
+
+After registering, log in here:
+
+```text
+http://localhost:5173/owner/login
+```
+
+Each admin account automatically gets its own `school_id`. Bookings made from that admin's booking link are shown in that admin's dashboard.
+
+## PostgreSQL Connection
+
+Use these details in pgAdmin or another PostgreSQL client:
+
+```text
+Host: 127.0.0.1
+Port: 5432
+Database: driving_school
+Username: driving_app
+Password: your_password
+```
+
+## Backend Env
+
+Create `backend/.env` from `backend/.env.example`.
+
+```env
+PORT=5000
+DB_HOST=127.0.0.1
+DB_PORT=5432
+DB_USER=driving_app
+DB_PASSWORD=your_password
+DB_NAME=driving_school
+JWT_SECRET=replace-with-a-long-random-secret
+FRONTEND_URL=http://localhost:5173
+```
+
+## Frontend Env
+
+Create `frontend/.env` from `frontend/.env.example`.
 
 ```env
 VITE_API_URL=http://localhost:5000/api
 ```
 
-### 4. Install and run
+## Install And Run
 
 Backend:
 
@@ -69,95 +174,17 @@ npm install
 npm run dev
 ```
 
-## Deploy to Render
+## Main API Routes
 
-This repo includes a [render.yaml](render.yaml) Blueprint for:
-
-- `driving-school-api`: Node/Express API
-- `driving-school-frontend`: Vite static site
-- `driving-school-db`: Render PostgreSQL database
-
-### 1. Push the repo to GitHub
-
-Render deploys from a Git repository, so push this project to GitHub or GitLab.
-
-### 2. Create the Render Blueprint
-
-In Render, choose **New + > Blueprint**, connect your repo, and select the
-root-level `render.yaml` file. Render will ask for secret values marked with
-`sync: false`.
-
-Initial required values:
-
-```env
-FRONTEND_URL=https://driving-school-frontend.onrender.com
-VITE_API_URL=https://driving-school-api.onrender.com/api
-```
-
-Render generates `JWT_SECRET` and wires `DATABASE_URL` to the Render Postgres
-database automatically.
-
-Optional values, only needed if you use those features:
-
-```env
-GOOGLE_CLIENT_ID=
-GOOGLE_CLIENT_SECRET=
-GOOGLE_CALLBACK_URL=https://driving-school-api.onrender.com/api/auth/google/callback
-FACEBOOK_APP_ID=
-FACEBOOK_APP_SECRET=
-FACEBOOK_CALLBACK_URL=https://driving-school-api.onrender.com/api/auth/facebook/callback
-EMAIL_USER=
-EMAIL_PASS=
-TWILIO_ACCOUNT_SID=
-TWILIO_AUTH_TOKEN=
-TWILIO_WHATSAPP_FROM=whatsapp:+14155238886
-```
-
-If Render gives your services different URLs, use those real URLs instead.
-
-### 3. Create the database tables
-
-After Render creates `driving-school-db`, connect to it with Beekeeper Studio
-using the Render database **External Database URL**, or use Render's SQL shell.
-Create the app tables there privately.
-
-### 4. Redeploy
-
-After the env vars and tables are ready, manually redeploy both services. Test:
-
-- Frontend: `https://driving-school-frontend.onrender.com`
-- API health: `https://driving-school-api.onrender.com/api/health`
-
-## Company Names
-
-Right now, company separation is based on `school_id`.
-
-Example:
-
-If you want company-branded URLs like:
-
-```text
-/booking/fast-driving-school
-/booking/realistic-driver-school
-```
-
-the next improvement is to add a `company_name` and `company_slug` field for
-each company admin.
-
-## Important Notes
-
-- Social login code is ready, but it will not work until real provider credentials are added to `backend/.env`.
-- Clients now pay in person, so the booking flow no longer redirects to payment.
-- Clients can download their booking reference card after confirming and also from the tracking page.
-- If Twilio credentials are missing, bookings still save but WhatsApp sending is skipped.
-- Company admins must share their own booking link from the dashboard so client bookings are assigned to the correct `school_id`.
-- The plain `/booking` route falls back to the first active company admin and should not be used as the main company-specific booking link.
-- Rotate any real secrets that were previously committed or shared.
-
-## Next Good Improvements
-
-- Add `company_name` and `company_slug` for branded company booking pages
-- Add Apple login or OTP phone login
-- Add charts to the dashboard
-- Add calendar scheduling view
-- Add branch support inside each company
+- `POST /api/auth/register`
+- `POST /api/auth/login`
+- `GET /api/auth/me`
+- `DELETE /api/auth/me`
+- `POST /api/bookings`
+- `GET /api/bookings/public/:reference`
+- `PATCH /api/bookings/public/:reference`
+- `GET /api/bookings`
+- `GET /api/bookings/summary`
+- `PATCH /api/bookings/:id/status`
+- `DELETE /api/bookings/:id`
+- `POST /api/contact`

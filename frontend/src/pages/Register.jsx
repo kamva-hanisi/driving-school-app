@@ -3,7 +3,6 @@ import API from "../services/api";
 import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import Button from "../components/common/Button";
-import SocialAuthButtons from "../components/auth/SocialAuthButtons";
 
 export default function Register({ portal = "owner" }) {
   const [form, setForm] = useState({});
@@ -86,14 +85,6 @@ export default function Register({ portal = "owner" }) {
 
         <Button onClick={handleRegister}>Register</Button>
 
-        {!isPlatformPortal ? (
-          <>
-            <div className="divider">
-              <span>or continue with</span>
-            </div>
-            <SocialAuthButtons />
-          </>
-        ) : null}
         <div className="R-L-links">
           {isPlatformPortal ? (
             <p>

@@ -1,5 +1,4 @@
 import db from "../config/db.js";
-import nodemailer from "nodemailer";
 
 const query = (sql, values = []) =>
   db.query(sql, values).then((result) => result.rows);
@@ -27,49 +26,8 @@ export const sendContactMessage = async (req, res) => {
       [name, email, phone, subject, message],
     );
 
-    const emailUser = process.env.EMAIL_USER?.trim();
-    const emailPass = process.env.EMAIL_PASS?.trim();
-
-    if (!emailUser || !emailPass) {
-      return res.status(201).json({
-        message:
-          "Your message was saved successfully, but email forwarding is not configured yet.",
-      });
-    }
-
-    try {
-      const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: emailUser,
-          pass: emailPass,
-        },
-      });
-
-      await transporter.sendMail({
-        from: emailUser,
-        replyTo: email,
-        to: emailUser,
-        subject: `Contact: ${subject}`,
-        html: `
-          <h3>New Contact Message</h3>
-          <p><strong>Name:</strong> ${name}</p>
-          <p><strong>Email:</strong> ${email}</p>
-          <p><strong>Phone:</strong> ${phone || "Not provided"}</p>
-          <p><strong>Subject:</strong> ${subject}</p>
-          <p><strong>Message:</strong> ${message}</p>
-        `,
-      });
-    } catch (emailError) {
-      console.error("Contact email forwarding failed:", emailError);
-      return res.status(201).json({
-        message:
-          "Your message was saved successfully, but email forwarding failed on the server.",
-      });
-    }
-
-    res.status(200).json({
-      message: "Message sent successfully",
+    res.status(201).json({
+      message: "Message saved successfully",
     });
   } catch (error) {
     console.error(error);

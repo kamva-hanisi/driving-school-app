@@ -2,11 +2,9 @@ import "dotenv/config";
 import pg from "pg";
 
 const getEnv = (key) => process.env[key]?.trim();
-
 const { Pool } = pg;
 
-// Shared PostgreSQL pool used across the app. Works with local pgAdmin-created
-// databases and hosted PostgreSQL URLs.
+// Shared PostgreSQL pool used across the app.
 const db = new Pool(
   getEnv("DATABASE_URL")
     ? {

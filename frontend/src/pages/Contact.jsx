@@ -88,15 +88,6 @@ export default function Contact() {
             <h3>Office Hours</h3>
             <p>Mon - Fri: 08:00 AM - 17:00 PM</p>
           </div>
-
-          <a
-            href="https://wa.me/27712345678"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="whatsapp-btn"
-          >
-            Chat on WhatsApp
-          </a>
         </div>
 
         <form className="contact-form" onSubmit={handleSubmit}>

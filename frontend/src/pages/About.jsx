@@ -33,7 +33,6 @@ const services = [
   "Public booking status tracking",
   "Downloadable booking reference cards",
   "Contact form records for client enquiries",
-  "WhatsApp notification hooks for production",
 ];
 
 export default function About({ embedded = false }) {
@@ -111,7 +110,7 @@ export default function About({ embedded = false }) {
               <p className="about__eyebrow">What the platform does</p>
               <h2>Built for learners and school owners</h2>
               <p>
-                DriveEasy brings the public booking journey and the owner’s
+                DriveEasy brings the public booking journey and the owner's
                 daily workflow into one practical system. Learners get a simple
                 path to reserve a lesson, while owners get the information they
                 need to confirm, update, and manage every booking.

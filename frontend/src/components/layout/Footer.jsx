@@ -1,25 +1,3 @@
-function FacebookIcon() {
-  return (
-    <svg aria-hidden="true" viewBox="0 0 24 24">
-      <path
-        d="M13.5 21v-7h2.3l.4-3h-2.7V9.1c0-.9.2-1.6 1.6-1.6H16V4.8c-.2 0-.9-.1-1.8-.1-1.8 0-3.1 1.1-3.1 3.3V11H9v3h2.1v7h2.4Z"
-        fill="currentColor"
-      />
-    </svg>
-  );
-}
-
-function WhatsAppIcon() {
-  return (
-    <svg aria-hidden="true" viewBox="0 0 24 24">
-      <path
-        d="M20 11.9A8 8 0 0 1 8.4 19l-3.4.9.9-3.3a8 8 0 1 1 14.1-4.7Zm-8-6.2a6.2 6.2 0 0 0-5.3 9.5l.3.4-.5 1.8 1.9-.5.3.2A6.2 6.2 0 1 0 12 5.7Zm3.7 7.9c-.2-.1-1.1-.5-1.3-.6-.2-.1-.3-.1-.4.1l-.6.7c-.1.1-.2.2-.4.1a5.2 5.2 0 0 1-2.5-2.2c-.1-.2 0-.3.1-.4l.5-.6c.1-.1.1-.2.2-.3 0-.1 0-.2 0-.3l-.6-1.4c-.1-.2-.2-.2-.4-.2h-.3c-.1 0-.3.1-.4.2-.4.4-.6.9-.6 1.5s.4 1.4.5 1.5a7.4 7.4 0 0 0 2.8 2.6c1.6.7 1.6.5 1.9.5.3 0 1.1-.4 1.2-.8.2-.4.2-.8.1-.8 0-.1-.2-.1-.4-.2Z"
-        fill="currentColor"
-      />
-    </svg>
-  );
-}
-
 function InstagramIcon() {
   return (
     <svg aria-hidden="true" viewBox="0 0 24 24">
@@ -65,16 +43,6 @@ function LocationIcon() {
 }
 
 const socialLinks = [
-  {
-    href: "https://www.facebook.com/",
-    icon: <FacebookIcon />,
-    label: "Facebook",
-  },
-  {
-    href: "https://wa.me/27123456789",
-    icon: <WhatsAppIcon />,
-    label: "WhatsApp",
-  },
   {
     href: "https://www.instagram.com/",
     icon: <InstagramIcon />,

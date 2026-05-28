@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { Link } from "react-router-dom";
 import Button from "../components/common/Button";
-import SocialAuthButtons from "../components/auth/SocialAuthButtons";
 
 export default function Login({ portal = "owner" }) {
   const [form, setForm] = useState({});
@@ -76,15 +75,6 @@ export default function Login({ portal = "owner" }) {
         {error ? <p className="form-status form-status--error">{error}</p> : null}
 
         <Button onClick={handleLogin}>SIGN IN</Button>
-
-        {!isPlatformPortal ? (
-          <>
-            <div className="divider">
-              <span>or continue with</span>
-            </div>
-            <SocialAuthButtons />
-          </>
-        ) : null}
 
         <div className="R-L-links">
           {isPlatformPortal ? (

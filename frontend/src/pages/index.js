@@ -1,4 +1,3 @@
-export { default as AuthCallback } from "./AuthCallback";
 export { default as Booking } from "./Booking";
 export { default as BookingReview } from "./BookingReview";
 export { default as BookingStatus } from "./BookingStatus";

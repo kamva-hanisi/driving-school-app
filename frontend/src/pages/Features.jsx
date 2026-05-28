@@ -14,7 +14,7 @@ const features = [
     image: SteeringImage,
     title: "Flexible scheduling with live slots",
     description:
-      "Available time slots help learners choose practical lesson times without back-and-forth calls or WhatsApp confusion.",
+      "Available time slots help learners choose practical lesson times without back-and-forth calls.",
     tag: "Operations",
   },
   {

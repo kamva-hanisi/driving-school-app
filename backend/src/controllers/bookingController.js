@@ -1,5 +1,4 @@
 import db from "../config/db.js";
-import { sendWhatsApp } from "../utils/whatsapp.js";
 import crypto from "crypto";
 
 const BOOKING_STATUSES = new Set([
@@ -8,6 +7,11 @@ const BOOKING_STATUSES = new Set([
   "completed",
   "cancelled",
 ]);
+
+const query = async (sql, values = []) => {
+  const result = await db.query(sql, values);
+  return result.rows;
+};
 
 const normalizeBookingPayload = (body) => ({
   name: body.name?.trim(),
@@ -27,11 +31,8 @@ const normalizeSchoolId = (value) => {
 const createPublicReference = () =>
   `DRV-${crypto.randomBytes(4).toString("hex").toUpperCase()}`;
 
-const query = (sql, values = []) =>
-  db.query(sql, values).then((result) => result.rows);
-
 const getDefaultSchoolId = async () => {
-  const [user] = await query(
+  const users = await query(
     `SELECT school_id
      FROM users
      WHERE school_id IS NOT NULL
@@ -40,7 +41,7 @@ const getDefaultSchoolId = async () => {
      LIMIT 1`,
   );
 
-  return user?.school_id ?? null;
+  return users[0]?.school_id ?? null;
 };
 
 const getAdminSchoolId = async (req) => {
@@ -58,11 +59,11 @@ const getAdminSchoolId = async (req) => {
     return null;
   }
 
-  const [user] = await query("SELECT school_id FROM users WHERE id = $1", [
+  const users = await query("SELECT school_id FROM users WHERE id = $1 LIMIT 1", [
     req.user.id,
   ]);
 
-  return normalizeSchoolId(user?.school_id);
+  return normalizeSchoolId(users[0]?.school_id);
 };
 
 const getPublicSchoolId = async (req) =>
@@ -141,7 +142,7 @@ export const createBooking = async (req, res) => {
         .json({ message: "This date and time is already booked" });
     }
 
-    const [createdBooking] = await query(
+    const createdBookings = await query(
       `INSERT INTO bookings
        (customer_name, customer_email, customer_phone, code, service, booking_date, booking_time, status, school_id, public_reference)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
@@ -160,11 +161,7 @@ export const createBooking = async (req, res) => {
       ],
     );
 
-    try {
-      await sendWhatsApp(phone, "Booking received. We will contact you soon.");
-    } catch (whatsAppError) {
-      console.error("Failed to send WhatsApp confirmation:", whatsAppError);
-    }
+    const createdBooking = createdBookings[0];
 
     return res.status(201).json({
       message: "Booking created",
@@ -230,28 +227,24 @@ export const getBookings = async (req, res) => {
 export const getBookingSummary = async (req, res) => {
   const schoolId = await getAdminSchoolId(req);
   const includeAllSchools = req.user?.role === "super_admin";
-  const whereClause = includeAllSchools
-    ? ""
-    : "WHERE school_id IS NOT DISTINCT FROM $1";
+  const whereClause = includeAllSchools ? "" : "WHERE school_id IS NOT DISTINCT FROM $1";
   const values = includeAllSchools ? [] : [schoolId];
 
   try {
-    const [summaryRows] = await Promise.all([
-      query(
-        `SELECT
-           COUNT(*)::int AS total_bookings,
-           COUNT(DISTINCT COALESCE(NULLIF(customer_email, ''), customer_phone))::int AS total_clients,
-           COUNT(*) FILTER (WHERE status = 'pending')::int AS pending_bookings,
-           COUNT(*) FILTER (WHERE status = 'confirmed')::int AS confirmed_bookings,
-           COUNT(*) FILTER (WHERE status = 'completed')::int AS completed_bookings,
-           COUNT(*) FILTER (WHERE status = 'cancelled')::int AS cancelled_bookings,
-           COUNT(*) FILTER (WHERE booking_date = CURRENT_DATE)::int AS today_bookings,
-           COUNT(*) FILTER (WHERE booking_date >= CURRENT_DATE)::int AS upcoming_bookings
-         FROM bookings
-         ${whereClause}`,
-        values,
-      ),
-    ]);
+    const summaryRows = await query(
+      `SELECT
+         COUNT(*)::int AS total_bookings,
+         COUNT(DISTINCT COALESCE(NULLIF(customer_email, ''), customer_phone))::int AS total_clients,
+         COUNT(*) FILTER (WHERE status = 'pending')::int AS pending_bookings,
+         COUNT(*) FILTER (WHERE status = 'confirmed')::int AS confirmed_bookings,
+         COUNT(*) FILTER (WHERE status = 'completed')::int AS completed_bookings,
+         COUNT(*) FILTER (WHERE status = 'cancelled')::int AS cancelled_bookings,
+         COUNT(*) FILTER (WHERE booking_date = CURRENT_DATE)::int AS today_bookings,
+         COUNT(*) FILTER (WHERE booking_date >= CURRENT_DATE)::int AS upcoming_bookings
+       FROM bookings
+       ${whereClause}`,
+      values,
+    );
 
     const recentClients = await query(
       `SELECT id, public_reference, customer_name, customer_email, customer_phone, code, service, booking_date, booking_time, status, created_at, school_id
@@ -286,7 +279,7 @@ export const updateBookingStatus = async (req, res) => {
   }
 
   try {
-    const [booking] = await query(
+    const bookings = await query(
       `UPDATE bookings
        SET status = $1, updated_at = CURRENT_TIMESTAMP
        WHERE id = $2 ${includeAllSchools ? "" : "AND school_id IS NOT DISTINCT FROM $3"}
@@ -294,13 +287,13 @@ export const updateBookingStatus = async (req, res) => {
       includeAllSchools ? [status, bookingId] : [status, bookingId, schoolId],
     );
 
-    if (!booking) {
+    if (bookings.length === 0) {
       return res.status(404).json({ message: "Booking not found" });
     }
 
     return res.json({
       message: "Booking status updated",
-      booking,
+      booking: bookings[0],
     });
   } catch (error) {
     return res.status(500).json({ message: "Failed to update booking status" });
@@ -315,13 +308,14 @@ export const getPublicBookingStatus = async (req, res) => {
   }
 
   try {
-    const [booking] = await query(
+    const bookings = await query(
       `SELECT public_reference, customer_name, customer_email, customer_phone, code, service, booking_date, booking_time, status, created_at, updated_at
        FROM bookings
        WHERE public_reference = $1
        LIMIT 1`,
       [reference],
     );
+    const booking = bookings[0];
 
     if (!booking) {
       return res.status(404).json({ message: "Booking not found" });
@@ -362,7 +356,7 @@ export const updatePublicBookingDetails = async (req, res) => {
   }
 
   try {
-    const [booking] = await query(
+    const bookings = await query(
       `UPDATE bookings
        SET customer_name = $1, customer_email = $2, customer_phone = $3, updated_at = CURRENT_TIMESTAMP
        WHERE public_reference = $4
@@ -370,9 +364,10 @@ export const updatePublicBookingDetails = async (req, res) => {
       [name, email, phone, reference],
     );
 
-    if (!booking) {
+    if (bookings.length === 0) {
       return res.status(404).json({ message: "Booking not found" });
     }
+    const booking = bookings[0];
 
     return res.json({
       message: "Booking details updated",

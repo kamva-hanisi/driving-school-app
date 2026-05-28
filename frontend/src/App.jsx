@@ -1,7 +1,6 @@
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router-dom";
 
 import {
-  AuthCallback,
   Booking,
   BookingReview,
   BookingStatus,
@@ -33,7 +32,6 @@ function AppContent() {
 
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/auth/callback" element={<AuthCallback />} />
         <Route path="/login" element={<Navigate replace to="/owner/login" />} />
         <Route path="/admin" element={<Navigate replace to="/platform/login" />} />
         <Route path="/admin/login" element={<Navigate replace to="/platform/login" />} />
