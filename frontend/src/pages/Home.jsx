@@ -7,7 +7,7 @@ import Testimonials from "./Testimonials";
 import About from "./About";
 import FAQAccordion from "../components/common/FAQAccordion";
 
-import DrivingSchool from "../assets/index-leaners-image_orig.jpg";
+import DrivingSchool from "../assets/Driving-school.jpg";
 import AboutImage from "../assets/about-drive.webp";
 
 function CarIcon() {

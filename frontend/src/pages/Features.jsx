@@ -1,6 +1,6 @@
-import SteeringImage from "../../public/Steering.jpg";
 import LearnerImage from "../assets/LearnerImage.avif";
 import Driver from "../assets/Driving-school.jpg";
+import SteeringImage from "../assets/index-leaners-image_orig.jpg";
 
 const features = [
   {
