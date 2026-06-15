@@ -7,21 +7,33 @@ import contactRoutes from "./routes/contactRoutes.js";
 
 const app = express();
 
+const normalizeOrigin = (value) => {
+  if (!value) {
+    return "";
+  }
+
+  try {
+    return new URL(value).origin;
+  } catch {
+    return value.replace(/\/+$/, "");
+  }
+};
+
 const allowedOrigins = (process.env.FRONTEND_URL || "")
   .split(",")
-  .map((origin) => origin.trim())
+  .map((origin) => normalizeOrigin(origin.trim()))
   .filter(Boolean);
 
 const corsOptions =
   allowedOrigins.length > 0
     ? {
         origin(origin, callback) {
-          if (!origin || allowedOrigins.includes(origin)) {
+          if (!origin || allowedOrigins.includes(normalizeOrigin(origin))) {
             callback(null, true);
             return;
           }
 
-          callback(new Error("Not allowed by CORS"));
+          callback(null, false);
         },
       }
     : undefined;
