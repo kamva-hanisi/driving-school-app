@@ -13,5 +13,11 @@ Full-stack driving school booking platform built with React, Vite, Express, and 
 
 ## Stack
 
-- Frontend: React, React Router, Vite, Sass, Axios
-- Backend: Node.js, Express, PostgreSQL, bcryptjs, JWT, dotenv
+- Web: React, React Router, Vite, Sass, Axios
+- API: Node.js, Express, PostgreSQL, bcryptjs, JWT, dotenv
+
+## Development
+
+- Run everything: `npm run dev:all`
+- Run web only: `npm run dev:web`
+- Run API only: `npm run dev:api`
