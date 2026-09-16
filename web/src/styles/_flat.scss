@@ -1073,6 +1073,32 @@ img {
   background: #ffffff;
 }
 
+.contact-info__card a {
+  color: var(--flat-primary-strong);
+  font-weight: 750;
+  overflow-wrap: anywhere;
+}
+
+.contact-form input[aria-invalid="true"],
+.contact-form textarea[aria-invalid="true"] {
+  border-color: var(--flat-red);
+}
+
+.field-error {
+  color: #b91c1c;
+  font-size: 0.84rem;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.contact-form__meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  color: var(--flat-muted);
+  font-size: 0.84rem;
+}
+
 .template-selector {
   display: grid;
   gap: 10px;
