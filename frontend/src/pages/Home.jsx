@@ -7,7 +7,6 @@ import Testimonials from "./Testimonials";
 import About from "./About";
 import FAQAccordion from "../components/common/FAQAccordion";
 
-import DrivingSchool from "../assets/Driving-school.jpg";
 import AboutImage from "../assets/about-drive.webp";
 
 function CarIcon() {
@@ -49,6 +48,21 @@ const codes = [
   { name: "Code 14", icon: <BigTruckIcon /> },
 ];
 
+const journeySteps = [
+  {
+    title: "Choose your code",
+    text: "Pick Code 8, Code 10, or Code 14 and start with the lesson path that fits your licence goal.",
+  },
+  {
+    title: "Reserve a time",
+    text: "Select an available date and time without waiting for calls, messages, or manual back-and-forth.",
+  },
+  {
+    title: "Track the booking",
+    text: "Use your reference number to follow the booking status and keep the lesson details close.",
+  },
+];
+
 export default function Home() {
   const { hash } = useLocation();
 
@@ -65,16 +79,9 @@ export default function Home() {
   return (
     <>
       <section className="hero-banner">
-        <div className="hero-banner__media">
-          <img
-            src={DrivingSchool}
-            alt="Driving School"
-            className="hero-image"
-          />
-        </div>
-        <div className="hero-banner__overlay" />
         <div className="hero-banner__content">
           <div className="hero_top">
+            <span className="hero__label">Flat, fast, learner-first</span>
             <h1 className="hero__title">
               Book your next driving lesson with confidence.
             </h1>
@@ -83,6 +90,14 @@ export default function Home() {
               booking flow designed for speed, trust, and a more professional
               client experience and get your license faster.
             </p>
+            <div className="hero__actions">
+              <Link to="/booking">
+                <Button>Book now</Button>
+              </Link>
+              <Link className="hero__ghost-link" to="/track-booking">
+                Track booking
+              </Link>
+            </div>
           </div>
         </div>
       </section>
@@ -105,19 +120,37 @@ export default function Home() {
             </article>
           ))}
         </div>
-        <div className="Btn-move">
-          <Link to="/booking">
-            <Button>Book now</Button>
-          </Link>
-        </div>
       </main>
 
-      <section className="features">
+      <section className="journey-strip" aria-label="Booking journey">
+        <div className="section-kicker">Simple process</div>
+        <div className="journey-strip__header">
+          <h2>From first click to confirmed lesson</h2>
+          <p>
+            A clean three-step structure keeps learners focused and gives the
+            school better information from the start.
+          </p>
+        </div>
+
+        <div className="journey-strip__grid">
+          {journeySteps.map((step, index) => (
+            <article className="journey-card" key={step.title}>
+              <span className="journey-card__number">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <h3>{step.title}</h3>
+              <p>{step.text}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="features home-band">
         <h2 className="features__title">Why Choose DriveEasy?</h2>
         <Features />
       </section>
 
-      <section id="testimonials" className="testimonials">
+      <section id="testimonials" className="testimonials home-band home-band--split">
         <h2 className="testimonials__title">What Our Learners Say</h2>
         <Testimonials />
       </section>
@@ -130,6 +163,16 @@ export default function Home() {
       </section>
 
       <FAQAccordion />
+
+      <section className="home-cta">
+        <div>
+          <span className="section-kicker">Ready when you are</span>
+          <h2>Book the lesson, keep the reference, follow the status.</h2>
+        </div>
+        <Link to="/booking">
+          <Button>Start booking</Button>
+        </Link>
+      </section>
     </>
   );
 }

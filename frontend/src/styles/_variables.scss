@@ -1,29 +1,21 @@
-$primary-gradient: linear-gradient(
-  135deg,
-  rgba(15, 23, 42, 0.98),
-  rgba(13, 148, 136, 0.94)
-);
-$color-primary-gradient-2: linear-gradient(
-  135deg,
-  rgba(15, 23, 42, 0.98),
-  rgba(13, 148, 136, 0.94)
-);
-$color-bg: #f6f8fb;
+$primary-gradient: #0f766e;
+$color-primary-gradient-2: #0f766e;
+$color-bg: #f3f6fa;
 $color-surface: #ffffff;
-$color-surface-muted: #eef6f6;
+$color-surface-muted: #e8f5f3;
 $color-text: #1f2937;
 $color-text-muted: #6b7280;
-$color-border: #dbe1e7;
+$color-border: #cbd5e1;
 $color-primary: #0d9488;
 $color-primary-dark: #0f766e;
 $color-accent: #facc15;
 $color-accent-soft: #fef9c3;
 $color-dark: #111827;
 $color-dark-soft: #1f2937;
-$shadow-soft: 0 8px 24px rgba(15, 23, 42, 0.06);
-$shadow-card: 0 4px 14px rgba(15, 23, 42, 0.05);
-$radius-lg: 16px;
-$radius-md: 12px;
+$shadow-soft: none;
+$shadow-card: none;
+$radius-lg: 8px;
+$radius-md: 8px;
 $radius-sm: 8px;
 $content-width: 1120px;
 $content-narrow: 860px;

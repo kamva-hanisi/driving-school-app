@@ -23,6 +23,16 @@ function PlatformIcon() {
   );
 }
 
+function DriveEasyLogo() {
+  return (
+    <span className="brand-mark" aria-hidden="true">
+      <svg viewBox="0 0 32 32">
+        <path d="M5 18.5 9.1 10c.5-1 1.5-1.6 2.6-1.6h8.6c1.1 0 2.1.6 2.6 1.6l4.1 8.5v5.3c0 .8-.6 1.4-1.4 1.4h-1.8c-.8 0-1.4-.6-1.4-1.4v-1H9v1c0 .8-.6 1.4-1.4 1.4H5.8c-.8 0-1.4-.6-1.4-1.4v-5.3H5Zm5.1-1.4h11.8l-2.2-4.6h-7.4l-2.2 4.6Zm-.2 4.1a1.9 1.9 0 1 0 0-3.8 1.9 1.9 0 0 0 0 3.8Zm12.2 0a1.9 1.9 0 1 0 0-3.8 1.9 1.9 0 0 0 0 3.8Z" />
+      </svg>
+    </span>
+  );
+}
+
 function ChevronDown() {
   return (
     <svg className="site-nav__chevron" viewBox="0 0 20 20" aria-hidden="true">
@@ -232,7 +242,8 @@ export function Navbar() {
     >
       <header className="site-nav">
         <Link className="site-nav__brand" onClick={closeMenus} to="/">
-          DriveEasy
+          <DriveEasyLogo />
+          <span>DriveEasy</span>
         </Link>
 
         <Menu isOpen={isOpen} onToggle={() => setIsOpen((open) => !open)} />
