@@ -114,12 +114,12 @@ export function Footer() {
           </a>
           <a
             className="site-footer__contact"
-            href="mailto:lucashaisi@gmail.com"
+            href="mailto:lucashanisi@gmail.com"
           >
             <MailIcon />
-            <span>lucashaisi@gmail.com</span>
+            <span>lucashanisi@gmail.com</span>
           </a>
-          <a className="site-footer__contact" href="tel:+275864843">
+          <a className="site-footer__contact" href="tel: +27 69 586 4843">
             <PhoneIcon />
             <span>+27 69 586 4843</span>
           </a>
@@ -136,7 +136,7 @@ export function Footer() {
 
       <div className="site-footer__bottom">
         <p>@{new Date().getFullYear()} DriveEasy</p>
-        <p>Designed by Kamva Haisi</p>
+        <p>Designed by Kamva Hanisi</p>
         <div className="site-footer__bottom-links">
           <a href="/">Help</a>
           <a href="/FAQAccordion">FAQs</a>

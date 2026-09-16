@@ -1,4 +1,5 @@
 import db from "../config/db.js";
+import { contactRecipient, sendContactEmail } from "../utils/mailer.js";
 
 const query = (sql, values = []) =>
   db.query(sql, values).then((result) => result.rows);
@@ -26,8 +27,27 @@ export const sendContactMessage = async (req, res) => {
       [name, email, phone, subject, message],
     );
 
+    const emailResult = await sendContactEmail({
+      name,
+      email,
+      phone,
+      subject,
+      message,
+    });
+
+    if (!emailResult.sent) {
+      return res.status(201).json({
+        message:
+          "Message saved. Email delivery is not configured yet, so no email was sent.",
+        emailSent: false,
+        recipient: contactRecipient,
+      });
+    }
+
     res.status(201).json({
-      message: "Message saved successfully",
+      message: "Message saved and emailed successfully",
+      emailSent: true,
+      recipient: contactRecipient,
     });
   } catch (error) {
     console.error(error);
