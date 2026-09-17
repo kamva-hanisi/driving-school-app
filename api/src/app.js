@@ -41,6 +41,15 @@ const corsOptions =
 // Global middleware for cross-origin requests and JSON request parsing.
 app.use(cors(corsOptions));
 app.use(express.json());
+
+app.get("/", (_req, res) => {
+  res.json({
+    name: "Driving School API",
+    status: "ok",
+    health: "/api/health",
+  });
+});
+
 app.get("/api/health", (_req, res) => {
   res.json({ status: "ok" });
 });
