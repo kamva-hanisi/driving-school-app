@@ -16,6 +16,15 @@ const emptySummary = {
   upcoming_bookings: 0,
 };
 
+const hasLongClientValue = (client) =>
+  [
+    client.customer_name,
+    client.customer_email,
+    client.customer_phone,
+    client.code,
+    client.service,
+  ].some((value) => String(value || "").trim().length > 16);
+
 export default function Dashboard() {
   const { user } = useContext(AuthContext);
   const [summary, setSummary] = useState(emptySummary);
@@ -285,7 +294,10 @@ export default function Dashboard() {
                 <p className="field__hint">No client bookings yet.</p>
               ) : (
                 recentClients.map((client) => (
-                  <article className="client-card" key={client.id}>
+                  <article
+                    className={`client-card${hasLongClientValue(client) ? " client-card--compact" : ""}`}
+                    key={client.id}
+                  >
                     <div className="client-card__row">
                       <strong>{client.customer_name}</strong>
                       <span className={`status status--${client.status}`}>

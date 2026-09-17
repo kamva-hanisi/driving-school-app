@@ -262,9 +262,15 @@
 
 .booking-detail strong {
   color: $color-dark;
+  font-size: 1rem;
   line-height: 1.5;
   overflow-wrap: anywhere;
   word-break: break-word;
+}
+
+.booking-card-item--compact .booking-detail strong {
+  font-size: 0.84rem;
+  line-height: 1.4;
 }
 
 .booking-detail--email {
@@ -272,7 +278,7 @@
 }
 
 .booking-detail__value--email {
-  font-size: 0.96rem;
+  font-size: inherit;
 }
 
 .booking-detail__label {
@@ -334,7 +340,14 @@
   margin: 8px 0 0;
   color: $color-text-muted;
   overflow-wrap: anywhere;
-  word-break: break-word;
+  word-break: normal;
+}
+
+.client-card--compact .client-card__row > strong,
+.client-card--compact p {
+  font-family: inherit;
+  font-size: 0.78rem;
+  line-height: 1.45;
 }
 
 .company-grid {

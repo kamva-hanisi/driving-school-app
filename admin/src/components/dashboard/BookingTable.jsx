@@ -6,6 +6,9 @@ const formatDate = (value) =>
   }).format(new Date(value));
 
 const formatTime = (value) => String(value).slice(0, 5);
+const hasLongValue = (values) =>
+  values.some((value) => String(value || "").trim().length > 16);
+
 const formatDateTime = (value) => {
   if (!value) {
     return "No activity yet";
@@ -37,8 +40,21 @@ export default function BookingTable({
 
   return (
     <div className="booking-list">
-      {bookings.map((booking) => (
-        <article className="booking-card-item" key={booking.id}>
+      {bookings.map((booking) => {
+        const compactDetails = hasLongValue([
+          booking.customer_phone,
+          booking.customer_email,
+          booking.code,
+          booking.service,
+          formatDate(booking.booking_date),
+          formatTime(booking.booking_time),
+        ]);
+
+        return (
+        <article
+          className={`booking-card-item${compactDetails ? " booking-card-item--compact" : ""}`}
+          key={booking.id}
+        >
           <div className="booking-card-item__top">
             <div>
               <p className="booking-card-item__eyebrow">Client booking</p>
@@ -118,7 +134,8 @@ export default function BookingTable({
             </button>
           </div>
         </article>
-      ))}
+        );
+      })}
     </div>
   );
 }
