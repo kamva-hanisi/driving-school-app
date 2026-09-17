@@ -1,6 +1,6 @@
 import { useEffect, useState, useContext } from "react";
 import API from "../services/api";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import Button from "../components/common/Button";
 
@@ -64,7 +64,11 @@ export default function Login() {
 
         <Button onClick={handleLogin}>SIGN IN</Button>
 
-        <p className="field__hint">Authorized staff accounts only.</p>
+        <div className="R-L-links">
+          <p>
+            Authorized staff registration: <Link to="/register">Create account</Link>
+          </p>
+        </div>
       </div>
     </div>
   );

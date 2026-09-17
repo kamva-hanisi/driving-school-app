@@ -43,6 +43,51 @@ const assignOwnSchoolIfMissing = async (user) => {
   return users[0] || user;
 };
 
+export const register = async (req, res) => {
+  const name = req.body.name?.trim();
+  const email = req.body.email?.trim().toLowerCase();
+  const password = req.body.password?.trim();
+
+  if (!name || !email || !password) {
+    return res
+      .status(400)
+      .json({ message: "Name, email, and password are required" });
+  }
+
+  if (password.length < 8) {
+    return res.status(400).json({ message: "Password must be at least 8 characters" });
+  }
+
+  try {
+    const existingAdmins = await query(
+      "SELECT id FROM users WHERE role IN ('admin', 'super_admin') LIMIT 1",
+    );
+
+    if (existingAdmins.length > 0) {
+      return res.status(403).json({
+        message: "Owner registration is closed. Contact the current owner.",
+      });
+    }
+
+    const hashedPassword = bcrypt.hashSync(password, 10);
+    const users = await query(
+      `INSERT INTO users (name, email, password, role, school_id)
+       VALUES ($1, $2, $3, 'admin', NULL)
+       RETURNING *`,
+      [name, email, hashedPassword],
+    );
+
+    await assignOwnSchoolIfMissing(users[0]);
+    return res.status(201).json({ message: "Admin account created" });
+  } catch (error) {
+    if (error?.code === "23505") {
+      return res.status(409).json({ message: "Email already registered" });
+    }
+
+    return res.status(500).json({ message: "Failed to register admin" });
+  }
+};
+
 export const login = async (req, res) => {
   const email = req.body.email?.trim().toLowerCase();
   const password = req.body.password?.trim();

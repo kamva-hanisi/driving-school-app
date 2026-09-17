@@ -28,7 +28,7 @@ export function Navbar() {
   }, []);
 
   const closeMenu = () => setIsOpen(false);
-  const isLogin = pathname === "/login";
+  const isAuthRoute = pathname === "/login" || pathname === "/register";
 
   return (
     <div className="site-nav-shell">
@@ -45,8 +45,11 @@ export function Navbar() {
           className={`site-nav__links${isOpen ? " site-nav__links--open" : ""}`}
           id="admin-navigation"
         >
-          {isLogin || !token ? (
-            <span className="dropdown-user">Authorized staff only</span>
+          {isAuthRoute || !token ? (
+            <>
+              <Link className="site-nav__link" onClick={closeMenu} to="/login">Sign in</Link>
+              <Link className="site-nav__link" onClick={closeMenu} to="/register">Register</Link>
+            </>
           ) : (
             <>
               <Link className="site-nav__link" onClick={closeMenu} to="/dashboard">Dashboard</Link>
