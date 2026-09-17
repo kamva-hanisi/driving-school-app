@@ -4,12 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import Button from "../components/common/Button";
 
-export default function Register({ portal = "owner" }) {
+export default function Register() {
   const [form, setForm] = useState({});
   const [show, setShow] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const isPlatformPortal = portal === "platform";
 
   const handleRegister = async () => {
     if (!form.name?.trim() || !form.email?.trim() || !form.password?.trim()) {
@@ -28,9 +27,9 @@ export default function Register({ portal = "owner" }) {
         name: form.name.trim(),
         email: form.email.trim(),
         password: form.password,
-        role: isPlatformPortal ? "super_admin" : "admin",
+        role: "admin",
       });
-      navigate(isPlatformPortal ? "/platform/login" : "/owner/login");
+      navigate("/admin/login");
     } catch (err) {
       console.error(err);
       setError(
@@ -43,9 +42,7 @@ export default function Register({ portal = "owner" }) {
   return (
     <div className="sign-R-L-wrapper">
       <div className="R-L-box">
-        <h2>
-          {isPlatformPortal ? "Create Platform Owner Account" : "Create Company Admin Account"}
-        </h2>
+        <h2>Create Admin Account</h2>
 
         <label>Full Name:</label>
         <input
@@ -86,16 +83,9 @@ export default function Register({ portal = "owner" }) {
         <Button onClick={handleRegister}>Register</Button>
 
         <div className="R-L-links">
-          {isPlatformPortal ? (
-            <p>
-              Already have a platform account?{" "}
-              <Link to="/platform/login">Sign In</Link>
-            </p>
-          ) : (
-            <p>
-              Already have an account? <Link to="/owner/login">Sign In</Link>
-            </p>
-          )}
+          <p>
+            Already have an account? <Link to="/admin/login">Sign In</Link>
+          </p>
         </div>
       </div>
     </div>

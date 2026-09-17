@@ -5,17 +5,16 @@ import { AuthContext } from "../context/AuthContext";
 import { Link } from "react-router-dom";
 import Button from "../components/common/Button";
 
-export default function Login({ portal = "owner" }) {
+export default function Login() {
   const [form, setForm] = useState({});
   const [show, setShow] = useState(false);
   const [error, setError] = useState("");
   const { login, logout } = useContext(AuthContext);
   const navigate = useNavigate();
-  const isPlatformPortal = portal === "platform";
 
   useEffect(() => {
     logout();
-  }, [logout, portal]);
+  }, [logout]);
 
   const handleLogin = async () => {
     if (!form.email?.trim() || !form.password?.trim()) {
@@ -28,18 +27,8 @@ export default function Login({ portal = "owner" }) {
       const response = await API.post("/auth/login", form);
       const user = response.data.user;
 
-      if (isPlatformPortal && user?.role !== "super_admin") {
-        setError("Use the company admin login for this account.");
-        return;
-      }
-
-      if (!isPlatformPortal && user?.role === "super_admin") {
-        setError("Use the platform login for the super admin account.");
-        return;
-      }
-
       login(response.data.token, user);
-      navigate(isPlatformPortal ? "/platform/dashboard" : "/owner/dashboard");
+      navigate("/admin/dashboard");
     } catch (requestError) {
       console.error("Login failed:", requestError);
       setError(
@@ -52,7 +41,7 @@ export default function Login({ portal = "owner" }) {
   return (
     <div className="sign-R-L-wrapper">
       <div className="R-L-box">
-        <h2>{isPlatformPortal ? "Platform Owner Login" : "Company Admin Login"}</h2>
+        <h2>Admin Login</h2>
 
         <label>Email:</label>
         <input
@@ -77,16 +66,9 @@ export default function Login({ portal = "owner" }) {
         <Button onClick={handleLogin}>SIGN IN</Button>
 
         <div className="R-L-links">
-          {isPlatformPortal ? (
-            <p>
-              Need a platform owner account?{" "}
-              <Link to="/platform/register">Create one</Link>
-            </p>
-          ) : (
-            <p>
-              Need a company account? <Link to="/owner/register">Create one</Link>
-            </p>
-          )}
+          <p>
+            Need an admin account? <Link to="/admin/register">Create one</Link>
+          </p>
         </div>
       </div>
     </div>

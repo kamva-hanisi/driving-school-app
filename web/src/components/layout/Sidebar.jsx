@@ -7,24 +7,18 @@ export default function Sidebar() {
   const bookingPath = user?.school_id
     ? `/booking?school_id=${user.school_id}`
     : "/booking";
-  const isPlatformAdmin = user?.role === "super_admin";
 
   return (
     <aside className="sidebar">
-      <h2>{isPlatformAdmin ? "DrivePlatform" : "DriveAdmin"}</h2>
-      <p className="sidebar__meta">{`${user?.name || "Admin"} | ${user?.role || "admin"}`}</p>
+      <h2>DriveEasy Admin</h2>
+      <p className="sidebar__meta">{user?.name || "Admin"}</p>
 
       <nav>
-        <Link to={isPlatformAdmin ? "/platform/dashboard" : "/owner/dashboard"}>
-          {isPlatformAdmin ? "Platform overview" : "Dashboard overview"}
-        </Link>
-        <Link to={isPlatformAdmin ? "/platform/settings" : "/owner/settings"}>
-          {isPlatformAdmin ? "Platform settings" : "Admin settings"}
-        </Link>
-        {!isPlatformAdmin ? (
-          <Link to={bookingPath}>Public booking page</Link>
-        ) : null}
-        <Link to="/">Website home</Link>
+        <Link to="/admin/dashboard">Dashboard</Link>
+        <Link to="/admin/posters">Posters</Link>
+        <Link to="/admin/settings">Settings</Link>
+        <Link to={bookingPath}>Client booking page</Link>
+        <Link to="/">Client site</Link>
       </nav>
     </aside>
   );

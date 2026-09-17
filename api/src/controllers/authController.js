@@ -2,13 +2,10 @@ import db from "../config/db.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-const ALLOWED_ROLES = new Set(["owner", "admin", "super_admin"]);
-
 const query = async (sql, values = []) => {
   const result = await db.query(sql, values);
   return result.rows;
 };
-
 const createToken = (user) =>
   jwt.sign(
     {
@@ -50,16 +47,11 @@ export const register = async (req, res) => {
   const name = req.body.name?.trim();
   const email = req.body.email?.trim().toLowerCase();
   const password = req.body.password?.trim();
-  const role = req.body.role?.trim().toLowerCase() || "admin";
 
   if (!name || !email || !password) {
     return res
       .status(400)
       .json({ message: "Name, email, and password are required" });
-  }
-
-  if (!ALLOWED_ROLES.has(role)) {
-    return res.status(400).json({ message: "Invalid account role" });
   }
 
   try {
@@ -69,7 +61,7 @@ export const register = async (req, res) => {
       `INSERT INTO users (name, email, password, role, school_id)
        VALUES ($1, $2, $3, $4, $5)
        RETURNING *`,
-      [name, email, hashed, role, null],
+      [name, email, hashed, "admin", null],
     );
 
     await assignOwnSchoolIfMissing(users[0]);
@@ -198,35 +190,5 @@ export const deleteCurrentUser = async (req, res) => {
     });
   } catch (error) {
     return res.status(500).json({ message: "Failed to update account" });
-  }
-};
-
-export const getAdmins = async (req, res) => {
-  if (req.user?.role !== "super_admin") {
-    return res.status(403).json({ message: "Platform admin access required" });
-  }
-
-  try {
-    const admins = await query(
-      `SELECT
-         u.id,
-         u.name,
-         u.email,
-         u.role,
-         u.school_id,
-         COALESCE(u.account_status, 'active') AS account_status,
-         COUNT(b.id)::int AS total_bookings,
-         COUNT(b.id) FILTER (WHERE b.status = 'pending')::int AS pending_bookings,
-         COUNT(b.id) FILTER (WHERE b.status = 'confirmed')::int AS confirmed_bookings
-       FROM users u
-       LEFT JOIN bookings b ON b.school_id = u.school_id
-       WHERE u.role IN ('owner', 'admin')
-       GROUP BY u.id, u.name, u.email, u.role, u.school_id, u.account_status
-       ORDER BY u.created_at DESC`,
-    );
-
-    return res.json(admins);
-  } catch (error) {
-    return res.status(500).json({ message: "Failed to load admin accounts" });
   }
 };

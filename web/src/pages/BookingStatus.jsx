@@ -80,7 +80,7 @@ export default function BookingStatus() {
         <p className="booking-status-card__eyebrow">Client booking status</p>
         <h1 className="booking-card__title">Track your booking</h1>
         <p className="booking-card__text">
-          Your booking status updates here when the owner confirms your lesson.
+          Your booking status updates here when the admin confirms your lesson.
         </p>
 
         {isLoading ? (
@@ -148,8 +148,8 @@ export default function BookingStatus() {
                 <span className="booking-detail__label">Status meaning</span>
                 <strong>
                   {booking.status === "confirmed"
-                    ? "Confirmed means your booking has been approved by the owner."
-                    : "Pending means the owner has received your booking and has not confirmed it yet."}
+                    ? "Confirmed means your booking has been approved by the admin."
+                    : "Pending means the admin has received your booking and has not confirmed it yet."}
                 </strong>
               </div>
             </div>

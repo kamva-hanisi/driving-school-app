@@ -36,7 +36,7 @@ export default function Settings() {
       setStatus("");
       await API.delete("/auth/me", { data: { mode } });
       logout();
-      navigate("/owner/login", { replace: true });
+      navigate("/admin/login", { replace: true });
     } catch (requestError) {
       console.error("Failed to update account:", requestError);
       setError(

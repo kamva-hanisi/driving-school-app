@@ -147,7 +147,7 @@ export default function Dashboard() {
       <main className="dashboard-main">
         <section className="dashboard-hero">
           <div>
-            <p className="dashboard-eyebrow">Private owner area</p>
+            <p className="dashboard-eyebrow">Private admin area</p>
             <h1>Manage client bookings with confidence</h1>
             <p className="dashboard-intro">
               Review every booking, confirm lesson slots, and remove records you

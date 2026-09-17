@@ -24,9 +24,7 @@ API.interceptors.response.use(
     if (error.response && error.response.status === 401) {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
-      window.location.href = window.location.pathname.startsWith("/platform")
-        ? "/platform/login"
-        : "/owner/login";
+      window.location.href = `${import.meta.env.BASE_URL}admin/login`;
     }
     return Promise.reject(error);
   },

@@ -14,7 +14,7 @@ const faqData = [
   {
     question: "Do I need an account to book?",
     answer:
-      "No, clients do not need an account. Only the owner/admin logs in to manage bookings and posters.",
+      "No, clients do not need an account. Only the admin signs in to manage bookings and posters.",
   },
   {
     question: "Which driving codes do you offer?",
