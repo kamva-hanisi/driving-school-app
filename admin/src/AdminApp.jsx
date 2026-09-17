@@ -1,0 +1,52 @@
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import Dashboard from "./pages/Dashboard";
+import Login from "./pages/Login";
+import Posters from "./pages/Posters";
+import Settings from "./pages/Settings";
+import { Navbar } from "./components/layout";
+import ProtectedRoute from "./routes/ProtectedRoute";
+
+function AdminRoutes() {
+  return (
+    <div className="app-shell">
+      <Navbar />
+      <Routes>
+        <Route path="/" element={<Navigate replace to="/login" />} />
+        <Route path="/login" element={<Login />} />
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/posters"
+          element={
+            <ProtectedRoute>
+              <Posters />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            <ProtectedRoute>
+              <Settings />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="*" element={<Navigate replace to="/" />} />
+      </Routes>
+    </div>
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <AdminRoutes />
+    </BrowserRouter>
+  );
+}

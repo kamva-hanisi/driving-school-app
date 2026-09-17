@@ -18,8 +18,8 @@ const features = [
     text: "Every booking gets a reference clients can download and use later to check their status without phoning the office.",
   },
   {
-    title: "Admin dashboard",
-    text: "Admins can view bookings, filter by status, confirm lessons, complete lessons, and keep the day organized.",
+    title: "Organized service",
+    text: "The driving school can review bookings, confirm lessons, and keep each day organized.",
   },
   {
     title: "Cleaner communication",
@@ -29,7 +29,7 @@ const features = [
 
 const services = [
   "Learner-focused lesson booking",
-  "Admin login and booking management",
+  "Reliable booking management",
   "Public booking status tracking",
   "Downloadable booking reference cards",
   "Contact form records for client enquiries",
@@ -54,7 +54,7 @@ export default function About({ embedded = false }) {
           </h1>
           <p className="about__subtitle">
             DriveEasy helps learners book lessons with confidence and gives
-            driving school admins a calmer way to manage clients, schedules, and
+            driving school staff a calmer way to manage clients, schedules, and
             follow-ups.
           </p>
 
@@ -69,7 +69,7 @@ export default function About({ embedded = false }) {
             <p>
               The platform supports Code 8, Code 10, and Code 14 lesson
               bookings, booking tracking, downloadable references, and a focused
-              admin workflow so staff can spend less time sorting messages and
+              booking workflow so staff can spend less time sorting messages and
               more time helping clients succeed.
             </p>
           </div>
@@ -108,11 +108,11 @@ export default function About({ embedded = false }) {
           <section className="about-feature-section">
             <div className="about-feature-section__content">
               <p className="about__eyebrow">What the platform does</p>
-              <h2>Built for learners and admins</h2>
+              <h2>Built for learners and driving schools</h2>
               <p>
-                DriveEasy brings the public booking journey and the admin's
+                DriveEasy brings the public booking journey and the school's
                 daily workflow into one practical system. Learners get a simple
-                path to reserve a lesson, while admins get the information they
+                path to reserve a lesson, while staff get the information they
                 need to confirm, update, and manage every booking.
               </p>
 
@@ -147,11 +147,11 @@ export default function About({ embedded = false }) {
             <img src={LearnerImage} alt="Learner driver inside a car" />
             <div>
               <p className="about__eyebrow">Why it matters</p>
-              <h2>Less admin, more confident learners</h2>
+              <h2>Less paperwork, more confident learners</h2>
               <p>
                 A driving school grows through trust. DriveEasy makes the first
                 interaction feel organized, professional, and easy to follow, so
-                learners know what they booked and admins can keep the next
+                learners know what they booked and staff can keep the next
                 lesson moving.
               </p>
             </div>

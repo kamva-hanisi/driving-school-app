@@ -10,11 +10,11 @@ export default function ProtectedRoute({ children }) {
   }
 
   if (!token) {
-    return <Navigate replace to="/admin/login" />;
+    return <Navigate replace to="/login" />;
   }
 
   if (!user) {
-    return <Navigate replace to="/admin/login" />;
+    return <Navigate replace to="/login" />;
   }
 
   return children;

@@ -2,7 +2,6 @@ import { useEffect, useState, useContext } from "react";
 import API from "../services/api";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
-import { Link } from "react-router-dom";
 import Button from "../components/common/Button";
 
 export default function Login() {
@@ -28,7 +27,7 @@ export default function Login() {
       const user = response.data.user;
 
       login(response.data.token, user);
-      navigate("/admin/dashboard");
+      navigate("/dashboard");
     } catch (requestError) {
       console.error("Login failed:", requestError);
       setError(
@@ -65,11 +64,7 @@ export default function Login() {
 
         <Button onClick={handleLogin}>SIGN IN</Button>
 
-        <div className="R-L-links">
-          <p>
-            Need an admin account? <Link to="/admin/register">Create one</Link>
-          </p>
-        </div>
+        <p className="field__hint">Authorized staff accounts only.</p>
       </div>
     </div>
   );

@@ -84,7 +84,7 @@ export default function Booking() {
         <h1 className="booking-card__title">Client booking form</h1>
         <p className="booking-card__text">
           Clients can book lessons here without creating an account. Every
-          booking goes straight to the admin dashboard.
+          booking goes straight to the driving school team.
         </p>
         {error ? <p className="form-status form-status--error">{error}</p> : null}
       </div>

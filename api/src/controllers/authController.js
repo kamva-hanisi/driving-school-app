@@ -43,39 +43,6 @@ const assignOwnSchoolIfMissing = async (user) => {
   return users[0] || user;
 };
 
-export const register = async (req, res) => {
-  const name = req.body.name?.trim();
-  const email = req.body.email?.trim().toLowerCase();
-  const password = req.body.password?.trim();
-
-  if (!name || !email || !password) {
-    return res
-      .status(400)
-      .json({ message: "Name, email, and password are required" });
-  }
-
-  try {
-    const hashed = bcrypt.hashSync(password, 10);
-
-    const users = await query(
-      `INSERT INTO users (name, email, password, role, school_id)
-       VALUES ($1, $2, $3, $4, $5)
-       RETURNING *`,
-      [name, email, hashed, "admin", null],
-    );
-
-    await assignOwnSchoolIfMissing(users[0]);
-
-    return res.json({ message: "User registered" });
-  } catch (error) {
-    if (error?.code === "23505") {
-      return res.status(409).json({ message: "Email already registered" });
-    }
-
-    return res.status(500).json({ message: "Failed to register user" });
-  }
-};
-
 export const login = async (req, res) => {
   const email = req.body.email?.trim().toLowerCase();
   const password = req.body.password?.trim();

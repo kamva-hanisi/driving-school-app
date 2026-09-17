@@ -4,6 +4,7 @@ const isWindows = process.platform === "win32";
 const npmCommand = isWindows ? "npm.cmd" : "npm";
 const commands = [
   { name: "web", directory: "web" },
+  { name: "admin", directory: "admin" },
   { name: "api", directory: "api" },
 ];
 

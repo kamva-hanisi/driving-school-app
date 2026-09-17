@@ -96,7 +96,10 @@ export default function Dashboard() {
     [summary],
   );
 
-  const schoolBookingLink = `${window.location.origin}/booking${
+  const clientUrl = (
+    import.meta.env.VITE_CLIENT_URL || "http://localhost:5173"
+  ).replace(/\/+$/, "");
+  const schoolBookingLink = `${clientUrl}/booking${
     user?.school_id ? `?school_id=${user.school_id}` : ""
   }`;
 

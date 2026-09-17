@@ -4,13 +4,11 @@ import {
   deleteCurrentUser,
   getCurrentUser,
   login,
-  register,
 } from "../controllers/authController.js";
 
 const router = express.Router();
 
 // Public authentication endpoints.
-router.post("/register", register);
 router.post("/login", login);
 router.get("/me", verifyToken, getCurrentUser);
 router.delete("/me", verifyToken, deleteCurrentUser);
