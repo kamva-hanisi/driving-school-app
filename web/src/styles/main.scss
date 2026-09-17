@@ -920,10 +920,15 @@ button {
 
 .booking-status-card__header {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 24px;
   margin-top: 24px;
+}
+
+.booking-status-card__reference-block {
+  display: grid;
+  gap: 8px;
 }
 
 .booking-status-card__meta {
@@ -940,7 +945,6 @@ button {
 
 .booking-status-card__reference {
   display: inline-block;
-  margin-top: 6px;
   font-size: 1.1rem;
   color: $color-dark;
 }
@@ -960,9 +964,25 @@ button {
   align-content: start;
 }
 
+.booking-detail {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  min-width: 0;
+  min-height: 88px;
+  padding: 14px 16px;
+}
+
+.booking-detail > strong {
+  overflow-wrap: anywhere;
+  color: $color-dark;
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
 .booking-detail__row {
   display: flex;
-  align-items: start;
+  align-items: center;
   justify-content: space-between;
   gap: 12px;
 }
@@ -974,6 +994,7 @@ button {
   color: $color-primary-dark;
   font-size: 0.85rem;
   font-weight: 700;
+  cursor: pointer;
 }
 
 .booking-detail__input {
@@ -996,6 +1017,8 @@ button {
 .booking-status-card__actions--spread {
   align-items: center;
   justify-content: space-between;
+  padding-top: 20px;
+  border-top: 1px solid rgba(15, 23, 42, 0.12);
 }
 
 .booking-status-card__actions-left {

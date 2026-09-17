@@ -243,15 +243,15 @@ export default function BookingReview() {
         {booking ? (
           <div className="booking-reference-poster" ref={cardRef}>
             <div className="booking-status-card__header">
-              <div>
-                <span className="booking-detail__label">Reference: </span>
+              <div className="booking-status-card__reference-block">
+                <span className="booking-detail__label">Booking reference</span>
                 <strong className="booking-status-card__reference">
                   {booking.reference}
                 </strong>
               </div>
               <div className="booking-status-card__meta">
                 <span className="booking-status-card__last-seen">
-                  Last seen{" "}
+                  Last updated{" "}
                   {formatDateTime(booking.updated_at || booking.created_at)}
                 </span>
                 <span className={`status status--${booking.status}`}>

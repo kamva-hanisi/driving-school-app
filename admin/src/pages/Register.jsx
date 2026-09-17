@@ -51,7 +51,7 @@ export default function Register() {
   return (
     <div className="sign-R-L-wrapper">
       <div className="R-L-box">
-        <h2>Create Admin Account</h2>
+        <h2>Create Company Account</h2>
 
         <label htmlFor="admin-name">Full name</label>
         <input id="admin-name" type="text" onChange={updateField("name")} />

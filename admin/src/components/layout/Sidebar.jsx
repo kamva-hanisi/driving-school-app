@@ -18,6 +18,7 @@ export default function Sidebar() {
 
       <nav>
         <Link to="/dashboard">Dashboard</Link>
+        {user?.role === "owner" ? <Link to="/team">Team</Link> : null}
         <Link to="/posters">Posters</Link>
         <Link to="/settings">Settings</Link>
         <a href={bookingPath} rel="noreferrer" target="_blank">

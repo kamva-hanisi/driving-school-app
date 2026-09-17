@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import Posters from "./pages/Posters";
 import Register from "./pages/Register";
 import Settings from "./pages/Settings";
+import Team from "./pages/Team";
 import { Navbar } from "./components/layout";
 import ProtectedRoute from "./routes/ProtectedRoute";
 
@@ -28,6 +29,14 @@ function AdminRoutes() {
           element={
             <ProtectedRoute>
               <Posters />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/team"
+          element={
+            <ProtectedRoute>
+              <Team />
             </ProtectedRoute>
           }
         />

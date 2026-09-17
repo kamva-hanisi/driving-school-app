@@ -53,6 +53,9 @@ export function Navbar() {
           ) : (
             <>
               <Link className="site-nav__link" onClick={closeMenu} to="/dashboard">Dashboard</Link>
+              {user?.role === "owner" ? (
+                <Link className="site-nav__link" onClick={closeMenu} to="/team">Team</Link>
+              ) : null}
               <Link className="site-nav__link" onClick={closeMenu} to="/posters">Posters</Link>
               <Link className="site-nav__link" onClick={closeMenu} to="/settings">Settings</Link>
               <span className="dropdown-user">{user?.name || "Admin"}</span>

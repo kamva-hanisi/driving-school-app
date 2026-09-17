@@ -212,7 +212,13 @@ export const getBookings = async (req, res) => {
          u.name AS admin_name,
          u.email AS admin_email
        FROM bookings b
-       LEFT JOIN users u ON u.school_id = b.school_id AND u.role IN ('owner', 'admin')
+       LEFT JOIN LATERAL (
+         SELECT name, email
+         FROM users
+         WHERE school_id = b.school_id AND role = 'owner'
+         ORDER BY id ASC
+         LIMIT 1
+       ) u ON true
        ${whereClause}
        ORDER BY b.booking_date ASC, b.booking_time ASC, b.created_at DESC`,
       values,

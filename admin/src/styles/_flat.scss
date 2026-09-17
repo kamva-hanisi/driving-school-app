@@ -1167,6 +1167,70 @@ img {
   color: #166534;
 }
 
+.team-form {
+  display: grid;
+  gap: 10px;
+}
+
+.team-form label {
+  color: #334155;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.team-form input {
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #fff;
+  color: #0f172a;
+  font: inherit;
+}
+
+.team-form input:focus {
+  border-color: #0284c7;
+  outline: 3px solid rgba(2, 132, 199, 0.16);
+}
+
+.team-list {
+  display: grid;
+  gap: 10px;
+}
+
+.team-member {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.team-member > div {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.team-member span {
+  overflow-wrap: anywhere;
+  color: #475569;
+}
+
+.team-member small {
+  color: #64748b;
+  text-transform: capitalize;
+}
+
+@media (max-width: 560px) {
+  .team-member {
+    align-items: stretch;
+    flex-direction: column;
+  }
+}
+
 .R-L-links a,
 .R-L-links span {
   color: var(--flat-primary-strong);

@@ -1124,27 +1124,38 @@ img {
 
 .booking-reference-poster {
   display: grid;
-  gap: 18px;
+  gap: 20px;
   margin-top: 22px;
-  padding: 18px;
+  padding: 22px;
   border: 1px solid var(--flat-line);
   background: #ffffff;
 }
 
 .booking-status-card__header {
-  padding-bottom: 16px;
+  padding-bottom: 20px;
   border-bottom: 1px solid var(--flat-line);
 }
 
 .booking-status-card__reference {
   display: inline-flex;
-  padding: 8px 10px;
-  border-radius: 8px;
+  width: fit-content;
+  padding: 9px 12px;
+  border-radius: 6px;
   background: var(--flat-panel-tint);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
 }
 
 .booking-detail__edit {
+  min-height: 28px;
+  padding: 2px 0;
   border-bottom: 2px solid var(--flat-primary);
+  text-decoration: none;
+}
+
+.booking-detail__label {
+  display: block;
+  line-height: 1.2;
 }
 
 .settings-card--danger {

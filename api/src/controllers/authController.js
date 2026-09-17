@@ -34,11 +34,18 @@ const findUserByEmail = async (email) => {
 };
 
 const assignOwnSchoolIfMissing = async (user) => {
-  if (user.role === "super_admin" || user.school_id) {
+  if (user.role === "super_admin") {
     return user;
   }
 
-  await query("UPDATE users SET school_id = id WHERE id = $1", [user.id]);
+  if (!user.school_id) {
+    await query("UPDATE users SET school_id = id WHERE id = $1", [user.id]);
+  }
+
+  if (user.role === "admin" && Number(user.school_id || user.id) === Number(user.id)) {
+    await query("UPDATE users SET role = 'owner' WHERE id = $1", [user.id]);
+  }
+
   const users = await query("SELECT * FROM users WHERE id = $1 LIMIT 1", [user.id]);
   return users[0] || user;
 };
@@ -59,32 +66,133 @@ export const register = async (req, res) => {
   }
 
   try {
-    const existingAdmins = await query(
-      "SELECT id FROM users WHERE role IN ('admin', 'super_admin') LIMIT 1",
-    );
-
-    if (existingAdmins.length > 0) {
-      return res.status(403).json({
-        message: "Owner registration is closed. Contact the current owner.",
-      });
-    }
-
     const hashedPassword = bcrypt.hashSync(password, 10);
     const users = await query(
       `INSERT INTO users (name, email, password, role, school_id)
-       VALUES ($1, $2, $3, 'admin', NULL)
+       VALUES ($1, $2, $3, 'owner', NULL)
        RETURNING *`,
       [name, email, hashedPassword],
     );
 
     await assignOwnSchoolIfMissing(users[0]);
-    return res.status(201).json({ message: "Admin account created" });
+    return res.status(201).json({ message: "Company owner account created" });
   } catch (error) {
     if (error?.code === "23505") {
       return res.status(409).json({ message: "Email already registered" });
     }
 
     return res.status(500).json({ message: "Failed to register admin" });
+  }
+};
+
+const getOwner = async (userId) => {
+  const users = await query(
+    `SELECT id, name, email, role, school_id
+     FROM users
+     WHERE id = $1 AND COALESCE(account_status, 'active') = 'active'
+     LIMIT 1`,
+    [userId],
+  );
+  return users[0] || null;
+};
+
+export const getTeam = async (req, res) => {
+  try {
+    const owner = await getOwner(req.user.id);
+
+    if (!owner || !["owner", "super_admin"].includes(owner.role)) {
+      return res.status(403).json({ message: "Only the company owner can manage staff" });
+    }
+
+    const values = owner.role === "super_admin" ? [] : [owner.school_id];
+    const whereClause =
+      owner.role === "super_admin"
+        ? "role IN ('owner', 'admin')"
+        : "school_id = $1 AND role IN ('owner', 'admin')";
+    const members = await query(
+      `SELECT id, name, email, role, school_id,
+              COALESCE(account_status, 'active') AS account_status, created_at
+       FROM users
+       WHERE ${whereClause}
+       ORDER BY CASE WHEN role = 'owner' THEN 0 ELSE 1 END, name ASC`,
+      values,
+    );
+
+    return res.json(members);
+  } catch {
+    return res.status(500).json({ message: "Failed to load team members" });
+  }
+};
+
+export const createTeamMember = async (req, res) => {
+  const name = req.body.name?.trim();
+  const email = req.body.email?.trim().toLowerCase();
+  const password = req.body.password?.trim();
+
+  if (!name || !email || !password) {
+    return res.status(400).json({ message: "Name, email, and password are required" });
+  }
+
+  if (password.length < 8) {
+    return res.status(400).json({ message: "Password must be at least 8 characters" });
+  }
+
+  try {
+    const owner = await getOwner(req.user.id);
+
+    if (!owner || owner.role !== "owner" || !owner.school_id) {
+      return res.status(403).json({ message: "Only the company owner can add staff" });
+    }
+
+    const hashedPassword = bcrypt.hashSync(password, 10);
+    const members = await query(
+      `INSERT INTO users (name, email, password, role, school_id)
+       VALUES ($1, $2, $3, 'admin', $4)
+       RETURNING id, name, email, role, school_id,
+                 COALESCE(account_status, 'active') AS account_status, created_at`,
+      [name, email, hashedPassword, owner.school_id],
+    );
+
+    return res.status(201).json({
+      message: "Staff account created",
+      member: members[0],
+    });
+  } catch (error) {
+    if (error?.code === "23505") {
+      return res.status(409).json({ message: "Email already registered" });
+    }
+    return res.status(500).json({ message: "Failed to create staff account" });
+  }
+};
+
+export const deleteTeamMember = async (req, res) => {
+  const memberId = Number(req.params.id);
+
+  if (!Number.isInteger(memberId) || memberId <= 0) {
+    return res.status(400).json({ message: "Invalid team member" });
+  }
+
+  try {
+    const owner = await getOwner(req.user.id);
+
+    if (!owner || owner.role !== "owner" || !owner.school_id) {
+      return res.status(403).json({ message: "Only the company owner can remove staff" });
+    }
+
+    const result = await db.query(
+      `DELETE FROM users
+       WHERE id = $1 AND school_id = $2 AND role = 'admin'
+       RETURNING id`,
+      [memberId, owner.school_id],
+    );
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: "Staff member not found" });
+    }
+
+    return res.json({ message: "Staff member removed" });
+  } catch {
+    return res.status(500).json({ message: "Failed to remove staff account" });
   }
 };
 

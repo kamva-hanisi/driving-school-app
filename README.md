@@ -17,6 +17,7 @@ manual administration and giving customers a clearer booking experience.
 - Booking review, downloadable booking cards, and reference-based tracking
 - Separate client and staff applications with no admin code in the client build
 - Secure admin login with JWT authentication and password hashing
+- Isolated company workspaces with owner-managed staff accounts
 - Live booking summaries, status management, editing, and deletion
 - Availability checks that prevent conflicting time-slot selection
 - Poster creation tools for driving-school marketing content
@@ -77,16 +78,21 @@ npm run dev:api     # API only on port 5000
 
 API health is available at `/api/health`.
 
-### Register The Owner
+### Register A Company
 
 1. Start the admin app and API with `npm run dev:all`.
 2. Open `http://localhost:5174/register`.
-3. Create the first owner account.
+3. Create the company owner account.
 4. Sign in at `http://localhost:5174/login` after registration.
 
-Registration closes automatically as soon as an admin or owner account exists
-in the database. This lets a new owner set up the website without receiving a
-server secret while preventing later visitors from creating admin accounts.
+Each registration creates a separate company workspace and booking link. The
+owner can open **Team** in the admin app to create staff accounts. Every staff
+account receives the owner's `school_id`, so the team shares bookings while
+remaining isolated from all other companies.
+
+Owners should give each staff member the admin URL, email, and temporary
+password privately. Staff can manage company bookings but cannot create or
+remove other staff accounts.
 
 ## Deployment
 
@@ -95,8 +101,7 @@ client from `web/`. In Vercel, configure separate projects with Root Directory
 set to `admin` and `api`. Set `VITE_API_URL` and `VITE_CLIENT_URL` on the admin
 project. On the API project, set `FRONTEND_URL` to a comma-separated list of
 the client and admin origins so CORS accepts both deployments. The deployed
-registration page is available at `/register` on the admin project's domain
-until its first owner account is created.
+registration page is available at `/register` on the admin project's domain.
 
 The GitHub Pages workflow builds from `web/` and reads `VITE_API_URL` from the
 repository's GitHub Actions secrets.

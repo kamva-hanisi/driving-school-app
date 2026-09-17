@@ -66,7 +66,7 @@ export default function Login() {
 
         <div className="R-L-links">
           <p>
-            Authorized staff registration: <Link to="/register">Create account</Link>
+            New company? <Link to="/register">Create owner account</Link>
           </p>
         </div>
       </div>
