@@ -4,6 +4,7 @@ import cors from "cors";
 import authRoutes from "./routes/authRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
 import contactRoutes from "./routes/contactRoutes.js";
+import { pingDatabase } from "./config/db.js";
 
 const app = express();
 
@@ -50,8 +51,14 @@ app.get("/", (_req, res) => {
   });
 });
 
-app.get("/api/health", (_req, res) => {
-  res.json({ status: "ok" });
+app.get("/api/health", async (_req, res) => {
+  try {
+    await pingDatabase();
+    res.json({ status: "ok", database: "connected" });
+  } catch (error) {
+    console.error("Database health check failed:", error.message);
+    res.status(503).json({ status: "error", database: "disconnected" });
+  }
 });
 
 // Feature routes are mounted under the API namespace.
