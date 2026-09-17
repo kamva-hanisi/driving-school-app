@@ -7,7 +7,7 @@ export default function Sidebar() {
   const clientUrl = (
     import.meta.env.VITE_CLIENT_URL || "http://localhost:5173"
   ).replace(/\/+$/, "");
-  const bookingPath = `${clientUrl}/booking${
+  const bookingPath = `${clientUrl}/${
     user?.school_id ? `?school_id=${user.school_id}` : ""
   }`;
 
@@ -22,7 +22,7 @@ export default function Sidebar() {
         <Link to="/posters">Posters</Link>
         <Link to="/settings">Settings</Link>
         <a href={bookingPath} rel="noreferrer" target="_blank">
-          Client booking page
+          Client website
         </a>
       </nav>
     </aside>

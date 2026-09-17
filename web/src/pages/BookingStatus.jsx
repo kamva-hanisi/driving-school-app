@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import API from "../services/api";
 import { downloadBookingCard } from "../utils/downloadBookingCard";
+import useSchoolLink from "../hooks/useSchoolLink";
 
 const formatDate = (value) =>
   new Intl.DateTimeFormat("en-ZA", {
@@ -33,6 +34,7 @@ const formatDateTime = (value) => {
 };
 
 export default function BookingStatus() {
+  const { withSchoolId } = useSchoolLink();
   const { reference } = useParams();
   const { state } = useLocation();
   const [booking, setBooking] = useState(null);
@@ -169,10 +171,10 @@ export default function BookingStatus() {
           >
             Download reference
           </button>
-          <Link className="btn btn--secondary" to="/">
+          <Link className="btn btn--secondary" to={withSchoolId("/")}>
             Done
           </Link>
-          <Link className="btn btn--secondary" to="/booking">
+          <Link className="btn btn--secondary" to={withSchoolId("/booking")}>
             Make another booking
           </Link>
         </div>

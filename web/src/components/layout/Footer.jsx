@@ -66,6 +66,8 @@ const socialLinks = [
 ];
 
 export function Footer() {
+  const { withSchoolId } = useSchoolLink();
+
   return (
     <footer className="site-footer">
       <div className="site-footer__inner">
@@ -98,20 +100,20 @@ export function Footer() {
         <div className="site-footer__group">
           <h3 className="site-footer__heading">Company</h3>
 
-          <a href="/contact">Contact Us</a>
-          <a href="/">Privacy Policy</a>
-          <a href="/">Terms &amp; Conditions</a>
+          <Link to={withSchoolId("/contact")}>Contact Us</Link>
+          <Link to={withSchoolId("/")}>Privacy Policy</Link>
+          <Link to={withSchoolId("/")}>Terms &amp; Conditions</Link>
         </div>
 
         <div className="site-footer__group">
           <h3 className="site-footer__heading">Contact</h3>
-          <a className="site-footer__contact" href="/">
+          <Link className="site-footer__contact" to={withSchoolId("/")}>
             <LocationIcon />
             <span>
               1771 Umqalothi Cres Greenfield, Katlehong, 1458 Johannesburg,
               South Africa
             </span>
-          </a>
+          </Link>
           <a
             className="site-footer__contact"
             href="mailto:lucashanisi@gmail.com"
@@ -138,11 +140,13 @@ export function Footer() {
         <p>@{new Date().getFullYear()} DriveEasy</p>
         <p>Designed by Kamva Hanisi</p>
         <div className="site-footer__bottom-links">
-          <a href="/">Help</a>
-          <a href="/FAQAccordion">FAQs</a>
-          <a href="/">Support</a>
+          <Link to={withSchoolId("/")}>Help</Link>
+          <Link to={withSchoolId("/#faq")}>FAQs</Link>
+          <Link to={withSchoolId("/")}>Support</Link>
         </div>
       </div>
     </footer>
   );
 }
+import { Link } from "react-router-dom";
+import useSchoolLink from "../../hooks/useSchoolLink";

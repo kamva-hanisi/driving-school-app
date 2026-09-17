@@ -1,15 +1,15 @@
 import { useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import API from "../services/api";
 import StepSelectCode from "../components/booking/StepSelectCode";
 import StepService from "../components/booking/StepService";
 import StepDateTime from "../components/booking/StepDateTime";
 import StepUserDetails from "../components/booking/StepUserDetails";
+import useSchoolLink from "../hooks/useSchoolLink";
 
 export default function Booking() {
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const schoolId = searchParams.get("school_id");
+  const { schoolId, withSchoolId } = useSchoolLink();
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -57,7 +57,7 @@ export default function Booking() {
         throw new Error("Booking reference was not returned");
       }
 
-      navigate(`/booking/review/${bookingReference}`, {
+      navigate(withSchoolId(`/booking/review/${bookingReference}`), {
         state: {
           bookingMessage:
             bookingResponse.data?.message ||

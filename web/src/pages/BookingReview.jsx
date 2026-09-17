@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import API from "../services/api";
 import { downloadBookingCard } from "../utils/downloadBookingCard";
+import useSchoolLink from "../hooks/useSchoolLink";
 
 const formatDate = (value) =>
   new Intl.DateTimeFormat("en-ZA", {
@@ -52,6 +53,7 @@ export default function BookingReview() {
   );
   const [isSaving, setIsSaving] = useState(false);
   const cardRef = useRef(null);
+  const { withSchoolId } = useSchoolLink();
 
   useEffect(() => {
     if (booking?.created_at || booking?.updated_at) {
@@ -286,12 +288,12 @@ export default function BookingReview() {
 
         <div className="booking-status-card__actions booking-status-card__actions--spread">
           <div className="booking-status-card__actions-left">
-            <Link className="btn btn--secondary" to="/booking">
+            <Link className="btn btn--secondary" to={withSchoolId("/booking")}>
               Back
             </Link>
             <Link
               className="btn btn--secondary"
-              to={`/booking/status/${reference}`}
+              to={withSchoolId(`/booking/status/${reference}`)}
             >
               Track your booking
             </Link>

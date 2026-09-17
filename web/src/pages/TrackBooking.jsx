@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import useSchoolLink from "../hooks/useSchoolLink";
 
 export default function TrackBooking() {
   const [reference, setReference] = useState("");
   const navigate = useNavigate();
+  const { withSchoolId } = useSchoolLink();
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -14,7 +16,7 @@ export default function TrackBooking() {
       return;
     }
 
-    navigate(`/booking/status/${trimmedReference}`);
+    navigate(withSchoolId(`/booking/status/${trimmedReference}`));
   };
 
   return (

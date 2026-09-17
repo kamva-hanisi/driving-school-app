@@ -25,6 +25,7 @@ export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [error, setError] = useState("");
+  const [linkCopied, setLinkCopied] = useState(false);
 
   const fetchDashboardData = useCallback(async ({ silent = false } = {}) => {
     try {
@@ -99,7 +100,7 @@ export default function Dashboard() {
   const clientUrl = (
     import.meta.env.VITE_CLIENT_URL || "http://localhost:5173"
   ).replace(/\/+$/, "");
-  const schoolBookingLink = `${clientUrl}/booking${
+  const schoolBookingLink = `${clientUrl}/${
     user?.school_id ? `?school_id=${user.school_id}` : ""
   }`;
 
@@ -107,6 +108,8 @@ export default function Dashboard() {
     try {
       await navigator.clipboard.writeText(schoolBookingLink);
       setError("");
+      setLinkCopied(true);
+      window.setTimeout(() => setLinkCopied(false), 2000);
     } catch {
       setError("We could not copy the booking link.");
     }
@@ -240,9 +243,12 @@ export default function Dashboard() {
           </form>
 
           <div className="school-link">
-            <span>{schoolBookingLink}</span>
+            <div>
+              <strong>Company client website</strong>
+              <span>{schoolBookingLink}</span>
+            </div>
             <button className="btn btn--secondary" onClick={copyBookingLink} type="button">
-              Copy booking link
+              {linkCopied ? "Copied" : "Copy link"}
             </button>
           </div>
         </section>

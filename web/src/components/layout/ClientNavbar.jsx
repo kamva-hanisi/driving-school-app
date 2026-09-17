@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu } from "../common/Menu";
+import useSchoolLink from "../../hooks/useSchoolLink";
 
 function DriveEasyLogo() {
   return (
@@ -15,6 +16,7 @@ function DriveEasyLogo() {
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const { pathname } = useLocation();
+  const { withSchoolId } = useSchoolLink();
 
   useEffect(() => {
     const handleResize = () => {
@@ -30,7 +32,7 @@ export function Navbar() {
   return (
     <div className={`site-nav-shell${pathname === "/" ? " site-nav-shell--overlay" : ""}`}>
       <header className="site-nav">
-        <Link className="site-nav__brand" onClick={closeMenu} to="/">
+        <Link className="site-nav__brand" onClick={closeMenu} to={withSchoolId("/")}>
           <DriveEasyLogo />
           <span>DriveEasy</span>
         </Link>
@@ -42,9 +44,9 @@ export function Navbar() {
           className={`site-nav__links${isOpen ? " site-nav__links--open" : ""}`}
           id="client-navigation"
         >
-          <Link className="site-nav__link" onClick={closeMenu} to="/">Home</Link>
-          <Link className="site-nav__link" onClick={closeMenu} to="/booking">Book lesson</Link>
-          <Link className="site-nav__link" onClick={closeMenu} to="/track-booking">Track booking</Link>
+          <Link className="site-nav__link" onClick={closeMenu} to={withSchoolId("/")}>Home</Link>
+          <Link className="site-nav__link" onClick={closeMenu} to={withSchoolId("/booking")}>Book lesson</Link>
+          <Link className="site-nav__link" onClick={closeMenu} to={withSchoolId("/track-booking")}>Track booking</Link>
         </nav>
       </header>
     </div>

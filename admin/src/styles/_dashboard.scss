@@ -184,9 +184,16 @@
 }
 
 .school-link span {
+  display: block;
   min-width: 0;
   color: $color-text-muted;
   overflow-wrap: anywhere;
+}
+
+.school-link > div {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
 }
 
 .dashboard-grid {

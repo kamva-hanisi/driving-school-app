@@ -6,6 +6,7 @@ import Features from "./Features";
 import Testimonials from "./Testimonials";
 import About from "./About";
 import FAQAccordion from "../components/common/FAQAccordion";
+import useSchoolLink from "../hooks/useSchoolLink";
 
 import AboutImage from "../assets/about-drive.webp";
 
@@ -65,6 +66,7 @@ const journeySteps = [
 
 export default function Home() {
   const { hash } = useLocation();
+  const { withSchoolId } = useSchoolLink();
 
   useEffect(() => {
     if (hash) {
@@ -91,10 +93,10 @@ export default function Home() {
               client experience and get your license faster.
             </p>
             <div className="hero__actions">
-              <Link to="/booking">
+              <Link to={withSchoolId("/booking")}>
                 <Button>Book now</Button>
               </Link>
-              <Link className="hero__ghost-link" to="/track-booking">
+              <Link className="hero__ghost-link" to={withSchoolId("/track-booking")}>
                 Track booking
               </Link>
             </div>
@@ -169,7 +171,7 @@ export default function Home() {
           <span className="section-kicker">Ready when you are</span>
           <h2>Book the lesson, keep the reference, follow the status.</h2>
         </div>
-        <Link to="/booking">
+        <Link to={withSchoolId("/booking")}>
           <Button>Start booking</Button>
         </Link>
       </section>
